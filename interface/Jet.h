@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.6 2008/02/07 18:16:13 lowette Exp $
+// $Id: Jet.h,v 1.6.2.1 2008/03/03 16:45:27 lowette Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,7 +13,7 @@
    'pat' namespace
 
   \author   Steven Lowette
-  \version  $Id: Jet.h,v 1.6 2008/02/07 18:16:13 lowette Exp $
+  \version  $Id: Jet.h,v 1.6.2.1 2008/03/03 16:45:27 lowette Exp $
 */
 
 #include "DataFormats/JetReco/interface/CaloJet.h"
@@ -22,6 +22,7 @@
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/BTauReco/interface/JetTag.h"
 #include "DataFormats/PatCandidates/interface/PATObject.h"
+#include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
 
 
 namespace pat {
@@ -42,13 +43,10 @@ namespace pat {
       const reco::Particle * genParton() const;
       const reco::GenJet *   genJet() const;
       int             partonFlavour() const;
-      float           noCorrF() const;
-      float           udsCorrF() const;
-      float           gluCorrF() const;
-      float           cCorrF() const;
-      float           bCorrF() const;
+      JetCorrFactors  jetCorrFactors() const;
       JetType         recJet() const;
       Jet             noCorrJet() const;
+      Jet             defaultCorrJet() const;
       Jet             udsCorrJet() const;
       Jet             gluCorrJet() const;
       Jet             cCorrJet() const;
@@ -68,7 +66,8 @@ namespace pat {
       void            setGenParton(const reco::Particle & gp);
       void            setGenJet(const reco::GenJet & gj);
       void            setPartonFlavour(int partonFl);
-      void            setScaleCalibFactors(float noCorrF, float udsCorrF, float gluCorrF, float cCorrF, float bCorrF);
+      void            setJetCorrFactors(const JetCorrFactors & jetCorrF);
+      void            setNoCorrFactor(float noCorrF);
       void            setBResolutions(float bResEt_, float bResEta_, float bResPhi_, float bResA_, float bResB_, float bResC_, float bResD_, float bResTheta_);
       void            addBDiscriminatorPair(std::pair<std::string, float> & thePair);
       void            addBJetTagRefPair(std::pair<std::string, reco::JetTagRef> & thePair);
@@ -88,9 +87,8 @@ namespace pat {
       std::vector<reco::GenJet>   genJet_;
       int partonFlavour_;
       // energy scale correction factors
-      // WARNING! noCorrF brings you back to the uncorrected jet, the other
-      //          factors bring you from uncorrected to the desired correction
-      float noCorrF_, udsCorrF_, gluCorrF_, cCorrF_, bCorrF_;
+      JetCorrFactors jetCorrF_;
+      float noCorrF_;
       // additional resolutions for the b-jet hypothesis
       float bResEt_, bResEta_, bResPhi_, bResA_, bResB_, bResC_, bResD_, bResTheta_;
       std::vector<float> bCovM_;
