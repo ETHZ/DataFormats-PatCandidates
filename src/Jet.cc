@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.5 2008/01/26 20:19:45 gpetrucc Exp $
+// $Id: Jet.cc,v 1.6 2008/02/28 14:08:55 llista Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -141,7 +141,7 @@ Jet Jet::bCorrJet() const {
   jet.setResolutionB(bResB_);
   jet.setResolutionC(bResC_);
   jet.setResolutionD(bResD_);
-  jet.setResolutionET(bResET_);
+  jet.setResolutionEt(bResET_);
   jet.setResolutionEta(bResEta_);
   jet.setResolutionPhi(bResPhi_);
   jet.setResolutionTheta(bResTheta_);
