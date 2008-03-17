@@ -1,5 +1,5 @@
 //
-// $Id: Photon.cc,v 1.2 2008/01/23 15:53:15 lowette Exp $
+// $Id: Photon.cc,v 1.3 2008/01/26 20:19:45 gpetrucc Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
@@ -11,7 +11,7 @@ using pat::Photon;
 /// default constructor
 Photon::Photon() :
     PATObject<PhotonType>(PhotonType(0, reco::Particle::LorentzVector(0, 0, 0, 0), reco::Particle::Point(0, 0, 0), 0, 0, 0)),
-    trackIso_(0), caloIso_(0), photonID_(-1.0) 
+    photonID_(-1.0) 
 {
 }
 
@@ -19,7 +19,7 @@ Photon::Photon() :
 /// constructor from PhotonType
 Photon::Photon(const PhotonType & aPhoton) :
     PATObject<PhotonType>(aPhoton),
-    trackIso_(0), caloIso_(0), photonID_(-1.0) 
+    photonID_(-1.0) 
 {
 }
 
@@ -27,7 +27,7 @@ Photon::Photon(const PhotonType & aPhoton) :
 /// constructor from ref to PhotonType
 Photon::Photon(const edm::RefToBase<PhotonType> & aPhotonRef) :
     PATObject<PhotonType>(aPhotonRef),
-    trackIso_(0), caloIso_(0), photonID_(-1.0) 
+    photonID_(-1.0) 
 {
 }
 
