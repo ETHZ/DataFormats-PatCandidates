@@ -15,6 +15,9 @@
   <class name="std::vector<std::pair<std::string, reco::JetTagRef> >" />
   <class name="std::pair<std::string, reco::JetTagRef>" />
 
+  <class name="std::pair<pat::IsolationKeys,reco::MuIsoDeposit>" />
+  <class name="std::vector<std::pair<pat::IsolationKeys,reco::MuIsoDeposit> >" />
+
   <class name="pat::PATObject<pat::ElectronType>" />
   <class name="pat::PATObject<pat::MuonType>" />
   <class name="pat::PATObject<pat::TauType>" />
