@@ -39,6 +39,7 @@
     <field name="oldPt_" transient="true"/>     
   </class>
   <class name="pat::Particle" />
+  <class name="pat::Hemisphere" />
   <class name="std::vector<pat::Electron>" />
   <class name="std::vector<pat::Muon>" />
   <class name="std::vector<pat::Tau>" />
@@ -46,6 +47,7 @@
   <class name="std::vector<pat::Jet>" />
   <class name="std::vector<pat::MET>" />
   <class name="std::vector<pat::Particle>" />
+  <class name="std::vector<pat::Hemisphere>" />
   <class name="edm::Wrapper<std::vector<pat::Electron> >" />
   <class name="edm::Wrapper<std::vector<pat::Muon> >" />
   <class name="edm::Wrapper<std::vector<pat::Tau> >" />
@@ -53,6 +55,7 @@
   <class name="edm::Wrapper<std::vector<pat::Jet> >" />
   <class name="edm::Wrapper<std::vector<pat::MET> >" />
   <class name="edm::Wrapper<std::vector<pat::Particle> >" />
+  <class name="edm::Wrapper<std::vector<pat::Hemisphere> >" />
   <class name="pat::ElectronRef" />
   <class name="pat::MuonRef" />
   <class name="pat::TauRef" />
@@ -60,6 +63,7 @@
   <class name="pat::JetRef" />
   <class name="pat::METRef" />
   <class name="pat::ParticleRef" />
+  <class name="pat::HemisphereRef" />
 
   <class name="pat::JetCorrFactors" />
   <class name="std::vector<pat::JetCorrFactors>" />
