@@ -9,7 +9,7 @@
  *
  *  \author   Steven Lowette
  *
- *  \version  $Id: PATObject.h,v 1.6 2008/03/03 16:45:27 lowette Exp $
+ *  \version  $Id: PATObject.h,v 1.7 2008/03/05 14:47:33 fronga Exp $
  *
  */
 
@@ -32,6 +32,8 @@ namespace pat {
       PATObject(const edm::RefToBase<ObjectType> & ref);
       /// destructor
       virtual ~PATObject() {}
+      /// Clone      
+      virtual PATObject<ObjectType> * clone() const { return new PATObject<ObjectType>(*this); }
       /// access to the original object; returns zero for null Ref and throws for unavailable collection
       const ObjectType * originalObject() const;
       /// reference to original object. Returns a null reference if not available

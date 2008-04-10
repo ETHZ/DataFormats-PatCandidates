@@ -12,6 +12,8 @@ namespace pat {
     Hemisphere (const Particle::LorentzVector& p4) :
     CompositeRefBaseCandidate(0,p4) {}
     virtual ~Hemisphere () {}
+
+    virtual Hemisphere * clone() const { return new Hemisphere(*this); }
   };
 
   typedef std::vector<Hemisphere> HemisphereCollection;
