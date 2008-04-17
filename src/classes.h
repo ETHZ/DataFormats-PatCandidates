@@ -31,6 +31,9 @@
 
 #include "DataFormats/JetReco/interface/GenJetfwd.h"
 #include "DataFormats/JetReco/interface/GenJet.h"
+
+#include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DataFormats/TrackReco/interface/Track.h"
 // ^^^^^ End
 
 // we need these typedefs, it won't work directly - NO IDEA WHY!!!
@@ -195,5 +198,7 @@ namespace {
     edm::reftobase::Holder<pat::ParticleType, pat::ParticleTypeRef> rbh1Particle;
     edm::reftobase::Holder<pat::ParticleType, pat::ParticleRef>     rbh2Particle;
     edm::reftobase::RefHolder<pat::ParticleRef> rhParticle;
+
+    edm::Wrapper<edm::ValueMap<reco::TrackRefVector> > patJTA;
   }
 }
