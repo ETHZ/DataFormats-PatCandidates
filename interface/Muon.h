@@ -1,5 +1,5 @@
 //
-// $Id: Muon.h,v 1.8 2008/04/03 12:29:08 gpetrucc Exp $
+// $Id: Muon.h,v 1.8.2.1 2008/04/10 19:25:59 srappocc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Muon_h
@@ -12,7 +12,7 @@
    Muon implements the analysis-level muon class within the 'pat' namespace.
 
   \author   Steven Lowette
-  \version  $Id: Muon.h,v 1.8 2008/04/03 12:29:08 gpetrucc Exp $
+  \version  $Id: Muon.h,v 1.8.2.1 2008/04/10 19:25:59 srappocc Exp $
 */
 
 #include "DataFormats/MuonReco/interface/Muon.h"
@@ -39,12 +39,15 @@ namespace pat {
       virtual Muon * clone() const { return new Muon(*this); }
 
       float leptonID() const;
+      float segmentCompatibility() const; // calo compatibility is already stored in the reco::Muon class
 
       void setLeptonID(float id);
+      void setSegmentCompatibility(float sc);
 
     protected:
 
       float leptonID_;
+      float segmentCompatibility_;
 
   };
 
