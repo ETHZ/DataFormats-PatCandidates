@@ -3,7 +3,7 @@
 
 
 //
-// $Id$
+// $Id: TriggerPrimitive.h,v 1.1.2.1 2008/04/08 09:40:53 vadler Exp $
 //
 
 
@@ -15,7 +15,7 @@
    It inherits from LeafCandidate and adds trigger and filter names.
 
   \author   Volker Adler
-  \version  $Id$
+  \version  $Id: TriggerPrimitive.h,v 1.1.2.1 2008/04/08 09:40:53 vadler Exp $
 */
 
 
@@ -44,10 +44,14 @@ namespace pat {
       virtual TriggerPrimitive * clone() const;
       
       const std::string & triggerName() const;
+      const std::string & pathName() const;
       const std::string & filterName() const;
+      const std::string & objectType() const;
       
       void setTriggerName( const std::string aTrig = "" );
+      void setPathName( const std::string aPath = "" );
       void setFilterName( const std::string aFilt = "" );
+      void setObjectType( const std::string anObj = "" );
       
     protected:
     
