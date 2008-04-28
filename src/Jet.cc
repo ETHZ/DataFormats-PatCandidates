@@ -1,17 +1,16 @@
 //
-// $Id: Jet.cc,v 1.6.2.3 2008/04/03 19:09:48 lowette Exp $
+// $Id: Jet.cc,v 1.6.2.4 2008/04/16 16:39:25 adamwo Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
-
+#include "DataFormats/RecoCandidate/interface/RecoCaloTowerCandidate.h"
 
 using namespace pat;
 
 
 /// default constructor
 Jet::Jet() :
-  PATObject<JetType>(JetType(reco::Particle::LorentzVector(0, 0, 0, 0), reco::Particle::Point(0,0,0), reco::CaloJet::Specific(), reco::Jet::Constituents())),
+  PATObject<JetType>(JetType()),
   embeddedCaloTowers_(false),
   partonFlavour_(0), lrPhysicsJetLRval_(-999.), lrPhysicsJetProb_(-1),
   jetCharge_(0.0) {
@@ -24,6 +23,7 @@ Jet::Jet(const JetType & aJet) :
   embeddedCaloTowers_(false),
   partonFlavour_(0), lrPhysicsJetLRval_(-999.), lrPhysicsJetProb_(-1),
   jetCharge_(0.0) {
+    tryImportSpecific(aJet);
 }
 
 
@@ -33,35 +33,83 @@ Jet::Jet(const edm::RefToBase<JetType> & aJetRef) :
   embeddedCaloTowers_(false),
   partonFlavour_(0), lrPhysicsJetLRval_(-999.), lrPhysicsJetProb_(-1),
   jetCharge_(0.0) {
+    tryImportSpecific(*aJetRef);
 }
 
+/// constructor helper that tries to import the specific info from the source jet
+void Jet::tryImportSpecific(const JetType &source) {
+    const std::type_info & type = typeid(source);
+    if (type == typeid(reco::CaloJet)) {
+        specificCalo_.push_back( (static_cast<const reco::CaloJet &>(source)).getSpecific() );
+    } else if (type == typeid(reco::PFJet)) {
+        specificPF_.push_back( (static_cast<const reco::PFJet &>(source)).getSpecific() );
+    }
+}
 
 /// destructor
 Jet::~Jet() {
 }
 
 
-/// override the getConstituent method from CaloJet, to access the internal storage of the constituents
-/// this returns a transient Ref which *should never be persisted*!
-CaloTowerRef Jet::getConstituent(unsigned int idx) const {
-  if (embeddedCaloTowers_) {
-    return CaloTowerRef(&caloTowers_, idx);
-  } else {
-    return JetType::getConstituent(idx);
+/// ============= CaloJet methods ============
+CaloTowerRef Jet::caloTower (const reco::Candidate* fConstituent) {
+  if (fConstituent) {
+    const reco::RecoCaloTowerCandidate* towerCandidate = dynamic_cast <const reco::RecoCaloTowerCandidate*> (fConstituent);
+    if (towerCandidate) {
+      return towerCandidate->caloTower ();
+    }
+    else {
+      throw cms::Exception("Invalid Constituent") << "Jet constituent is not of RecoCaloTowerCandidate type";
+    }
   }
+  return CaloTowerRef ();
 }
 
-
-/// override the getConstituents method from CaloJet, to access the internal storage of the constituents
-/// this returns a transient RefVector which *should never be persisted*!
-std::vector<CaloTowerRef> Jet::getConstituents() const {
-  std::vector<CaloTowerRef> caloTowerRefs;
-  for (unsigned int i = 0; i < caloTowers_.size(); ++i) {
-    caloTowerRefs.push_back(CaloTowerRef(&caloTowers_, i));
-  }
-  return caloTowerRefs;
+CaloTowerRef Jet::getCaloConstituent (unsigned fIndex) const {
+    if (embeddedCaloTowers_) {
+        return (fIndex < caloTowers_.size() ? CaloTowerRef(&caloTowers_, fIndex) : CaloTowerRef());
+    } else {
+        reco::Candidate::const_iterator daugh = begin ();
+        std::advance(daugh, fIndex);
+        if (daugh < end()) {
+            const reco::Candidate* constituent = &*daugh; // deref
+            return caloTower(constituent);
+        } else {
+            return CaloTowerRef ();
+        } 
+    }
 }
 
+std::vector <CaloTowerRef> Jet::getCaloConstituents () const {
+  std::vector <CaloTowerRef> result;
+  for (unsigned i = 0;  i <  numberOfDaughters (); i++) result.push_back (getCaloConstituent (i));
+  return result;
+}
+
+/// ============= PFJet methods ============
+const reco::PFCandidate* Jet::getPFCandidate (const reco::Candidate* fConstituent) {
+  if (!fConstituent) return 0;
+  const reco::Candidate* base = fConstituent;
+  if (fConstituent->hasMasterClone ())
+    base = fConstituent->masterClone().get();
+  if (!base) return 0; // not in the event
+  const reco::PFCandidate* candidate = dynamic_cast <const reco::PFCandidate*> (base);
+  if (!candidate) {
+    throw cms::Exception("Invalid Constituent") << "Jet constituent is not of PFCandidate type."
+                                                << "Actual type is " << typeid (*base).name();
+  }
+  return candidate;
+}
+
+const reco::PFCandidate* Jet::getPFConstituent (unsigned fIndex) const {
+  return getPFCandidate (daughter (fIndex));
+}
+
+std::vector <const reco::PFCandidate*> Jet::getPFConstituents () const {
+  std::vector <const reco::PFCandidate*> result;
+  for (unsigned i = 0;  i <  numberOfDaughters (); i++) result.push_back (getPFConstituent (i));
+  return result;
+}
 
 /// return the matched generated parton
 const reco::Particle * Jet::genParton() const {
@@ -368,10 +416,8 @@ Jet::correctionType (const std::string& correctionName)
     if ( correctionName == correctionNames_[i] )  
       return static_cast<CorrectionType>(i);
   }
-  // should include an error message ..
-  edm::LogError("pat::Jet") << "Unknown correction type " << correctionName
-			    << " - going to use default";
-  return DefaultCorrection;
+  // No MessageLogger in DataFormats 
+  throw cms::Exception("pat::Jet") << "Unknown correction type '" << correctionName << "' ";
 }
 
 const std::string pat::Jet::correctionNames_[] = { "none", "default", 

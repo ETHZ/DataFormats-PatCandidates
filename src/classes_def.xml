@@ -34,6 +34,8 @@
   <class name="pat::Tau" />
   <class name="pat::Photon" />
   <class name="pat::Jet" />
+     <class name="std::vector<reco::CaloJet::Specific>" />
+     <class name="std::vector<reco::PFJet::Specific>"   />
   <class name="pat::MET" >
     <field name="uncorInfo_" transient="true"/>     
     <field name="nCorrections_" transient="true"/>     

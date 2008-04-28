@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.6.2.4 2008/04/10 19:25:59 srappocc Exp $
+// $Id: Jet.h,v 1.6.2.5 2008/04/16 16:39:25 adamwo Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,11 +13,15 @@
    'pat' namespace
 
   \author   Steven Lowette
-  \version  $Id: Jet.h,v 1.6.2.4 2008/04/10 19:25:59 srappocc Exp $
+  \version  $Id: Jet.h,v 1.6.2.5 2008/04/16 16:39:25 adamwo Exp $
 */
 
 #include "DataFormats/JetReco/interface/CaloJet.h"
+#include "DataFormats/JetReco/interface/BasicJet.h"
+#include "DataFormats/JetReco/interface/PFJet.h"
+
 #include "DataFormats/CaloTowers/interface/CaloTower.h"
+
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include "DataFormats/Candidate/interface/Particle.h"
 #include "DataFormats/TrackReco/interface/Track.h"
@@ -28,9 +32,9 @@
 
 namespace pat {
 
-
-  typedef reco::CaloJet JetType;
-
+  typedef reco::Jet JetType;
+  typedef reco::CaloJet::Specific CaloSpecific;
+  typedef reco::PFJet::Specific PFSpecific;
 
   class Jet : public PATObject<JetType> {
 
@@ -52,12 +56,6 @@ namespace pat {
 
       virtual Jet * clone() const { return new Jet(*this); }
 
-      /// override the getConstituent method from CaloJet, to access the internal storage of the constituents
-      /// this returns a transient Ref which *should never be persisted*!
-      CaloTowerRef getConstituent(unsigned int idx) const;
-      /// override the getConstituents method from CaloJet, to access the internal storage of the constituents
-      /// this returns a transient RefVector which *should never be persisted*!
-      std::vector<CaloTowerRef> getConstituents() const;
       /// return the matched generated parton
       const reco::Particle * genParton() const;
       /// return the matched generated jet
@@ -132,9 +130,96 @@ namespace pat {
     /// auxiliary method to convert a string to a correction type
     static CorrectionType correctionType (const std::string& name);
 
+    bool isCaloJet()  const { return !specificCalo_.empty(); }
+    bool isPFJet()    const { return !specificPF_.empty(); }
+    bool isBasicJet() const { return !(isCaloJet() || isPFJet()); }
+
+    const CaloSpecific & caloSpecific() const { 
+        if (specificCalo_.empty()) throw cms::Exception("Type Mismatch") << "This PAT jet was not made from a CaloJet.\n";
+        return specificCalo_[0];
+    }
+    const PFSpecific & pfSpecific() const { 
+        if (specificPF_.empty()) throw cms::Exception("Type Mismatch") << "This PAT jet was not made from a PFJet.\n";
+        return specificPF_[0];
+    }
+
+    //================== Calo Jet specific information ====================
+      /** Returns the maximum energy deposited in ECAL towers*/
+      float maxEInEmTowers() const {return caloSpecific().mMaxEInEmTowers;}
+      /** Returns the maximum energy deposited in HCAL towers*/
+      float maxEInHadTowers() const {return caloSpecific().mMaxEInHadTowers;}
+      /** Returns the jet hadronic energy fraction*/
+      float energyFractionHadronic () const {return caloSpecific().mEnergyFractionHadronic;}
+      /** Returns the jet electromagnetic energy fraction*/
+      float emEnergyFraction() const {return caloSpecific().mEnergyFractionEm;}
+      /** Returns the jet hadronic energy in HB*/
+      float hadEnergyInHB() const {return caloSpecific().mHadEnergyInHB;}
+      /** Returns the jet hadronic energy in HO*/
+      float hadEnergyInHO() const {return caloSpecific().mHadEnergyInHO;}
+      /** Returns the jet hadronic energy in HE*/
+      float hadEnergyInHE() const {return caloSpecific().mHadEnergyInHE;}
+      /** Returns the jet hadronic energy in HF*/
+      float hadEnergyInHF() const {return caloSpecific().mHadEnergyInHF;}
+      /** Returns the jet electromagnetic energy in EB*/
+      float emEnergyInEB() const {return caloSpecific().mEmEnergyInEB;}
+      /** Returns the jet electromagnetic energy in EE*/
+      float emEnergyInEE() const {return caloSpecific().mEmEnergyInEE;}
+      /** Returns the jet electromagnetic energy extracted from HF*/
+      float emEnergyInHF() const {return caloSpecific().mEmEnergyInHF;}
+      /** Returns area of contributing towers */
+      float towersArea() const {return caloSpecific().mTowersArea;}
+      /** Returns the number of constituents carrying a 90% of the total Jet energy*/
+      int n90() const {return nCarrying (0.9);}
+      /** Returns the number of constituents carrying a 60% of the total Jet energy*/
+      int n60() const {return nCarrying (0.6);}
+
+      /// convert generic constituent to specific type
+      static CaloTowerRef caloTower (const reco::Candidate* fConstituent);
+      /// Get specific constituent of the CaloJet. 
+      /// If the caloTowers were embedded, this reference is transient only and must not be persisted
+      CaloTowerRef getCaloConstituent (unsigned fIndex) const;
+      /// Get the constituents of the CaloJet. 
+      /// If the caloTowers were embedded, these reference are transient only and must not be persisted
+      std::vector <CaloTowerRef> getCaloConstituents () const;
+
+    //================== PF Jet specific information ====================
+      /// chargedHadronEnergy
+      float chargedHadronEnergy () const {return pfSpecific().mChargedHadronEnergy;}
+      ///  chargedHadronEnergyFraction
+      float  chargedHadronEnergyFraction () const {return chargedHadronEnergy () / energy ();}
+      /// neutralHadronEnergy
+      float neutralHadronEnergy () const {return pfSpecific().mNeutralHadronEnergy;}
+      /// neutralHadronEnergyFraction
+      float neutralHadronEnergyFraction () const {return neutralHadronEnergy () / energy ();}
+      /// chargedEmEnergy
+      float chargedEmEnergy () const {return pfSpecific().mChargedEmEnergy;}
+      /// chargedEmEnergyFraction
+      float chargedEmEnergyFraction () const {return chargedEmEnergy () / energy ();}
+      /// chargedMuEnergy
+      float chargedMuEnergy () const {return pfSpecific().mChargedMuEnergy;}
+      /// chargedMuEnergyFraction
+      float chargedMuEnergyFraction () const {return chargedMuEnergy () / energy ();}
+      /// neutralEmEnergy
+      float neutralEmEnergy () const {return pfSpecific().mNeutralEmEnergy;}
+      /// neutralEmEnergyFraction
+      float neutralEmEnergyFraction () const {return neutralEmEnergy () / energy ();}
+      /// chargedMultiplicity
+      float chargedMultiplicity () const {return pfSpecific().mChargedMultiplicity;}
+      /// neutralMultiplicity
+      float neutralMultiplicity () const {return pfSpecific().mNeutralMultiplicity;}
+      /// muonMultiplicity
+      float muonMultiplicity () const {return pfSpecific().mMuonMultiplicity;}
+
+      /// convert generic constituent to specific type
+      static const reco::PFCandidate* getPFCandidate (const reco::Candidate* fConstituent);
+      /// get specific constituent
+      const reco::PFCandidate* getPFConstituent (unsigned fIndex) const;
+      /// get all constituents
+      std::vector <const reco::PFCandidate*> getPFConstituents () const;
+
     public:
 
-      reco::TrackRefVector associatedTracks_;
+      reco::TrackRefVector associatedTracks_; // FIXME this should not be public!!
 
     protected:
 
@@ -160,6 +245,10 @@ namespace pat {
       float lrPhysicsJetProb_;
       // jet charge members
       float jetCharge_;
+
+      std::vector<CaloSpecific> specificCalo_;
+      std::vector<PFSpecific>   specificPF_;
+      void tryImportSpecific(const JetType &source);
 
     static const std::string correctionNames_[NrOfCorrections];
   };
