@@ -1,5 +1,5 @@
 //
-// $Id: Photon.cc,v 1.3.2.1 2008/03/17 17:17:49 gpetrucc Exp $
+// $Id: Photon.cc,v 1.3.2.2 2008/04/03 18:57:18 lowette Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
@@ -58,9 +58,10 @@ const reco::Particle * Photon::genPhoton() const {
 
 
 /// method to store the photon's supercluster internally
-void Photon::setSuperCluster(const reco::SuperClusterRef & superCluster) {
+void Photon::embedSuperCluster() {
   superCluster_.clear();
-  superCluster_.push_back(*superCluster);
+  superCluster_.push_back(*PhotonType::superCluster());
+  embeddedSuperCluster_ = true;
 }
 
 

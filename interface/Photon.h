@@ -1,5 +1,5 @@
 //
-// $Id: Photon.h,v 1.7.2.1 2008/04/03 18:57:18 lowette Exp $
+// $Id: Photon.h,v 1.7.2.2 2008/04/10 19:25:59 srappocc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Photon_h
@@ -13,7 +13,7 @@
    namespace.
 
   \author   Steven Lowette
-  \version  $Id: Photon.h,v 1.7.2.1 2008/04/03 18:57:18 lowette Exp $
+  \version  $Id: Photon.h,v 1.7.2.2 2008/04/10 19:25:59 srappocc Exp $
 */
 
 #include "DataFormats/PatCandidates/interface/PATObject.h"
@@ -51,7 +51,7 @@ namespace pat {
       const reco::Particle * genPhoton() const;
 
       /// method to store the photon's supercluster internally
-      void setSuperCluster(const reco::SuperClusterRef & superCluster);
+      void embedSuperCluster();
       /// method to set the generated photon
       void setGenPhoton(const reco::Particle & gp);
 
