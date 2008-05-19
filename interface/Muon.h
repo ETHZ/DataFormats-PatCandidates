@@ -1,5 +1,5 @@
 //
-// $Id: Muon.h,v 1.8.2.4 2008/04/23 16:34:46 lowette Exp $
+// $Id: Muon.h,v 1.8.2.5 2008/05/14 13:20:38 lowette Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Muon_h
@@ -12,15 +12,12 @@
    Muon implements the analysis-level muon class within the 'pat' namespace.
 
   \author   Steven Lowette
-  \version  $Id: Muon.h,v 1.8.2.4 2008/04/23 16:34:46 lowette Exp $
+  \version  $Id: Muon.h,v 1.8.2.5 2008/05/14 13:20:38 lowette Exp $
 */
 
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/PatCandidates/interface/Lepton.h"
-
-#include "RecoMuon/MuonIdentification/interface/IdGlobalFunctions.h"
-
 
 namespace pat {
 
@@ -53,9 +50,7 @@ namespace pat {
       reco::TrackRef combinedMuon() const;
       /// return the lepton ID discriminator
       float leptonID() const;
-      /// return whether it is a good muon
-      bool isGoodMuon(const MuonType & muon, muonid::SelectionType type = muonid::TMLastStationLoose);
-      /// return the muon segment compatibility -> meant for
+      /// return the muon segment compatibility
       float segmentCompatibility() const;
 
       /// set reference to Track reconstructed in the tracker only (reimplemented from reco::Muon)
