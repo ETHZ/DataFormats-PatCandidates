@@ -1,5 +1,5 @@
 //
-// $Id: Tau.cc,v 1.4 2008/02/21 21:23:27 delaer Exp $
+// $Id: Tau.cc,v 1.4.2.1 2008/05/14 13:20:38 lowette Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Tau.h"
@@ -59,13 +59,13 @@ Tau::~Tau() {
 
 
 /// override the TauType::isolationTracks method, to access the internal storage of the track
-reco::TrackRefVector Tau::isolationTracks() const {
+const reco::TrackRefVector & Tau::isolationTracks() const {
   if (embeddedIsolationTracks_) {
-    reco::TrackRefVector trackRefVec;
+    transientIsolationTracksRefVector_.clear();
     for (unsigned int i = 0; i < isolationTracks_.size(); i++) {
-      trackRefVec.push_back(reco::TrackRef(&isolationTracks_, i));
+      transientIsolationTracksRefVector_.push_back(reco::TrackRef(&isolationTracks_, i));
     }
-    return trackRefVec;
+    return transientIsolationTracksRefVector_;
   } else {
     return TauType::isolationTracks();
   }
@@ -73,9 +73,10 @@ reco::TrackRefVector Tau::isolationTracks() const {
 
 
 /// override the TauType::track method, to access the internal storage of the track
-reco::TrackRef Tau::leadTrack() const {
+const reco::TrackRef & Tau::leadTrack() const {
   if (embeddedLeadTrack_) {
-    return reco::TrackRef(&leadTrack_, 0);
+    transientLeadTrackRef_ = reco::TrackRef(&leadTrack_, 0);
+    return transientLeadTrackRef_;
   } else {
     return TauType::leadTrack();
   }
@@ -83,13 +84,13 @@ reco::TrackRef Tau::leadTrack() const {
 
 
 /// override the TauType::track method, to access the internal storage of the track
-reco::TrackRefVector Tau::signalTracks() const {
+const reco::TrackRefVector & Tau::signalTracks() const {
   if (embeddedSignalTracks_) {
-    reco::TrackRefVector trackRefVec;
+    transientSignalTracksRefVector_.clear();
     for (unsigned int i = 0; i < signalTracks_.size(); i++) {
-      trackRefVec.push_back(reco::TrackRef(&signalTracks_, i));
+      transientSignalTracksRefVector_.push_back(reco::TrackRef(&signalTracks_, i));
     }
-    return trackRefVec;
+    return transientSignalTracksRefVector_;
   } else {
     return TauType::signalTracks();
   }

@@ -31,7 +31,11 @@
   <class name="pat::Lepton<pat::TauType>" />
   <class name="pat::Electron" />
   <class name="pat::Muon" />
-  <class name="pat::Tau" />
+  <class name="pat::Tau">
+    <field name="transientIsolationTracksRefVector_" transient="true"/>     
+    <field name="transientLeadTrackRef_" transient="true"/>     
+    <field name="transientSignalTracksRefVector_" transient="true"/>     
+  </class>
   <class name="pat::Photon" />
   <class name="pat::Jet" />
      <class name="std::vector<reco::CaloJet::Specific>" />

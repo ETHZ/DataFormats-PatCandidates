@@ -1,5 +1,5 @@
 //
-// $Id: Tau.h,v 1.9.2.1 2008/04/10 19:25:59 srappocc Exp $
+// $Id: Tau.h,v 1.9.2.2 2008/05/14 13:20:38 lowette Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Tau_h
@@ -12,7 +12,7 @@
    Tau implements the analysis-level tau class within the 'pat' namespace.
 
   \author   Steven Lowette
-  \version  $Id: Tau.h,v 1.9.2.1 2008/04/10 19:25:59 srappocc Exp $
+  \version  $Id: Tau.h,v 1.9.2.2 2008/05/14 13:20:38 lowette Exp $
 */
 
 
@@ -38,11 +38,11 @@ namespace pat {
       virtual Tau * clone() const { return new Tau(*this); }
 
       /// override the TauType::isolationTracks method, to access the internal storage of the track
-      reco::TrackRefVector isolationTracks() const;
+      const reco::TrackRefVector & isolationTracks() const;
       /// override the TauType::track method, to access the internal storage of the track
-      reco::TrackRef leadTrack() const;
+      const reco::TrackRef & leadTrack() const;
       /// override the TauType::track method, to access the internal storage of the track
-      reco::TrackRefVector signalTracks() const;
+      const reco::TrackRefVector & signalTracks() const;
       float emEnergyFraction() const { return emEnergyFraction_; }
       float eOverP() const { return eOverP_; }
       float leadEoverP() const { return leadeOverP_; }
@@ -65,10 +65,13 @@ namespace pat {
 
       bool embeddedIsolationTracks_;
       std::vector<reco::Track> isolationTracks_;
+      mutable TrackRefVector transientIsolationTracksRefVector_;
       bool embeddedLeadTrack_;
       std::vector<reco::Track> leadTrack_;
+      mutable TrackRef transientLeadTrackRef_;
       bool embeddedSignalTracks_;
       std::vector<reco::Track> signalTracks_;
+      mutable TrackRefVector transientSignalTracksRefVector_;
       float emEnergyFraction_;
       float eOverP_;
       float leadeOverP_;
