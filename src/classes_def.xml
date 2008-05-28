@@ -26,6 +26,7 @@
   <class name="pat::PATObject<pat::JetType>" />
   <class name="pat::PATObject<pat::METType>" />
   <class name="pat::PATObject<pat::ParticleType>" />
+  <class name="pat::PATObject<reco::RecoCandidate>" />
   <class name="pat::Lepton<pat::ElectronType>" />
   <class name="pat::Lepton<pat::MuonType>" />
   <class name="pat::Lepton<pat::TauType>" />
@@ -46,6 +47,7 @@
     <field name="oldPt_" transient="true"/>     
   </class>
   <class name="pat::Particle" />
+  <class name="pat::GenericParticle" />
   <class name="pat::Hemisphere" />
   <class name="std::vector<pat::Electron>" />
   <class name="std::vector<pat::Muon>" />
@@ -54,6 +56,7 @@
   <class name="std::vector<pat::Jet>" />
   <class name="std::vector<pat::MET>" />
   <class name="std::vector<pat::Particle>" />
+  <class name="std::vector<pat::GenericParticle>" />
   <class name="std::vector<pat::Hemisphere>" />
   <class name="edm::Wrapper<std::vector<pat::Electron> >" />
   <class name="edm::Wrapper<std::vector<pat::Muon> >" />
@@ -61,6 +64,7 @@
   <class name="edm::Wrapper<std::vector<pat::Photon> >" />
   <class name="edm::Wrapper<std::vector<pat::Jet> >" />
   <class name="edm::Wrapper<std::vector<pat::MET> >" />
+  <class name="edm::Wrapper<std::vector<pat::GenericParticle> >" />
   <class name="edm::Wrapper<std::vector<pat::Particle> >" />
   <class name="edm::Wrapper<std::vector<pat::Hemisphere> >" />
   <class name="pat::ElectronRef" />
@@ -70,6 +74,7 @@
   <class name="pat::JetRef" />
   <class name="pat::METRef" />
   <class name="pat::ParticleRef" />
+  <class name="pat::GenericParticleRef" />
   <class name="pat::HemisphereRef" />
 
   <class name="pat::JetCorrFactors" />
@@ -164,12 +169,11 @@
   <class name="edm::reftobase::RefHolder<pat::METRef>" />
   <class name="edm::reftobase::Holder<reco::Candidate, pat::METRef>" />
 
-  <class name="edm::RefToBase<pat::ParticleType>" />
-  <class name="edm::reftobase::BaseHolder<pat::ParticleType>" />
-  <class name="edm::reftobase::IndirectHolder<pat::ParticleType>" />
-  <class name="edm::reftobase::Holder<pat::ParticleType, pat::ParticleTypeRef>" />
-  <class name="edm::reftobase::Holder<pat::ParticleType, pat::ParticleRef>" />
+  <class name="edm::reftobase::Holder<reco::Candidate,pat::ParticleRef>" />
   <class name="edm::reftobase::RefHolder<pat::ParticleRef>" />
+
+  <class name="edm::reftobase::Holder<reco::Candidate,pat::GenericParticleRef>" />
+  <class name="edm::reftobase::RefHolder<pat::GenericParticleRef>" />
 
   <class name="std::vector<reco::TrackRefVector>" />
   <class name="edm::ValueMap<reco::TrackRefVector>" />

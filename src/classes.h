@@ -9,6 +9,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Particle.h"
+#include "DataFormats/PatCandidates/interface/GenericParticle.h"
 #include "DataFormats/PatCandidates/interface/Hemisphere.h"
 
 #include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
@@ -44,6 +45,7 @@ namespace pat {
   typedef edm::Ref<std::vector<pat::Photon> >   PhotonRef;
   typedef edm::Ref<std::vector<pat::Jet> >      JetRef;
   typedef edm::Ref<std::vector<pat::MET> >      METRef;
+  typedef edm::Ref<std::vector<pat::GenericParticle> > GenericParticleRef;
   typedef edm::Ref<std::vector<pat::Particle> > ParticleRef;
   typedef edm::Ref<std::vector<pat::Hemisphere> > HemisphereRef;
 
@@ -53,7 +55,6 @@ namespace pat {
   typedef edm::Ref<std::vector<pat::PhotonType> >   PhotonTypeRef;
   typedef edm::Ref<std::vector<pat::JetType> >      JetTypeRef;
   typedef edm::Ref<std::vector<pat::METType> >      METTypeRef;
-  typedef edm::Ref<std::vector<pat::ParticleType> > ParticleTypeRef;
 }
 
 
@@ -120,6 +121,7 @@ namespace {
     pat::Jet                                    jet;
     pat::MET                                    met;
     pat::Particle                               part;
+    pat::GenericParticle                        recopart;
     pat::Hemisphere                             hemisphere;
     std::vector<pat::Electron>                  v_el;
     std::vector<pat::Muon>                      v_mu;
@@ -128,6 +130,7 @@ namespace {
     std::vector<pat::Jet>                       v_jet;
     std::vector<pat::MET>                       v_met;
     std::vector<pat::Particle>                  v_part;
+    std::vector<pat::GenericParticle>           v_recopart;
     std::vector<pat::Hemisphere>                v_hemi;
     edm::Wrapper<std::vector<pat::Electron> >   w_v_el;
     edm::Wrapper<std::vector<pat::Muon> >       w_v_mu;
@@ -136,6 +139,7 @@ namespace {
     edm::Wrapper<std::vector<pat::Jet> >        w_v_jet;
     edm::Wrapper<std::vector<pat::MET> >        w_v_met;
     edm::Wrapper<std::vector<pat::Particle> >   w_v_part;
+    edm::Wrapper<std::vector<pat::GenericParticle> > w_v_reco_part;
     edm::Wrapper<std::vector<pat::Hemisphere> >   w_v_hemi;
     edm::Ref<std::vector<pat::Electron> >       r_el;
     edm::Ref<std::vector<pat::Muon> >           r_mu;
@@ -205,11 +209,11 @@ namespace {
     edm::reftobase::RefHolder<pat::METRef> rhMET;
     edm::reftobase::Holder<reco::Candidate, pat::METRef> rbh3MET;
 
-    edm::RefToBase<pat::ParticleType>  rbParticle;
-    edm::reftobase::IndirectHolder<pat::ParticleType> rbihParticle;
-    edm::reftobase::Holder<pat::ParticleType, pat::ParticleTypeRef> rbh1Particle;
-    edm::reftobase::Holder<pat::ParticleType, pat::ParticleRef>     rbh2Particle;
+    edm::reftobase::Holder<reco::Candidate, pat::ParticleRef>     rbh3Particle;
     edm::reftobase::RefHolder<pat::ParticleRef> rhParticle;
+
+    edm::reftobase::Holder<reco::Candidate, pat::GenericParticleRef>     hGenericParticle;
+    edm::reftobase::RefHolder<pat::GenericParticleRef>                  rhGenericParticle;
 
     edm::Wrapper<edm::ValueMap<reco::TrackRefVector> > patJTA;
   }
