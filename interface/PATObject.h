@@ -9,7 +9,7 @@
  *
  *  \author   Steven Lowette
  *
- *  \version  $Id: PATObject.h,v 1.7.2.2 2008/04/14 21:36:11 vadler Exp $
+ *  \version  $Id: PATObject.h,v 1.7.2.3 2008/05/28 13:19:28 gpetrucc Exp $
  *
  */
 
@@ -126,8 +126,14 @@ namespace pat {
 
   template <class ObjectType> PATObject<ObjectType>::PATObject(const edm::RefToBase<ObjectType> & ref) :
     ObjectType(*ref),
-    refToOrig_(ref),
-    resEt_(0), resEta_(0), resPhi_(0), resA_(0), resB_(0), resC_(0), resD_(0),  resTheta_(0) {
+    refToOrig_(),
+    resEt_(0), resEta_(0), resPhi_(0), resA_(0), resB_(0), resC_(0), resD_(0),  resTheta_(0) 
+  {
+     // NOT as simple, in 1.6.X RefToBase from RefToBase constructor is broken :-(
+     // see https://hypernews.cern.ch/HyperNews/CMS/get/edmFramework/1308.html for details
+     // this workaround should be ok
+     boost::shared_ptr<edm::reftobase::RefHolderBase> holderBase(ref.holder().release());
+     refToOrig_ = edm::RefToBase<reco::Candidate>(holderBase);
   }
   
   //  NO NO NO: ObjectType can be abstract
