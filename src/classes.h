@@ -35,6 +35,9 @@
 
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+
+#include "DataFormats/TauReco/interface/PFTauFwd.h"
+#include "DataFormats/TauReco/interface/PFTau.h"
 // ^^^^^ End
 
 // we need these typedefs, it won't work directly - NO IDEA WHY!!!
@@ -186,7 +189,9 @@ namespace {
     edm::reftobase::Holder<pat::TauType, pat::TauTypeRef> rbh1Tau;
     edm::reftobase::Holder<pat::TauType, pat::TauRef>     rbh2Tau;
     edm::reftobase::RefHolder<pat::TauRef> rhTau;
+    edm::reftobase::RefHolder<reco::PFTauRef> rhPFTau;
     edm::reftobase::Holder<reco::Candidate, pat::TauRef> rbh3Tau;
+    edm::reftobase::Holder<reco::Candidate, reco::PFTauRef> rbh4Tau;
 
     edm::RefToBase<pat::PhotonType>  rbPhoton;
     edm::reftobase::IndirectHolder<pat::PhotonType> rbihPhoton;
