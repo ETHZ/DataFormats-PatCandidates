@@ -1,4 +1,5 @@
 <lcgdict>
+ <selection>
 
   <!-- To check: -->
   <!-- These dont belong here, and maybe they already exist in the meantime -->
@@ -76,6 +77,23 @@
   <class name="pat::EventHypothesis" />
   <class name="std::vector<pat::EventHypothesis>" />
   <class name="edm::Wrapper<std::vector<pat::EventHypothesis> >" />
+  
+  <class name="std::string" />
+<!--   <class name="int" /> -->
+  <class name="pat::TriggerPrimitive" />
+  <class name="std::vector<pat::TriggerPrimitive>" />
+  <class name="std::vector<pat::TriggerPrimitive *>" />
+  <class name="pat::TriggerPrimitiveCollection" />
+  <class name="edm::Wrapper<pat::TriggerPrimitiveCollection>" />
+  <class name="pat::TriggerPrimitiveMatch" />
+  <class name="edm::Wrapper<pat::TriggerPrimitiveMatch>" />
+  <class name="pat::TriggerPrimitiveRef" />
+  <class name="pat::TriggerPrimitiveRefProd" />
+  <class name="pat::TriggerPrimitiveRefVector" />
+  <class name="edm::reftobase::Holder<reco::Candidate, pat::TriggerPrimitiveRef>" />
+  <class name="edm::reftobase::RefHolder<pat::TriggerPrimitiveRef>" />
+  <class name="edm::reftobase::VectorHolder<reco::Candidate, pat::TriggerPrimitiveRefVector>" />
+  <class name="edm::reftobase::RefVectorHolder<pat::TriggerPrimitiveRefVector>" />
 
   <class name="edm::reftobase::RefHolder<edm::Ref<std::vector<reco::MET>,reco::MET,edm::refhelper::FindUsingAdvance<std::vector<reco::MET>,reco::MET> > >" />
   <class name="edm::reftobase::RefHolder<edm::Ref<std::vector<reco::CaloMET>,reco::CaloMET,edm::refhelper::FindUsingAdvance<std::vector<reco::CaloMET>,reco::CaloMET> > >" />
@@ -169,5 +187,11 @@
   <class name="std::vector<edm::Ptr<reco::BaseTagInfo> >" />
   <class name="edm::ValueMap<edm::Ptr<reco::BaseTagInfo> >" />
   <class name="edm::Wrapper<edm::ValueMap<edm::Ptr<reco::BaseTagInfo> > >" />
+ </selection>
+ <exclusion>
+  <class name="edm::OwnVector<pat::TriggerPrimitive, edm::ClonePolicy<pat::TriggerPrimitive> >">
+   <method name="sort" />
+  </class>
+ </exclusion>
 </lcgdict>
 
