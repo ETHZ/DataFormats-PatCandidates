@@ -1,5 +1,5 @@
 //
-// $Id: Lepton.h,v 1.10 2008/04/04 18:22:08 srappocc Exp $
+// $Id: Lepton.h,v 1.11 2008/04/18 10:20:11 gpetrucc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Lepton_h
@@ -13,7 +13,7 @@
    namespace.
 
   \author   Steven Lowette
-  \version  $Id: Lepton.h,v 1.10 2008/04/04 18:22:08 srappocc Exp $
+  \version  $Id: Lepton.h,v 1.11 2008/04/18 10:20:11 gpetrucc Exp $
 */
 
 #include "DataFormats/Candidate/interface/Particle.h"
@@ -32,6 +32,7 @@ namespace pat {
       Lepton();
       Lepton(const LeptonType & aLepton);
       Lepton(const edm::RefToBase<LeptonType> & aLeptonRef);
+      Lepton(const edm::Ptr<LeptonType> & aLeptonRef);
       virtual ~Lepton();
 
       virtual Lepton<LeptonType> * clone() const { return new Lepton<LeptonType>(*this); }
@@ -161,6 +162,13 @@ namespace pat {
   /// constructor from ref to LeptonType
   template <class LeptonType>
   Lepton<LeptonType>::Lepton(const edm::RefToBase<LeptonType> & aLeptonRef) :
+    PATObject<LeptonType>(aLeptonRef) {
+  }
+
+
+  /// constructor from ref to LeptonType
+  template <class LeptonType>
+  Lepton<LeptonType>::Lepton(const edm::Ptr<LeptonType> & aLeptonRef) :
     PATObject<LeptonType>(aLeptonRef) {
   }
 

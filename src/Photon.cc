@@ -1,5 +1,5 @@
 //
-// $Id$
+// $Id: Photon.cc,v 1.11 2008/05/15 17:20:44 lowette Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
@@ -25,7 +25,6 @@ Photon::Photon(const PhotonType & aPhoton) :
 {
 }
 
-
 /// constructor from ref to PhotonType
 Photon::Photon(const edm::RefToBase<PhotonType> & aPhotonRef) :
     PATObject<PhotonType>(aPhotonRef),
@@ -34,6 +33,13 @@ Photon::Photon(const edm::RefToBase<PhotonType> & aPhotonRef) :
 {
 }
 
+/// constructor from ref to PhotonType
+Photon::Photon(const edm::Ptr<PhotonType> & aPhotonRef) :
+    PATObject<PhotonType>(aPhotonRef),
+    embeddedSuperCluster_(false),
+    photonID_(-1.0) 
+{
+}
 
 /// destructor
 Photon::~Photon() {
