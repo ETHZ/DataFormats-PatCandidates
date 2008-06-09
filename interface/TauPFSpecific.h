@@ -1,0 +1,38 @@
+//
+// $Id: TauPFSpecific.h,v 1.1 2008/06/09 09:03:19 gpetrucc Exp $
+//
+
+#ifndef DataFormats_PatCandidates_Tau_PFSpecific_h
+#define DataFormats_PatCandidates_Tau_PFSpecific_h
+
+/**
+  \class    pat::tau::PFSpecific TauPFSpecific.h "DataFormats/PatCandidates/interface/TauPFSpecific.h"
+  \brief    Structure to hold information specific to a PFTau inside a pat::Tau
+
+  \author   Giovanni Petrucciani
+  \version  $Id: TauPFSpecific.h,v 1.1 2008/06/09 09:03:19 gpetrucc Exp $
+*/
+
+#include "DataFormats/TauReco/interface/PFTau.h"
+
+namespace pat { namespace tau {
+
+struct TauPFSpecific {
+// dummy constructor for ROOT I/O
+    TauPFSpecific() {}
+// constructor from PFTau
+    TauPFSpecific(const reco::PFTau &tau) ;
+// datamembers 
+    reco::PFTauTagInfoRef PFTauTagInfoRef_;
+    reco::PFCandidateRef leadPFChargedHadrCand_;
+    float leadPFChargedHadrCandsignedSipt_;
+    reco::PFCandidateRefVector selectedSignalPFCands_, selectedSignalPFChargedHadrCands_, selectedSignalPFNeutrHadrCands_, selectedSignalPFGammaCands_;
+    reco::PFCandidateRefVector selectedIsolationPFCands_, selectedIsolationPFChargedHadrCands_, selectedIsolationPFNeutrHadrCands_, selectedIsolationPFGammaCands_;
+    float isolationPFChargedHadrCandsPtSum_;
+    float isolationPFGammaCandsEtSum_;
+    float maximumHCALPFClusterEt_;
+};
+
+} }
+
+#endif
