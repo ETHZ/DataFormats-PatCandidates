@@ -36,7 +36,11 @@
   <class name="pat::Jet" />
      <class name="std::vector<reco::CaloJet::Specific>" />
      <class name="std::vector<reco::PFJet::Specific>"   />
-  <class name="pat::MET" />
+  <class name="pat::MET" >
+    <field name="uncorInfo_" transient="true"/>     
+    <field name="nCorrections_" transient="true"/>     
+    <field name="oldPt_" transient="true"/>     
+  </class>
   <class name="pat::Particle" />
   <class name="pat::GenericParticle" />
   <class name="pat::Hemisphere" />
