@@ -1,5 +1,5 @@
 //
-// $Id: Electron.cc,v 1.5 2008/04/03 12:29:09 gpetrucc Exp $
+// $Id: Electron.cc,v 1.5.2.1 2008/05/14 13:20:38 lowette Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -88,24 +88,30 @@ float Electron::electronIDRobust() const {
 /// method to store the electron's gsfTrack internally
 void Electron::embedGsfTrack() {
   gsfTrack_.clear();
-  gsfTrack_.push_back(*ElectronType::gsfTrack());
-  embeddedGsfTrack_ = true;
+  if (ElectronType::gsfTrack().isNonnull()) {
+      gsfTrack_.push_back(*ElectronType::gsfTrack());
+      embeddedGsfTrack_ = true;
+  }
 }
 
 
 /// method to store the electron's supercluster internally
 void Electron::embedSuperCluster() {
   superCluster_.clear();
-  superCluster_.push_back(*ElectronType::superCluster());
-  embeddedSuperCluster_ = true;
+  if (ElectronType::superCluster().isNonnull()) {
+      superCluster_.push_back(*ElectronType::superCluster());
+      embeddedSuperCluster_ = true;
+  }
 }
 
 
 /// method to store the electron's track internally
 void Electron::embedTrack() {
   track_.clear();
-  track_.push_back(*ElectronType::track());
-  embeddedTrack_ = true;
+  if (ElectronType::track().isNonnull()) {
+      track_.push_back(*ElectronType::track());
+      embeddedTrack_ = true;
+  }
 }
 
 

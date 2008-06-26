@@ -1,5 +1,5 @@
 //
-// $Id: Muon.cc,v 1.5.2.4 2008/05/14 13:20:38 lowette Exp $
+// $Id: Muon.cc,v 1.5.2.5 2008/05/19 11:32:26 fronga Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -89,24 +89,30 @@ float Muon::segmentCompatibility() const {
 /// embed the Track reconstructed in the tracker only
 void Muon::embedTrack() {
   track_.clear();
-  track_.push_back(*MuonType::track());
-  embeddedTrack_ = true;
+  if (MuonType::track().isNonnull()) {
+      track_.push_back(*MuonType::track());
+      embeddedTrack_ = true;
+  }
 }
 
 
 /// embed the Track reconstructed in the muon detector only
 void Muon::embedStandAloneMuon() {
   standAloneMuon_.clear();
-  standAloneMuon_.push_back(*MuonType::standAloneMuon());
-  embeddedStandAloneMuon_ = true;
+  if (MuonType::standAloneMuon().isNonnull()) {
+      standAloneMuon_.push_back(*MuonType::standAloneMuon());
+      embeddedStandAloneMuon_ = true;
+  }
 }
 
 
 /// embed the Track reconstructed in both tracked and muon detector
 void Muon::embedCombinedMuon() {
   combinedMuon_.clear();
-  combinedMuon_.push_back(*MuonType::combinedMuon());
-  embeddedCombinedMuon_ = true;
+  if (MuonType::combinedMuon().isNonnull()) {
+      combinedMuon_.push_back(*MuonType::combinedMuon());
+      embeddedCombinedMuon_ = true;
+  }
 }
 
 
