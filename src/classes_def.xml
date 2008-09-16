@@ -46,6 +46,7 @@
     <field name="nCorrections_" transient="true"/>     
     <field name="oldPt_" transient="true"/>     
   </class>
+  <class name="pat::MHT" />
   <class name="pat::Particle" />
   <class name="pat::GenericParticle" />
   <class name="pat::Hemisphere" />

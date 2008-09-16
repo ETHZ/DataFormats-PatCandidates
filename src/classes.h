@@ -8,6 +8,7 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/MHT.h"
 #include "DataFormats/PatCandidates/interface/Particle.h"
 #include "DataFormats/PatCandidates/interface/GenericParticle.h"
 #include "DataFormats/PatCandidates/interface/Hemisphere.h"
@@ -48,6 +49,7 @@ namespace pat {
   typedef edm::Ref<std::vector<pat::Photon> >   PhotonRef;
   typedef edm::Ref<std::vector<pat::Jet> >      JetRef;
   typedef edm::Ref<std::vector<pat::MET> >      METRef;
+  typedef edm::Ref<std::vector<pat::MHT> >      MHTRef;
   typedef edm::Ref<std::vector<pat::GenericParticle> > GenericParticleRef;
   typedef edm::Ref<std::vector<pat::Particle> > ParticleRef;
   typedef edm::Ref<std::vector<pat::Hemisphere> > HemisphereRef;
@@ -123,6 +125,7 @@ namespace {
     pat::Photon                                 photon;
     pat::Jet                                    jet;
     pat::MET                                    met;
+    pat::MHT                                    mht;
     pat::Particle                               part;
     pat::GenericParticle                        recopart;
     pat::Hemisphere                             hemisphere;
@@ -132,6 +135,7 @@ namespace {
     std::vector<pat::Photon>                    v_photon;
     std::vector<pat::Jet>                       v_jet;
     std::vector<pat::MET>                       v_met;
+    std::vector<pat::MHT>                       v_mht;
     std::vector<pat::Particle>                  v_part;
     std::vector<pat::GenericParticle>           v_recopart;
     std::vector<pat::Hemisphere>                v_hemi;
@@ -141,6 +145,7 @@ namespace {
     edm::Wrapper<std::vector<pat::Photon> >     w_v_photon;
     edm::Wrapper<std::vector<pat::Jet> >        w_v_jet;
     edm::Wrapper<std::vector<pat::MET> >        w_v_met;
+    edm::Wrapper<std::vector<pat::MHT> >        w_v_mht;
     edm::Wrapper<std::vector<pat::Particle> >   w_v_part;
     edm::Wrapper<std::vector<pat::GenericParticle> > w_v_reco_part;
     edm::Wrapper<std::vector<pat::Hemisphere> >   w_v_hemi;
@@ -150,6 +155,7 @@ namespace {
     edm::Ref<std::vector<pat::Photon> >         r_photon;
     edm::Ref<std::vector<pat::Jet> >            r_jet;
     edm::Ref<std::vector<pat::MET> >            r_met;
+    edm::Ref<std::vector<pat::MHT> >            r_mht;
     edm::Ref<std::vector<pat::Particle> >       r_part;
     edm::Ref<std::vector<pat::Hemisphere> >     r_hemi;
 
