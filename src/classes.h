@@ -66,6 +66,7 @@ namespace pat {
 namespace {
   namespace {
 
+    edm::Wrapper<pat::MHT> mht_w;
     std::pair<std::string,int32_t> smap0;
     std::vector<std::pair<std::string,int32_t> > smap1;
     StringMap smap;
@@ -219,6 +220,8 @@ namespace {
     edm::reftobase::Holder<pat::METType, pat::METRef>     rbh2MET;
     edm::reftobase::RefHolder<pat::METRef> rhMET;
     edm::reftobase::Holder<reco::Candidate, pat::METRef> rbh3MET;
+    edm::reftobase::RefHolder<pat::MHTRef> rhMHT;
+    edm::reftobase::Holder<reco::Candidate, pat::MHTRef> rbh3MHT;
 
     edm::reftobase::Holder<reco::Candidate, pat::ParticleRef>     rbh3Particle;
     edm::reftobase::RefHolder<pat::ParticleRef> rhParticle;

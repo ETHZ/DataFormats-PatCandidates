@@ -28,7 +28,7 @@ namespace pat {
                                                                                                                    
   };
                                                                                                                    
-  typedef std::vector<MHT> MHTCollection;
+  typedef std::vector<pat::MHT> MHTCollection;
 }
                                                                                                                    
 #endif
