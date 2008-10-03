@@ -10,20 +10,20 @@ namespace pat {
   class MHT : public reco::CompositeRefBaseCandidate {
   public:
     MHT () {}
-    MHT (const Particle::LorentzVector& p4, float ht, float signif) :
+    MHT (const Particle::LorentzVector& p4, double ht, double signif) :
       CompositeRefBaseCandidate(0,p4), ht_(ht), significance_(signif) {}
     virtual ~MHT () {}
                                                                                                                    
-    float mht() {return pt();};
-    float phi() {return phi();};
-    float ht() {return ht_;};
-    float significance() {return significance_;};
-    float error() {return 0.5*significance()*mht()*mht();};
+    double mht() const {return pt();};
+    double phi() const {return phi();};
+    double ht()  const {return ht_;};
+    double significance() const {return significance_;};
+    double error()  const{return 0.5*significance()*mht()*mht();};
                                                                                                                    
   private:
                                                                                                                    
-    float ht_;
-    float significance_;
+    double ht_;
+    double significance_;
                                                                                                                    
                                                                                                                    
   };
