@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.6.2.5 2008/04/16 16:39:25 adamwo Exp $
+// $Id: Jet.h,v 1.6.2.6 2008/04/28 15:24:50 gpetrucc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,7 +13,7 @@
    'pat' namespace
 
   \author   Steven Lowette
-  \version  $Id: Jet.h,v 1.6.2.5 2008/04/16 16:39:25 adamwo Exp $
+  \version  $Id: Jet.h,v 1.6.2.6 2008/04/28 15:24:50 gpetrucc Exp $
 */
 
 #include "DataFormats/JetReco/interface/CaloJet.h"
@@ -21,6 +21,8 @@
 #include "DataFormats/JetReco/interface/PFJet.h"
 
 #include "DataFormats/CaloTowers/interface/CaloTower.h"
+#include "DataFormats/RecoCandidate/interface/RecoCaloTowerCandidate.h"
+#include "DataFormats/Common/interface/BoolCache.h"
 
 #include "DataFormats/JetReco/interface/GenJet.h"
 #include "DataFormats/Candidate/interface/Particle.h"
@@ -217,6 +219,16 @@ namespace pat {
       /// get all constituents
       std::vector <const reco::PFCandidate*> getPFConstituents () const;
 
+      /// Get a pointer to a Candididate constituent of the jet 
+      /// Needs to be re-implemented because of CaloTower embedding
+      virtual const reco::Candidate * daughter(size_t i) const ;
+      /// Get the number of constituents 
+      /// Needs to be re-implemented because of CaloTower embedding
+      virtual size_t numberOfDaughters() const {
+          return (embeddedCaloTowers_ ? caloTowers_.size() : reco::Jet::numberOfDaughters() );
+      }
+       
+
     public:
 
       reco::TrackRefVector associatedTracks_; // FIXME this should not be public!!
@@ -226,6 +238,9 @@ namespace pat {
       // information originally in external branches
       bool embeddedCaloTowers_;
       CaloTowerCollection caloTowers_;
+      mutable edm::BoolCache transientCaloCandidatesFixed_;
+      mutable std::vector<reco::RecoCaloTowerCandidate> transientCaloCandidates_;
+
       // MC info
       std::vector<reco::Particle> genParton_;
       std::vector<reco::GenJet> genJet_;
@@ -249,8 +264,10 @@ namespace pat {
       std::vector<CaloSpecific> specificCalo_;
       std::vector<PFSpecific>   specificPF_;
       void tryImportSpecific(const JetType &source);
+      void makeCandidatesFromEmbeddedTowers() const ;
 
     static const std::string correctionNames_[NrOfCorrections];
+
   };
 
 }

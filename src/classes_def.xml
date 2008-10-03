@@ -38,7 +38,9 @@
     <field name="transientSignalTracksRefVector_" transient="true"/>     
   </class>
   <class name="pat::Photon" />
-  <class name="pat::Jet" />
+  <class name="pat::Jet">
+     <field name="transientCaloCandidates_" transient="true"/>
+  </class>
      <class name="std::vector<reco::CaloJet::Specific>" />
      <class name="std::vector<reco::PFJet::Specific>"   />
   <class name="pat::MET" >

@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.6.2.4 2008/04/16 16:39:25 adamwo Exp $
+// $Id: Jet.cc,v 1.6.2.5 2008/04/28 15:24:51 gpetrucc Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -418,6 +418,35 @@ Jet::correctionType (const std::string& correctionName)
   }
   // No MessageLogger in DataFormats 
   throw cms::Exception("pat::Jet") << "Unknown correction type '" << correctionName << "' ";
+}
+
+
+const reco::Candidate * 
+Jet::daughter(size_t i) const {
+    if (embeddedCaloTowers_) { 
+        // need to use our embedded candidates 
+        makeCandidatesFromEmbeddedTowers();
+        return & transientCaloCandidates_[i];
+    } else { 
+        // otherwise do the default thing
+        return reco::Jet::daughter(i);
+    }
+
+}
+
+void
+Jet::makeCandidatesFromEmbeddedTowers() const {
+    if (!transientCaloCandidatesFixed_) {
+        // First step, easy: make Candidates
+        transientCaloCandidates_.resize(caloTowers_.size());
+        for (size_t i = 0; i < caloTowers_.size(); ++i) {
+            CaloTowerRef tower(&caloTowers_, i);
+            math::PtEtaPhiELorentzVector p4( tower->et(), tower->eta(), tower->phi(), tower->energy() );
+            transientCaloCandidates_[i].setP4( reco::Particle::PolarLorentzVector(p4) ) ;
+            transientCaloCandidates_[i].setCaloTower( tower );
+        }
+        transientCaloCandidatesFixed_ = true;
+    }
 }
 
 const std::string pat::Jet::correctionNames_[] = { "none", "default", 
