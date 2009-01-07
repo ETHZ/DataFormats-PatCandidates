@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.28 2008/11/04 13:53:52 auterman Exp $
+// $Id: Jet.h,v 1.28.2.1 2008/12/10 12:42:21 lowette Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,7 +13,7 @@
    'pat' namespace
 
   \author   Steven Lowette
-  \version  $Id: Jet.h,v 1.28 2008/11/04 13:53:52 auterman Exp $
+  \version  $Id: Jet.h,v 1.28.2.1 2008/12/10 12:42:21 lowette Exp $
 */
 
 
@@ -77,51 +77,40 @@ namespace pat {
       /// return the flavour of the parton underlying the jet
       int partonFlavour() const;
 
+    //================== Jet Energy Correction ====================
       // Return true if this jet carries jet energy correction information
-      bool  hasJetCorrFactors() const { return !jetEnergyCorrections_.empty(); }
-      /// return the correction factor for this jet. Throws an exception if they're not available.
-      const JetCorrFactors & jetCorrFactors() const {
-        if (!hasJetCorrFactors()) throw cms::Exception("Not Available") << "This pat::Jet does not carry jet energy correction information.\n";
-        return jetEnergyCorrections_.front();
-      }
-      /// Return the current level of jet energy corrections
-      std::string jetCorrName() const { 
-	return jetCorrFactors().corrStep(jetCorrStep()); 
-      }
-      /// Return flavour of the current level of jet energy corrections
-      std::string jetCorrFlavour() const {
-	return jetCorrFactors().flavour(jetCorrStep()); 
-      }
-      /// Return the current level of jet energy corrections
-      JetCorrFactors::CorrStep jetCorrStep() const { //FIXME: this one should be private
-        return jetEnergyCorrectionStep_;
-      }
-      /// Total correction factor to target step, starting from jetCorrStep()
-      float jetCorrFactor(std::string &step, const std::string &flavour="") const {
-	return jetCorrFactors().correction(jetCorrFactors().corrStep(step, flavour), jetCorrStep());
-      }
-      /// Copy of this jet with correction factor to target step
-      Jet correctedJet(const std::string &step, const std::string &flavour="") const ;
-      /// method to set the energy scale correction factors
-      void setJetCorrFactors(const JetCorrFactors & jetCorrF);
-      /// method to set the energy scale correction step used to make this jet
-      void setJetCorrStep(JetCorrFactors::CorrStep step); //FIXME: this one shouls be private
-#ifdef TO_BE_ADDED_LATER
+      bool  hasCorrFactors() const { return !jetEnergyCorrections_.empty(); }
       /// Return true if this jet carries the jet correction factors of a different set, for systematic studies
-      bool hasCorrFactors(const std::string &set) const ;
-      /// Return the jet correction factors of a different set, for systematic studies
-      const JetCorrFactors & jetCorrFactors(const std::string &set) const ;
-      /// Return the jet correction factor from a different set, relative to the present energy corrections
-      float jetCorrFactor(const std::string &set, JetCorrFactors::CorrStep target) const ;
-      /// Copy of this jet with correction factor to target step from a different set
-      Jet correctedJet(const std::string &set, JetCorrFactors::CorrStep target) const ;
-      /// return the correction factor for this jet
-      float jetCorrFactor(const std::string &step, const std::string &flavour) const ;
-      /// return a copy of this jet with the requested correction factor applied
-      Jet   correctedJet( const std::string &step, const std::string &flavour) const ;
-      /// method to set the energy scale correction factors from a different set
-      void setJetCorrFactors(const std::string &set, const JetCorrFactors & jetCorrF);
-#endif
+      bool  hasCorrFactorSet(const std::string &set) const;
+      /// Return the label-name of the current set of jet energy corrections
+      std::string corrFactorSetLabel() const { return corrFactors_()->getLabel(); }
+      /// Return the all available label-names of all sets of jet energy corrections
+      const std::vector<std::string> corrFactorSetLabels() const;
+      /// Return the name of the current level of jet energy corrections
+      std::string corrStep() const;
+      /// Return flavour of the current level of jet energy corrections
+      std::string corrFlavour() const;
+      /// Total correction factor to target step, starting from jetCorrStep(),
+      /// for the currently used set of correction factors
+      float corrFactor(const std::string &step, const std::string &flavour="") const;
+      /// Total correction factor to target step, starting from jetCorrStep(),
+      /// for any available set of correction factors
+      float corrFactor(const std::string &step, const std::string &flavour, const std::string &set) const;
+      /// Copy of this jet with correction factor to target step
+      /// for the currently used set of correction factors
+      Jet correctedJet(const std::string &step, const std::string &flavour="") const ;
+      /// Copy of this jet with correction factor to target step
+      /// for any available set of correction factors
+      Jet correctedJet(const std::string &step, const std::string &flavour, const std::string &set) const ;
+      /// method to set the energy scale correction factors
+      /// this will change the jet's momentum! To be used (only) by PATJetProducer.
+      /// The default JetCorrFactor-Set is always the first element in 'jetEnergyCorrections_'
+      void setCorrStep(JetCorrFactors::CorrStep step);
+      /// to be used by PATJetProducer: method to set the energy scale correction factors
+      void setCorrFactors(const JetCorrFactors & jetCorrF);
+      /// to be used by PATJetProducer: method to add more sets of energy scale correction factors
+      void addCorrFactors(const JetCorrFactors & jetCorrF);
+
 
       /// get b discriminant from label name
       float bDiscriminator(const std::string &theLabel) const;
@@ -162,10 +151,6 @@ namespace pat {
       void setGenJet(const reco::GenJet & gj);
       /// method to set the flavour of the parton underlying the jet
       void setPartonFlavour(int partonFl);
-//      /// method to set the energy scale correction factors
-//      void setJetCorrFactors(const JetCorrFactors & jetCorrF);
-//      /// method to set correction factor to go back to an uncorrected jet
-//      void setNoCorrFactor(float noCorrF);
       /// method to add a algolabel-discriminator pair
       void addBDiscriminatorPair(const std::pair<std::string, float> & thePair);
 
@@ -282,17 +267,18 @@ namespace pat {
       // MC info
       std::vector<reco::GenJet> genJet_;
       int partonFlavour_;
+
       // energy scale correction factors
-
+      std::vector<pat::JetCorrFactors> jetEnergyCorrections_; 
+      // the level of the currently applied correction factor
       pat::JetCorrFactors::CorrStep    jetEnergyCorrectionStep_;
-      std::vector<pat::JetCorrFactors> jetEnergyCorrections_;
-#if TO_BE_ADDED_LATER
-      // Names for the additional jet energy corrections for systematic studies
-      // The default one carries no name, to save disk space.
-      // This means jetEnergyCorrectionExtraNames_.size() < jetEnergyCorrections_.size()
-      std::vector<std::string>         jetEnergyCorrectionExtraNames_;
-#endif
-
+      // index in 'jetEnergyCorrections_' of the currently applied correction factor set
+      unsigned activeJetCorrIndex_;
+      /// Return the jet correction factors of a different set, for systematic studies
+      const JetCorrFactors * corrFactors_(const std::string &set) const ;
+      /// return the correction factor for this jet. Throws if they're not available.
+      const JetCorrFactors * corrFactors_() const;
+      
       // b-tag related members
       std::vector<std::pair<std::string, float> >           pairDiscriVector_;
       // track association
@@ -308,9 +294,6 @@ namespace pat {
       std::vector<PFSpecific>   specificPF_;
       void tryImportSpecific(const JetType &source);
 
-#if TO_BE_PORTED_LATER
-    static const std::string correctionNames_[NrOfCorrections];
-#endif
   };
 
 

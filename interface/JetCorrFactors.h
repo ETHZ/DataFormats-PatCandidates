@@ -1,5 +1,5 @@
 //
-// $Id: JetCorrFactors.h,v 1.1 2008/03/07 18:52:54 lowette Exp $
+// $Id: JetCorrFactors.h,v 1.2 2008/11/04 13:53:52 auterman Exp $
 //
 
 #ifndef DataFormats_PatCandidates_JetCorrFactors_h
@@ -15,7 +15,7 @@
    PAT Layer-1.
 
   \author   Giovanni Petrucciani
-  \version  $Id: JetCorrFactors.h,v 1.1 2008/03/07 18:52:54 lowette Exp $
+  \version  $Id: JetCorrFactors.h,v 1.2 2008/11/04 13:53:52 auterman Exp $
 */
 
 #include <vector>
@@ -47,7 +47,7 @@ namespace pat {
 
    	  /// Default Constructor
           JetCorrFactors();
-          JetCorrFactors(float l1, float l2, float l3, float l4, FlavourCorrections l5, float l6, FlavourCorrections l7);
+          JetCorrFactors(std::string &label, float l1, float l2, float l3, float l4, FlavourCorrections l5, float l6, FlavourCorrections l7);
 
           /// Default Scale Factor: Raw & L1 & L2 & L3 (ignore -1's)
           float scaleDefault() const { return fabs(correction(L3)); };
@@ -66,6 +66,10 @@ namespace pat {
           std::string corrStep(CorrStep step) const;
           /// Return Flavour 
           std::string flavour (CorrStep step) const; 
+	  /// Return label, i.e. the identifying name of this set of correction factors
+	  std::string getLabel() const { return label_; };
+	  /// Clear label to save storage, if only one set of correction factors is used.
+	  void clearLabel() { label_.clear(); };
 
       private:
           // one vector to hold flavour independent corrections
@@ -76,6 +80,11 @@ namespace pat {
           // one vector to hold flavour dependent corrections (L5, L7 in this order);
           // if some are not available, it can be shorter (or even empty)
           std::vector<FlavourCorrections>  flavourDepCorrections_;
+	  
+	  // label for this set of jet correction factors
+	  // Different sets are distinguished by this string
+	  // If only one set is attached to each jet, than this string is empty to save storage
+	  std::string label_;
 
           /// Convert a CorrStep into a number 0-7
           static inline size_t istep(const CorrStep &cstep ) { return (static_cast<size_t>(cstep)) >> 4; }

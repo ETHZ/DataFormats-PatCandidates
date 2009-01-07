@@ -1,5 +1,5 @@
 //
-// $Id: JetCorrFactors.cc,v 1.1 2008/03/07 18:52:55 lowette Exp $
+// $Id: JetCorrFactors.cc,v 1.2 2008/11/04 13:53:52 auterman Exp $
 //
 
 #include "FWCore/Utilities/interface/EDMException.h"
@@ -10,6 +10,7 @@
 using namespace pat;
 
 JetCorrFactors::JetCorrFactors() {
+  clearLabel();                                                 //label_="";
   flavourIndepCorrections_.push_back(-1); 			//L1 default
   flavourIndepCorrections_.push_back(-1); 			//L2 default
   flavourIndepCorrections_.push_back(-1); 			//L3 default
@@ -19,7 +20,8 @@ JetCorrFactors::JetCorrFactors() {
   flavourDepCorrections_.push_back( FlavourCorrections() ); 	//L7 default
 }
 
-JetCorrFactors::JetCorrFactors(float l1, float l2, float l3, float l4, FlavourCorrections l5, float l6, FlavourCorrections l7){
+JetCorrFactors::JetCorrFactors(std::string &label, float l1, float l2, float l3, float l4, FlavourCorrections l5, 
+                               float l6, FlavourCorrections l7) : label_(label) {
   flavourIndepCorrections_.push_back( l1 ); 		
   flavourIndepCorrections_.push_back( l2 ); 		
   flavourIndepCorrections_.push_back( l3 ); 		
@@ -153,10 +155,10 @@ JetCorrFactors::corrStep(const std::string &step, const std::string &flavour) {
 
   if(invalidFlavour)
     throw cms::Exception("InvalidRequest") 
-      << "invalid flavour " << flavour << " requested for jet correction: " << step << std::endl;
+      << "invalid flavour '" << flavour << "' requested for jet correction: " << step << std::endl;
   if(invalidCorrect)
     throw cms::Exception("InvalidRequest") 
-      << "invalid jet correction level " << flavour << " requested" << std::endl;
+      << "invalid jet correction level '" << step << "' requested" << std::endl;
   return result;
 }
 
