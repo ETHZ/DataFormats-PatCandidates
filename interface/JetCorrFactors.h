@@ -1,5 +1,5 @@
 //
-// $Id: JetCorrFactors.h,v 1.2 2008/11/04 13:53:52 auterman Exp $
+// $Id: JetCorrFactors.h,v 1.2.2.1 2009/01/07 11:45:25 auterman Exp $
 //
 
 #ifndef DataFormats_PatCandidates_JetCorrFactors_h
@@ -15,7 +15,7 @@
    PAT Layer-1.
 
   \author   Giovanni Petrucciani
-  \version  $Id: JetCorrFactors.h,v 1.2 2008/11/04 13:53:52 auterman Exp $
+  \version  $Id: JetCorrFactors.h,v 1.2.2.1 2009/01/07 11:45:25 auterman Exp $
 */
 
 #include <vector>
@@ -34,6 +34,8 @@ namespace pat {
               FlavourCorrections(float corr_uds, float corr_g, float corr_c, float corr_b) :  
                   uds(corr_uds), g(corr_g), c(corr_c), b(corr_b) {}
               float uds, g, c, b; 
+              /// To check if all are different from -1 (default), or 0
+              bool operator!=(const float f) const {return (f!=uds && f!=g && f!=c && f!=b);}          
           };
 
           /** Define a single enum to point a step in the sequence of corrections
