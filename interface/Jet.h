@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.28.2.1 2008/12/10 12:42:21 lowette Exp $
+// $Id: Jet.h,v 1.28.2.2 2009/01/07 11:45:25 auterman Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,7 +13,7 @@
    'pat' namespace
 
   \author   Steven Lowette
-  \version  $Id: Jet.h,v 1.28.2.1 2008/12/10 12:42:21 lowette Exp $
+  \version  $Id: Jet.h,v 1.28.2.2 2009/01/07 11:45:25 auterman Exp $
 */
 
 
@@ -137,6 +137,10 @@ namespace pat {
       /// If the label ends with 'TagInfos', the 'TagInfos' is stripped out.
       void  addTagInfo(const std::string &label, 
                        const edm::Ptr<reco::BaseTagInfo> &info) ;
+      /// Sets a tagInfo with the given name.  
+      /// If the label ends with 'TagInfos', the 'TagInfos' is stripped out.
+      void  addTagInfo(const std::string &label, 
+                       const reco::BaseTagInfo &info) ;
 
       /// method to return the JetCharge computed when creating the Jet
       float jetCharge() const;

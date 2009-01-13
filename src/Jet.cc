@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.25.2.1 2008/12/18 17:22:33 rwolf Exp $
+// $Id: Jet.cc,v 1.25.2.2 2009/01/07 11:45:26 auterman Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -174,15 +174,21 @@ Jet::tagInfoSecondaryVertex(const std::string &label) const {
     return (label.empty() ? tagInfoByType<reco::SecondaryVertexTagInfo>()
                           : dynamic_cast<const reco::SecondaryVertexTagInfo *>(tagInfo(label)) );
 }
+
 void
 Jet::addTagInfo(const std::string &label, const edm::Ptr<reco::BaseTagInfo> &info) {
+    addTagInfo(label, *info);
+}
+
+void
+Jet::addTagInfo(const std::string &label, const reco::BaseTagInfo &info) {
     std::string::size_type idx = label.find("TagInfos");
     if (idx == std::string::npos) {
         tagInfoLabels_.push_back(label);
     } else {
         tagInfoLabels_.push_back(label.substr(0,idx));
     }
-    tagInfos_.push_back(info->clone());
+    tagInfos_.push_back(info.clone());
 }
 
 /// method to return the JetCharge computed when creating the Jet
