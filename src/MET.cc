@@ -1,5 +1,5 @@
 //
-// $Id: MET.cc,v 1.6 2008/04/01 19:03:27 lowette Exp $
+// $Id: MET.cc,v 1.2 2009/01/09 14:42:16 xs32 Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -37,6 +37,11 @@ const reco::GenMET * MET::genMET() const {
 void MET::setGenMET(const reco::GenMET & gm) {
   genMET_.clear();
   genMET_.push_back(gm);
+}
+
+/// method to set the MET Significance
+void MET::setSignificance(const double & sgf) {
+  significance_ = sgf;
 }
 
 //! return uncorrrection related stuff
