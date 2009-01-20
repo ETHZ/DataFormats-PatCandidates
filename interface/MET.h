@@ -1,19 +1,19 @@
 //
-// $Id: MET.h,v 1.4 2009/01/09 21:42:39 xs32 Exp $
+// $Id: MET.h,v 1.5 2009/01/19 22:14:23 xs32 Exp $
 //
 
 #ifndef DataFormats_PatCandidates_MET_h
 #define DataFormats_PatCandidates_MET_h
 
 /**
-  \class    pat::MET MET.h "DataFormats/PatCandidates/interface/MET.h"
-  \brief    Analysis-level MET class
+   \class    pat::MET MET.h "DataFormats/PatCandidates/interface/MET.h"
+   \brief    Analysis-level MET class
 
    MET implements an analysis-level missing energy class as a 4-vector
    within the 'pat' namespace.
 
-  \author   Steven Lowette
-  \version  $Id: MET.h,v 1.4 2009/01/09 21:42:39 xs32 Exp $
+   \author   Steven Lowette
+   \version  $Id: MET.h,v 1.5 2009/01/19 22:14:23 xs32 Exp $
 */
 
 
@@ -46,6 +46,16 @@ namespace pat {
 
     double significance() const {return significance_;};
     
+    double getNumberOfJets() const;
+    void   setNumberOfJets(const double & numberOfJets);
+    
+    double getNumberOfElectrons() const;
+    void   setNumberOfElectrons(const double & numberOfElectrons);
+
+    double getNumberOfMuons() const;
+    void   setNumberOfMuons(const double & numberOfMuons);
+
+
     //! uses internal info from mEtCorr
     //! except for full uncorrection, how do you know which is which?
     //! you don't, 
@@ -88,6 +98,9 @@ namespace pat {
     
   private:
     double significance_;
+    double number_of_jets_;
+    double number_of_electrons_;
+    double number_of_muons_;
     
     
   };

@@ -1,5 +1,5 @@
 //
-// $Id: MET.cc,v 1.2 2009/01/09 14:42:16 xs32 Exp $
+// $Id: MET.cc,v 1.3 2009/01/19 22:14:34 xs32 Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -106,3 +106,41 @@ void MET::setPtPhi_(UncorInfo& uci) const {
   uci.pt = sqrt(lpx*lpx + lpy*lpy);
   uci.phi = atan2(lpy, lpx);  
 }
+
+
+void
+pat::MET::setNumberOfMuons(const double & numberOfMuons)
+{
+  number_of_muons_ = numberOfMuons;
+}
+
+double
+pat::MET::getNumberOfMuons() const
+{
+  return number_of_muons_;
+}
+
+void 
+pat::MET::setNumberOfJets(const double & numberOfJets)
+{
+  number_of_jets_ = numberOfJets;
+}
+
+double
+pat::MET::getNumberOfJets() const{
+  return number_of_jets_;
+}
+
+
+
+
+void 
+pat::MET::setNumberOfElectrons(const double & numberOfElectrons){
+  number_of_electrons_ = numberOfElectrons;
+}
+
+double
+pat::MET::getNumberOfElectrons() const{
+  return number_of_electrons_;
+}
+
