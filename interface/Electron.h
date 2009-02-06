@@ -1,5 +1,5 @@
 //
-// $Id: Electron.h,v 1.18.2.1 2008/11/25 09:05:43 fronga Exp $
+// $Id: Electron.h,v 1.18.2.2 2009/01/16 15:37:29 pioppi Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Electron_h
@@ -16,7 +16,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga
-  \version  $Id: Electron.h,v 1.18.2.1 2008/11/25 09:05:43 fronga Exp $
+  \version  $Id: Electron.h,v 1.18.2.2 2009/01/16 15:37:29 pioppi Exp $
 */
 
 
@@ -25,8 +25,8 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 
-#include "DataFormats/ParticleFlowCandidate/interface/IsolatedPFCandidateFwd.h"
-#include "DataFormats/ParticleFlowCandidate/interface/IsolatedPFCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 
 // Define typedefs for convenience
 namespace pat {
@@ -124,14 +124,14 @@ namespace pat {
 
 
       // ---- PF specific methods ----
-      /// reference to the source IsolatedPFCandidates
+      /// reference to the source PFCandidates
       /// null if this has been built from a standard electron
-      reco::IsolatedPFCandidateRef pfCandidateRef() const;
+      reco::PFCandidateRef pfCandidateRef() const;
       /// add a reference to the source IsolatedPFCandidate
-      void setPFCandidateRef(const reco::IsolatedPFCandidateRef& ref) {
+      void setPFCandidateRef(const reco::PFCandidateRef& ref) {
 	pfCandidateRef_ = ref;
       } 
-      /// embed the IsolatedPFCandidate pointed to by pfCandidateRef_
+      /// embed the PFCandidate pointed to by pfCandidateRef_
       void embedPFCandidate();
 
 
@@ -159,10 +159,10 @@ namespace pat {
       bool embeddedPFCandidate_;      
       /// if embeddedPFCandidate_, a copy of the source IsolatedPFCandidate
       /// is stored in this vector
-      reco::IsolatedPFCandidateCollection pfCandidate_;
+      reco::PFCandidateCollection pfCandidate_;
       /// reference to the IsolatedPFCandidate this has been built from
       /// null if this has been built from a standard electron
-      reco::IsolatedPFCandidateRef pfCandidateRef_;
+      reco::PFCandidateRef pfCandidateRef_;
 
   };
 
