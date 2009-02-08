@@ -1,5 +1,5 @@
 //
-// $Id: Electron.cc,v 1.11 2008/10/07 18:49:59 lowette Exp $
+// $Id: Electron.cc,v 1.12.2.2 2009/01/16 15:37:29 pioppi Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -152,7 +152,8 @@ bool Electron::isElectronIDAvailable(const std::string & name) const {
     return false;
 }
 /// method to store the electron's cluster shape
-void Electron::setClusterShapes (float scSigmaEtaEta, float scSigmaIEtaIEta, float scE1x5, float scE2x5Max, float scE5x5) 
+void Electron::setClusterShapes (const float& scSigmaEtaEta, const float& scSigmaIEtaIEta, 
+                                 const float& scE1x5, const float& scE2x5Max, const float& scE5x5) 
   { 
     scSigmaEtaEta_ = scSigmaEtaEta ; 
     scSigmaIEtaIEta_ = scSigmaIEtaIEta ;
@@ -160,5 +161,23 @@ void Electron::setClusterShapes (float scSigmaEtaEta, float scSigmaIEtaIEta, flo
     scE2x5Max_ = scE2x5Max ;
     scE5x5_ = scE5x5 ;
   }
+
+
+/// reference to the source PFCandidates
+reco::PFCandidateRef Electron::pfCandidateRef() const {
+  if (embeddedPFCandidate_) {
+    return reco::PFCandidateRef(&pfCandidate_, 0);
+  } else {
+    return pfCandidateRef_;
+  }
+}
+/// embed the IsolatedPFCandidate pointed to by pfCandidateRef_
+void Electron::embedPFCandidate() {
+  pfCandidate_.clear();
+  if ( pfCandidateRef_.isAvailable() && pfCandidateRef_.isNonnull()) {
+    pfCandidate_.push_back( *pfCandidateRef_ );
+    embeddedPFCandidate_ = true;
+  }
+}
 
 
