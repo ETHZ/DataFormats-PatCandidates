@@ -1,5 +1,5 @@
 //
-// $Id: Lepton.h,v 1.14 2008/10/07 18:15:13 lowette Exp $
+// $Id: Lepton.h,v 1.14.2.1 2009/02/06 15:31:48 pioppi Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Lepton_h
@@ -17,7 +17,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga
-  \version  $Id: Lepton.h,v 1.14 2008/10/07 18:15:13 lowette Exp $
+  \version  $Id: Lepton.h,v 1.14.2.1 2009/02/06 15:31:48 pioppi Exp $
 */
 
 #include "DataFormats/Candidate/interface/Particle.h"
@@ -94,7 +94,7 @@ namespace pat {
       ///Return the isolation calculated with only the charged PFCandidates
       float chargedParticleIso()  const { return isolation(ChargedParticleIso); }
       ///Return the isolation calculated with only the neutral hadrons PFCandidates      
-      float neutralParticleIso()  const { return isolation(ChargedParticleIso); }	
+      float neutralParticleIso()  const { return isolation(NeutralParticleIso); }	
       ///Return the isolation calculated with only the gamma PFCandidates  
       float gammaParticleIso()  const { return isolation(GammaParticleIso); }	
 
