@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.25 2008/11/04 13:53:52 auterman Exp $
+// $Id: Jet.cc,v 1.25.2.1 2008/12/18 17:22:33 rwolf Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -91,6 +91,7 @@ std::vector<CaloTowerPtr> Jet::getCaloConstituents () const {
 }
 
 /// ============= PFJet methods ============
+
 const reco::PFCandidate* Jet::getPFCandidate (const reco::Candidate* fConstituent) {
   if (!fConstituent) return 0;
   const reco::Candidate* base = fConstituent;
@@ -126,15 +127,21 @@ int Jet::partonFlavour() const {
   return partonFlavour_;
 }
 
-
-/// Copy of this jet with correction factor to target step, starting from jetCorrStep()
+/// copy of this jet with correction factor to target step, starting from jetCorrStep()
 Jet Jet::correctedJet(const std::string &step, const std::string &flavour) const {
     Jet ret(*this);
-    ret.setP4(p4() * fabs(jetCorrFactors().correction(jetCorrFactors().corrStep(step, flavour), jetCorrStep())));
+    ret.setP4(p4() * jetCorrFactors().correction(jetCorrFactors().corrStep(step, flavour), jetCorrStep()));
     ret.setJetCorrStep(jetCorrFactors().corrStep(step, flavour));
     return ret;
 }
 
+/// copy of this jet with correction factor to target step, starting from jetCorrStep()
+Jet Jet::correctedJet(const JetCorrFactors::CorrStep &step) const {
+    Jet ret(*this);
+    ret.setP4(p4() * jetCorrFactors().correction(step, jetCorrStep()));
+    ret.setJetCorrStep(step);
+    return ret;
+}
 
 const std::vector<std::pair<std::string, float> > & Jet::getPairDiscri() const {
    return pairDiscriVector_;
