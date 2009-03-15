@@ -1,18 +1,16 @@
 //
-// $Id: TriggerEvent.cc,v 1.1.2.4 2008/12/16 18:01:57 vadler Exp $
+// $Id: TriggerEvent.cc,v 1.1.2.14 2009/03/13 12:10:35 vadler Exp $
 //
 
 
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
 
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "DataFormats/Common/interface/AssociativeIterator.h"
+
 
 using namespace pat;
 
-/// default constructor
-TriggerEvent::TriggerEvent() :
-  nameHltTable_()
-{
-}
 
 /// constructor from values
 TriggerEvent::TriggerEvent( const std::string & nameHltTable, bool run, bool accept, bool error ) :
@@ -21,252 +19,292 @@ TriggerEvent::TriggerEvent( const std::string & nameHltTable, bool run, bool acc
   accept_( accept ),
   error_( error )
 {
+  objectMatchResults_.clear();
 }
 
-/// destructor
-TriggerEvent::~TriggerEvent()
-{
-}
-
-/// event related
-
-void TriggerEvent::setNameHltTable( const std::string & nameHltTable )
-{
-  nameHltTable_ = nameHltTable;
-}
-
-void TriggerEvent::setRun( bool run )
-{
-  run_ = run;
-}
-
-void TriggerEvent::setAccept( bool accept )
-{
-  accept_ = accept;
-}
-
-void TriggerEvent::setError( bool error )
-{
-  error_ = error;
-}
-
-std::string TriggerEvent::nameHltTable() const
-{
-  return nameHltTable_;
-}
-
-bool TriggerEvent::wasRun() const
-{
-  return run_;
-}
-
-bool TriggerEvent::wasAccept() const
-{
-  return accept_;
-}
-
-bool TriggerEvent::wasError() const
-{
-  return error_;
-}
 
 /// paths related
 
-void TriggerEvent::setPathCollection( const edm::Handle< TriggerPathCollection > & handleTriggerPaths )
-{
-  setPaths( handleTriggerPaths );
-}
-void TriggerEvent::setPaths( const edm::Handle< TriggerPathCollection > & handleTriggerPaths )
-{
-  paths_ = TriggerPathRefProd( handleTriggerPaths );
-}
-
-const TriggerPathCollection * TriggerEvent::pathCollection() const
-{
-  return paths();
-}
-const TriggerPathCollection * TriggerEvent::paths() const
-{
-  return paths_.get();
-}
-
 const TriggerPath * TriggerEvent::path( const std::string & namePath ) const
 {
-  const TriggerPathCollection * allPaths( paths() );
-  for ( TriggerPathCollection::const_iterator iP = allPaths->begin(); iP != allPaths->end(); ++iP ) {
-    if ( iP->name() == namePath ) {
-      return &*iP;
+  for ( TriggerPathCollection::const_iterator iPath = paths()->begin(); iPath != paths()->end(); ++iPath ) {
+    if ( namePath == iPath->name() ) {
+      return &*iPath;
     }
   }
   return 0;
 }
 
-unsigned int TriggerEvent::indexPath( const std::string & namePath ) const
+unsigned TriggerEvent::indexPath( const std::string & namePath ) const
 {
-  const TriggerPathCollection * allPaths( paths() );
-  unsigned int iP = 0;
-  while ( iP < allPaths->size() && allPaths->at( iP ).name() != namePath ) {
-    ++iP;
+  unsigned iPath = 0;
+  while ( iPath < paths()->size() && paths()->at( iPath ).name() != namePath ) {
+    ++iPath;
   }
-  return iP;
+  return iPath;
 }
 
 TriggerPathRefVector TriggerEvent::acceptedPaths() const
 {
-  const TriggerPathCollection   * allPaths( paths() );
-  TriggerPathRefVector            goodPaths;
-  for ( unsigned int iP = 0; iP < allPaths->size(); ++iP ) {
-    const TriggerPath thisPath( allPaths->at( iP ) );
-    if ( thisPath.wasAccept() ) {
-      const std::string namePath( thisPath.name() );
-      const unsigned int keyPath( indexPath( namePath ) );
-      const TriggerPathRef thisPathRef( allPaths, keyPath );
-      goodPaths.push_back( thisPathRef );
+  TriggerPathRefVector theAcceptedPaths;
+  for ( TriggerPathCollection::const_iterator iPath = paths()->begin(); iPath != paths()->end(); ++iPath ) {
+    if ( iPath->wasAccept() ) {
+      const std::string namePath( iPath->name() );
+      const TriggerPathRef pathRef( paths(), indexPath( namePath ) );
+      theAcceptedPaths.push_back( pathRef );
     }
   }
-  return goodPaths;
+  return theAcceptedPaths;
 }
       
 /// filters related
 
-void TriggerEvent::setFilterCollection( const edm::Handle< TriggerFilterCollection > & handleTriggerFilters )
-{
-  setFilters( handleTriggerFilters );
-}
-void TriggerEvent::setFilters( const edm::Handle< TriggerFilterCollection > & handleTriggerFilters )
-{
-  filters_ = TriggerFilterRefProd( handleTriggerFilters );
-}
-
-const TriggerFilterCollection * TriggerEvent::filterCollection() const
-{
-  return filters();
-}
-const TriggerFilterCollection * TriggerEvent::filters() const
-{
-  return filters_.get();
-}
-
 const TriggerFilter * TriggerEvent::filter( const std::string & labelFilter ) const
 {
-  const TriggerFilterCollection * allFilters( filters() );
-  for ( TriggerFilterCollection::const_iterator iF = allFilters->begin(); iF != allFilters->end(); ++iF ) {
-    if ( iF->label() == labelFilter ) {
-      return &*iF;
+  for ( TriggerFilterCollection::const_iterator iFilter = filters()->begin(); iFilter != filters()->end(); ++iFilter ) {
+    if ( iFilter->label() == labelFilter ) {
+      return &*iFilter;
     }
   }
   return 0;
 }
 
-unsigned int TriggerEvent::indexFilter( const std::string & labelFilter ) const
+unsigned TriggerEvent::indexFilter( const std::string & labelFilter ) const
 {
-  const TriggerFilterCollection * allFilters( filters() );
-  unsigned int iF = 0;
-  while ( iF < allFilters->size() && allFilters->at( iF ).label() != labelFilter ) {
-    ++iF;
+  unsigned iFilter = 0;
+  while ( iFilter < filters()->size() && filters()->at( iFilter ).label() != labelFilter ) {
+    ++iFilter;
   }
-  return iF;
+  return iFilter;
 }
 
 TriggerFilterRefVector TriggerEvent::acceptedFilters() const
 {
-  const TriggerFilterCollection   * allFilters( filters() );
-  TriggerFilterRefVector            goodFilters;
-  for ( unsigned int iF = 0; iF < allFilters->size(); ++iF ) {
-    const TriggerFilter thisFilter( allFilters->at( iF ) );
-    if ( thisFilter.status() == 1 ) {
-      const std::string labelFilter( thisFilter.label() );
-      const unsigned int keyFilter( indexFilter( labelFilter ) );
-      const TriggerFilterRef thisFilterRef( allFilters, keyFilter );
-      goodFilters.push_back( thisFilterRef );
+  TriggerFilterRefVector theAcceptedFilters;
+  for ( TriggerFilterCollection::const_iterator iFilter = filters()->begin(); iFilter != filters()->end(); ++iFilter ) {
+    if ( iFilter->status() == 1 ) {
+      const std::string labelFilter( iFilter->label() );
+      const TriggerFilterRef filterRef( filters(), indexFilter( labelFilter ) );
+      theAcceptedFilters.push_back( filterRef );
     }
   }
-  return goodFilters;
+  return theAcceptedFilters;
 }
 
 /// objects related
 
-void TriggerEvent::setObjectCollection( const edm::Handle< TriggerObjectCollection > & handleTriggerObjects )
+bool TriggerEvent::addObjectMatchResult( const TriggerObjectMatchRefProd & trigMatches, const std::string & labelMatcher )
 {
-  setObjects( handleTriggerObjects );
+  if ( triggerObjectMatchResults()->find( labelMatcher ) == triggerObjectMatchResults()->end() ) {
+    objectMatchResults_[ labelMatcher ] = trigMatches;
+    return true;
+  }
+  edm::LogWarning( "existingObjectMatchResult" ) << "Tried adding trigger object match result from " << labelMatcher << ", although existing.\n"
+                                                 << "Skipped.";
+  return false;
 }
-void TriggerEvent::setObjects( const edm::Handle< TriggerObjectCollection > & handleTriggerObjects )
+bool TriggerEvent::addObjectMatchResult( const edm::Handle< TriggerObjectMatch > & trigMatches, const std::string & labelMatcher )
 {
-  objects_ = TriggerObjectRefProd( handleTriggerObjects );
+  return addObjectMatchResult( TriggerObjectMatchRefProd( trigMatches ), labelMatcher );
 }
 
-const TriggerObjectCollection * TriggerEvent::objectCollection() const
+TriggerObjectRefVector TriggerEvent::objects( unsigned filterId ) const
 {
-  return objects();
-}
-const TriggerObjectCollection * TriggerEvent::objects() const
-{
-  return objects_.get();
+  TriggerObjectRefVector theObjects;
+  for ( unsigned iObject = 0; iObject < objects()->size(); ++iObject ) {
+    if ( objects()->at( iObject ).hasFilterId( filterId ) ) {
+      const TriggerObjectRef objectRef( objects(), iObject );
+      theObjects.push_back( objectRef );
+    }
+  }
+  return theObjects;
 }
  
 /// x-collection related
 
-TriggerFilterRefVector TriggerEvent::pathFilters( const std::string & namePath, bool all ) const
+TriggerFilterRefVector TriggerEvent::pathModules( const std::string & namePath, bool all ) const
 {
-  const TriggerPath             * thisPath( path( namePath ) );
-  const TriggerFilterCollection * allFilters( filters() );
-  TriggerFilterRefVector          pathFilters;
-  const unsigned int lastModule = all ? thisPath->modules().size() : thisPath->lastActiveModule();
-  for ( unsigned int iM = 0; iM < lastModule; ++iM ) {
-    const std::string labelFilter( thisPath->modules().at( iM ) );
-    const unsigned int keyFilter( indexFilter( labelFilter ) );
-    const TriggerFilterRef thisFilterRef( allFilters, keyFilter );
-    pathFilters.push_back( thisFilterRef );
+  TriggerFilterRefVector thePathFilters;
+  if ( path( namePath )->modules().size() == 0 ) {
+    return thePathFilters;
   }
-  return pathFilters;
+  const unsigned onePastLastFilter = all ? path( namePath )->modules().size() : path( namePath )->lastActiveFilterSlot() + 1;
+  for ( unsigned iM = 0; iM < onePastLastFilter; ++iM ) {
+    const std::string labelFilter( path( namePath )->modules().at( iM ) );
+    const TriggerFilterRef filterRef( filters(), indexFilter( labelFilter ) ); // NULL, if filter was not in trigger::TriggerEvent
+    thePathFilters.push_back( filterRef );
+  }
+  return thePathFilters;
+}
+
+TriggerFilterRefVector TriggerEvent::pathFilters( const std::string & namePath ) const
+{
+  TriggerFilterRefVector thePathFilters;
+  for ( unsigned iF = 0; iF < path( namePath )->filterIndices().size(); ++iF ) {
+    const TriggerFilterRef filterRef( filters(), path( namePath )->filterIndices().at( iF ) );
+    thePathFilters.push_back( filterRef );
+  }
+  return thePathFilters;
+}
+
+bool TriggerEvent::filterInPath( const TriggerFilterRef & filterRef, const std::string & namePath ) const
+{
+  for ( TriggerFilterRefVector::const_iterator iFilter = pathFilters( namePath ).begin(); iFilter != pathFilters( namePath ).end(); ++iFilter ) {
+    if ( filterRef == *iFilter ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+TriggerPathRefVector TriggerEvent::filterPaths( const TriggerFilterRef & filterRef ) const
+{
+  return TriggerPathRefVector();
 }
 
 std::vector< std::string > TriggerEvent::filterCollections( const std::string & labelFilter ) const
 {
-  const TriggerObjectCollection * allObjects( objects() );
-  std::vector< std::string >      filterCollections;
-  for ( unsigned int iO = 0; iO < allObjects->size(); ++iO ) {
-    if ( filter( labelFilter )->hasObjectKey( iO ) ) {
-      std::string thisCollection( allObjects->at( iO ).collection() );
-      bool found = false;
-      for ( std::vector< std::string >::const_iterator iC = filterCollections.begin(); iC != filterCollections.end(); ++iC ) {
-        if ( *iC == thisCollection ) {
+  std::vector< std::string > theFilterCollections;
+  for ( unsigned iObject = 0; iObject < objects()->size(); ++iObject ) {
+    if ( filter( labelFilter )->hasObjectKey( iObject ) ) {
+      bool found( false );
+      std::string objectCollection( objects()->at( iObject ).collection() );
+      for ( std::vector< std::string >::const_iterator iC = theFilterCollections.begin(); iC != theFilterCollections.end(); ++iC ) {
+        if ( *iC == objectCollection ) {
           found = true;
           break;
         }
       }
       if ( ! found ) {
-        filterCollections.push_back( thisCollection );
+        theFilterCollections.push_back( objectCollection );
       }
     }
   }
-  return filterCollections;
+  return theFilterCollections;
 }
 
 TriggerObjectRefVector TriggerEvent::filterObjects( const std::string & labelFilter ) const
 {
-  const TriggerFilter           * thisFilter( filter( labelFilter ) );
-  const TriggerObjectCollection * allObjects( objects() );
-  TriggerObjectRefVector          filterObjects;
-  for ( unsigned int iO = 0; iO < allObjects->size(); ++iO ) {
-    if ( thisFilter->hasObjectKey( iO ) ) {
-      const TriggerObjectRef thisObjectRef( allObjects, iO );
-      filterObjects.push_back( thisObjectRef );
+  TriggerObjectRefVector theFilterObjects;
+  for ( unsigned iObject = 0; iObject < objects()->size(); ++iObject ) {
+    if ( filter( labelFilter )->hasObjectKey( iObject ) ) {
+      const TriggerObjectRef objectRef( objects(), iObject );
+      theFilterObjects.push_back( objectRef );
     }
   }
-  return filterObjects;
+  return theFilterObjects;
+}
+
+bool TriggerEvent::objectInFilter( const TriggerObjectRef & objectRef, const std::string & labelFilter ) const {
+  return filter( labelFilter )->hasObjectKey( objectRef.key() );
+}
+                                                 
+TriggerFilterRefVector TriggerEvent::objectFilters( const TriggerObjectRef & objectRef ) const
+{
+  TriggerFilterRefVector theObjectFilters;
+  for ( TriggerFilterCollection::const_iterator iFilter = filters()->begin(); iFilter != filters()->end(); ++iFilter ) {
+    const std::string labelFilter( iFilter->label() );
+    if ( objectInFilter( objectRef, labelFilter ) ) {
+      const TriggerFilterRef filterRef( filters(), indexFilter( labelFilter ) );
+      theObjectFilters.push_back( filterRef );
+    }
+  }
+  return theObjectFilters;
 }
 
 TriggerObjectRefVector TriggerEvent::pathObjects( const std::string & namePath ) const
 {
-  const TriggerFilterRefVector theseFilters( pathFilters( namePath ) );
-  TriggerObjectRefVector       pathObjects;
-  for ( TriggerFilterRefVector::const_iterator iF = theseFilters.begin(); iF != theseFilters.end(); ++iF ) {
-    const std::string labelFilter( ( *iF )->label() );
-    TriggerObjectRefVector theseObjects( filterObjects( labelFilter ) );
-    for ( TriggerObjectRefVector::const_iterator iO = theseObjects.begin(); iO != theseObjects.end(); ++iO ) {
-      pathObjects.push_back( *iO );
+  TriggerObjectRefVector thePathObjects;
+  for ( TriggerFilterRefVector::const_iterator iFilter = pathFilters( namePath ).begin(); iFilter != pathFilters( namePath ).end(); ++iFilter ) {
+    const std::string labelFilter( ( *iFilter )->label() );
+    for ( TriggerObjectRefVector::const_iterator iObject = filterObjects( labelFilter ).begin(); iObject != filterObjects( labelFilter ).end(); ++iObject ) {
+      thePathObjects.push_back( *iObject );
     }
   }
-  return pathObjects;
+  return thePathObjects;
+}
+
+bool TriggerEvent::objectInPath( const TriggerObjectRef & objectRef, const std::string & namePath ) const
+{
+  for ( TriggerFilterRefVector::const_iterator iFilter = pathFilters( namePath ).begin(); iFilter != pathFilters( namePath ).end(); ++iFilter ) {
+    if ( objectInFilter( objectRef, ( *iFilter )->label() ) ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+TriggerPathRefVector TriggerEvent::objectPaths( const TriggerObjectRef & objectRef ) const
+{
+  TriggerPathRefVector theObjectPaths;
+  for ( TriggerPathCollection::const_iterator iPath = paths()->begin(); iPath != paths()->end(); ++iPath ) {
+    const std::string namePath( iPath->name() );
+    if ( objectInPath( objectRef, namePath ) ) {
+      const TriggerPathRef pathRef( paths(), indexPath( namePath ) );
+      theObjectPaths.push_back( pathRef );
+    }
+  }
+  return theObjectPaths;
+}
+
+/// trigger matches
+
+std::vector< std::string > TriggerEvent::triggerMatchers() const
+{
+  std::vector< std::string > theMatchers;
+  for ( TriggerObjectMatchContainer::const_iterator iMatch = triggerObjectMatchResults()->begin(); iMatch != triggerObjectMatchResults()->end(); ++iMatch ) {
+    theMatchers.push_back( iMatch->first );
+  }
+  return theMatchers;
+}
+
+const TriggerObjectMatch * TriggerEvent::triggerObjectMatchResult( const std::string & labelMatcher ) const
+{
+  const TriggerObjectMatchContainer::const_iterator iMatch( triggerObjectMatchResults()->find( labelMatcher ) );
+  if ( iMatch != triggerObjectMatchResults()->end() ) {
+    return iMatch->second.get();
+  }
+  return 0;
+}
+
+TriggerObjectRef TriggerEvent::triggerMatchObject( const reco::CandidateBaseRef & candRef, const std::string & labelMatcher, const edm::Event & iEvent ) const
+{
+  const TriggerObjectMatch * matchResult( triggerObjectMatchResult( labelMatcher ) );
+  if ( matchResult ) {
+    edm::AssociativeIterator< reco::CandidateBaseRef, TriggerObjectMatch > it( *matchResult, edm::EdmEventItemGetter< reco::CandidateBaseRef >( iEvent ) ), itEnd( it.end() );
+    while ( it != itEnd ) {
+      if ( it->first.isNonnull() && it->second.isNonnull() && it->second.isAvailable() ) {
+        if ( it->first == candRef ) {
+          return TriggerObjectRef( it->second );
+        }
+      }
+      ++it;
+    }
+  }
+  return TriggerObjectRef();
+}
+
+TriggerObjectMatchMap TriggerEvent::triggerMatchObjects( const reco::CandidateBaseRef & candRef, const edm::Event & iEvent ) const
+{
+  TriggerObjectMatchMap theContainer;
+  const std::vector< std::string > matchers( triggerMatchers() );
+  for ( size_t iMatch = 0; iMatch < matchers.size(); ++iMatch ) {
+    theContainer[ matchers.at( iMatch ) ] = triggerMatchObject( candRef, matchers.at( iMatch ), iEvent );
+  }
+  return theContainer;
+}
+
+reco::CandidateBaseRefVector TriggerEvent::triggerMatchCandidates( const TriggerObjectRef & objectRef, const std::string & labelMatcher, const edm::Event & iEvent ) const
+{
+  reco::CandidateBaseRefVector theCands;
+  edm::AssociativeIterator< reco::CandidateBaseRef, TriggerObjectMatch > it( *( triggerObjectMatchResult( labelMatcher ) ), edm::EdmEventItemGetter< reco::CandidateBaseRef >( iEvent ) ), itEnd( it.end() );
+  while ( it != itEnd ) {
+    if ( it->first.isNonnull() && it->second.isNonnull() && it->second.isAvailable() ) {
+      if ( it->second == objectRef ) {
+        theCands.push_back( it->first );
+      }
+    }
+    ++it;
+  }
+  return theCands;
 }

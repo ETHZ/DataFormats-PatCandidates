@@ -7,7 +7,7 @@
 // Package:    PatCandidates
 // Class:      pat::TriggerFilter
 //
-// $Id: TriggerFilter.h,v 1.1.2.6 2008/12/16 18:01:57 vadler Exp $
+// $Id: TriggerFilter.h,v 1.1.2.9 2009/03/13 12:10:35 vadler Exp $
 //
 /**
   \class    pat::TriggerFilter TriggerFilter.h "DataFormats/PatCandidates/interface/TriggerFilter.h"
@@ -18,7 +18,7 @@
    - [to be filled]
 
   \author   Volker Adler
-  \version  $Id: TriggerFilter.h,v 1.1.2.6 2008/12/16 18:01:57 vadler Exp $
+  \version  $Id: TriggerFilter.h,v 1.1.2.9 2009/03/13 12:10:35 vadler Exp $
 */
 
 
@@ -33,6 +33,13 @@
 namespace pat {
 
   class TriggerFilter {
+    
+      /// data members
+      std::string             label_;
+      std::string             type_;
+      std::vector< unsigned > objectKeys_;
+      std::vector< unsigned > objectIds_; // special filter related object ID as defined in enum 'TriggerObjectType' in DataFormats/HLTReco/interface/TriggerTypeDefs.h
+      int                     status_;    // -1: not run, 0: failed, 1: succeeded
 
     public:
 
@@ -40,30 +47,21 @@ namespace pat {
       TriggerFilter();
       TriggerFilter( const std::string & label, int status = -1 );
       TriggerFilter( const edm::InputTag & tag, int status = -1 );
-      virtual ~TriggerFilter();
+      virtual ~TriggerFilter() {};
       
       /// setters & getters
-      void setLabel( const std::string & label );
-      void setType( const std::string & type );
-      void addObjectKey( unsigned int objectKey );
-      void addObjectId( unsigned int objectId );
+      void setLabel( const std::string & label ) { label_ = label; };
+      void setType( const std::string & type )   { type_  = type; };
+      void addObjectKey( unsigned objectKey )    { if ( ! hasObjectKey( objectKey ) ) objectKeys_.push_back( objectKey ); };
+      void addObjectId( unsigned objectId )      { if ( ! hasObjectId( objectId ) )   objectIds_.push_back( objectId ); };
       bool setStatus( int status ); // only -1,0,1 accepted; returns 'false' (and does not modify the status) otherwise
-      std::string                 label() const;
-      std::string                 type() const;
-      std::vector< unsigned int > objectKeys() const;                 
-      bool                        hasObjectKey( unsigned int objectKey ) const;
-      std::vector< unsigned int > objectIds() const;                 
-      bool                        hasObjectId( unsigned int objectId ) const;
-      int                         status() const;
-      
-    protected:
-    
-      /// data members
-      std::string                 label_;
-      std::string                 type_;
-      std::vector< unsigned int > objectKeys_;
-      std::vector< unsigned int > objectIds_; // special filter related object ID as defined in enum 'TriggerObjectType' in DataFormats/HLTReco/interface/TriggerTypeDefs.h
-      int                         status_;    // -1: not run, 0: failed, 1: succeeded
+      std::string             label() const      { return label_; };
+      std::string             type() const       { return type_; };
+      std::vector< unsigned > objectKeys() const { return objectKeys_; };                 
+      std::vector< unsigned > objectIds() const  { return objectIds_; };                 
+      int                     status() const     { return status_; };
+      bool                    hasObjectKey( unsigned objectKey ) const;
+      bool                    hasObjectId( unsigned objectId ) const;
         
   };
   

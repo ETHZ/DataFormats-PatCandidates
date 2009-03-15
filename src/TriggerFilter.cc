@@ -1,5 +1,5 @@
 //
-// $Id: TriggerFilter.cc,v 1.1.2.6 2008/12/16 18:01:57 vadler Exp $
+// $Id: TriggerFilter.cc,v 1.1.2.8 2009/02/20 13:47:41 vadler Exp $
 //
 
 
@@ -36,34 +36,9 @@ TriggerFilter::TriggerFilter( const edm::InputTag & tag, int status ) :
   objectIds_.clear();
 }
 
-/// destructor
-
-TriggerFilter::~TriggerFilter()
-{
-}
-
 /// setters
 
-void TriggerFilter::setLabel( const std::string & label )
-{
-  label_ = label;
-}
-
-void TriggerFilter::setType( const std::string & type )
-{
-  type_ = type;
-}
-
-void TriggerFilter::addObjectKey( unsigned int objectKey )
-{
-  objectKeys_.push_back( objectKey );
-}
-
-void TriggerFilter::addObjectId( unsigned int objectId )
-{
-  objectIds_.push_back( objectId );
-}
-
+// only -1,0,1 accepted; returns 'false' (and does not modify the status) otherwise
 bool TriggerFilter::setStatus( int status )
 {
   if ( status < -1 || 1 < status ) {
@@ -75,24 +50,9 @@ bool TriggerFilter::setStatus( int status )
 
 /// getters
 
-std::string TriggerFilter::label() const
+bool TriggerFilter::hasObjectKey( unsigned objectKey ) const
 {
-  return label_;
-}
-
-std::string TriggerFilter::type() const
-{
-  return type_;
-}
-
-std::vector< unsigned int > TriggerFilter::objectKeys() const
-{
-  return objectKeys_;
-}
-
-bool TriggerFilter::hasObjectKey( unsigned int objectKey ) const
-{
-  for ( std::vector< unsigned int >::const_iterator iO = objectKeys_.begin(); iO != objectKeys_.end(); ++iO ) {
+  for ( std::vector< unsigned >::const_iterator iO = objectKeys_.begin(); iO != objectKeys_.end(); ++iO ) {
     if ( *iO == objectKey ) {
       return true;
     }
@@ -100,22 +60,12 @@ bool TriggerFilter::hasObjectKey( unsigned int objectKey ) const
   return false;
 }
 
-std::vector< unsigned int > TriggerFilter::objectIds() const
+bool TriggerFilter::hasObjectId( unsigned objectId ) const
 {
-  return objectIds_;
-}
-
-bool TriggerFilter::hasObjectId( unsigned int objectId ) const
-{
-  for ( std::vector< unsigned int >::const_iterator iO = objectIds_.begin(); iO != objectIds_.end(); ++iO ) {
+  for ( std::vector< unsigned >::const_iterator iO = objectIds_.begin(); iO != objectIds_.end(); ++iO ) {
     if ( *iO == objectId ) {
       return true;
     }
   }
   return false;
-}
-
-int TriggerFilter::status() const
-{
-  return status_;
 }
