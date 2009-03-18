@@ -1,5 +1,5 @@
 //
-// $Id: TriggerEvent.cc,v 1.1.2.14 2009/03/13 12:10:35 vadler Exp $
+// $Id: TriggerEvent.cc,v 1.1.2.2 2009/03/15 12:24:13 vadler Exp $
 //
 
 
@@ -280,7 +280,7 @@ TriggerObjectRef TriggerEvent::triggerMatchObject( const reco::CandidateBaseRef 
       }
       ++it;
     }
-  }
+  }  
   return TriggerObjectRef();
 }
 
@@ -297,14 +297,17 @@ TriggerObjectMatchMap TriggerEvent::triggerMatchObjects( const reco::CandidateBa
 reco::CandidateBaseRefVector TriggerEvent::triggerMatchCandidates( const TriggerObjectRef & objectRef, const std::string & labelMatcher, const edm::Event & iEvent ) const
 {
   reco::CandidateBaseRefVector theCands;
-  edm::AssociativeIterator< reco::CandidateBaseRef, TriggerObjectMatch > it( *( triggerObjectMatchResult( labelMatcher ) ), edm::EdmEventItemGetter< reco::CandidateBaseRef >( iEvent ) ), itEnd( it.end() );
-  while ( it != itEnd ) {
-    if ( it->first.isNonnull() && it->second.isNonnull() && it->second.isAvailable() ) {
-      if ( it->second == objectRef ) {
-        theCands.push_back( it->first );
+  const TriggerObjectMatch * matchResult( triggerObjectMatchResult( labelMatcher ) );
+  if ( matchResult ) {
+    edm::AssociativeIterator< reco::CandidateBaseRef, TriggerObjectMatch > it( *matchResult, edm::EdmEventItemGetter< reco::CandidateBaseRef >( iEvent ) ), itEnd( it.end() );
+    while ( it != itEnd ) {
+      if ( it->first.isNonnull() && it->second.isNonnull() && it->second.isAvailable() ) {
+        if ( it->second == objectRef ) {
+          theCands.push_back( it->first );
+        }
       }
+      ++it;
     }
-    ++it;
   }
   return theCands;
 }
