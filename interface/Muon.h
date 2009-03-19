@@ -1,5 +1,5 @@
 //
-// $Id: Muon.h,v 1.20 2008/10/10 17:44:57 lowette Exp $
+// $Id: Muon.h,v 1.20.2.1 2009/03/12 16:24:14 tucker Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Muon_h
@@ -16,7 +16,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga, Colin Bernet
-  \version  $Id: Muon.h,v 1.20 2008/10/10 17:44:57 lowette Exp $
+  \version  $Id: Muon.h,v 1.20.2.1 2009/03/12 16:24:14 tucker Exp $
 */
 
 
@@ -49,7 +49,7 @@ namespace pat {
   class Muon : public Lepton<MuonType> {
 
     public:
-
+      typedef std::pair<std::string,float> IdPair;
       /// default constructor
       Muon();
       /// constructor from a reco muon
@@ -99,9 +99,9 @@ namespace pat {
       // ---- PF specific methods ----
       /// reference to the source IsolatedPFCandidates
       /// null if this has been built from a standard muon
-      reco::IsolatedPFCandidateRef pfCandidateRef() const;
+      reco::PFCandidateRef pfCandidateRef() const;
       /// add a reference to the source IsolatedPFCandidate
-      void setPFCandidateRef(const reco::IsolatedPFCandidateRef& ref) {
+      void setPFCandidateRef(const reco::PFCandidateRef& ref) {
 	pfCandidateRef_ = ref;
       } 
       /// embed the IsolatedPFCandidate pointed to by pfCandidateRef_
@@ -132,10 +132,10 @@ namespace pat {
       bool embeddedPFCandidate_;      
       /// if embeddedPFCandidate_, a copy of the source IsolatedPFCandidate
       /// is stored in this vector
-      reco::IsolatedPFCandidateCollection pfCandidate_;
+      reco::PFCandidateCollection pfCandidate_;
       /// reference to the IsolatedPFCandidate this has been built from
       /// null if this has been built from a standard muon
-      reco::IsolatedPFCandidateRef pfCandidateRef_;
+      reco::PFCandidateRef pfCandidateRef_;
 
   };
 
