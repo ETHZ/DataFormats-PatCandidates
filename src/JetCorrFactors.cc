@@ -1,5 +1,5 @@
 //
-// $Id: JetCorrFactors.cc,v 1.2 2008/11/04 13:53:52 auterman Exp $
+// $Id: JetCorrFactors.cc,v 1.2.4.1 2009/02/16 23:32:25 rwolf Exp $
 //
 
 #include "FWCore/Utilities/interface/EDMException.h"
@@ -64,10 +64,13 @@ float
 JetCorrFactors::correction(CorrStep laststep, CorrStep begin) const 
 {
   // first make sure that begin < end
-  if (laststep == begin) return 1.0;
-  else if (begin > laststep) return 1.0/correction(begin,laststep);
-  
-  size_t step   = istep(begin);
+  if (laststep == begin){
+    return 1.0;
+  }
+  else if (begin > laststep){
+    return 1.0/correction(begin,laststep);
+  }
+  size_t step   = istep(begin)+1;
   size_t myflav = iflav(laststep), oldflav = iflav(begin);
   // begin==5 and flavor is not 0 as default
   if (myflav != oldflav && step==6) myflav = oldflav; 
