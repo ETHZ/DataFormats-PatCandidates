@@ -1,5 +1,5 @@
 //
-// $Id: Muon.cc,v 1.15.2.1 2009/03/12 16:24:14 tucker Exp $
+// $Id: Muon.cc,v 1.15.2.2 2009/03/19 17:33:27 lusito Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -18,7 +18,7 @@ Muon::Muon() :
     embeddedTpfmsMuon_(false),
     pickyMuonRef_(),
     tpfmsMuonRef_(),
-    embeddedPFCandidate_(false),
+    embeddedPFCandidate_(false)
     //pfCandidateRef_()
 {
 }
@@ -34,7 +34,7 @@ Muon::Muon(const MuonType & aMuon) :
     embeddedTpfmsMuon_(false),
     pickyMuonRef_(),
     tpfmsMuonRef_(),
-    embeddedPFCandidate_(false),
+    embeddedPFCandidate_(false)
     //pfCandidateRef_()
 {
 }
@@ -50,7 +50,7 @@ Muon::Muon(const edm::RefToBase<MuonType> & aMuonRef) :
     embeddedTpfmsMuon_(false),
     pickyMuonRef_(),
     tpfmsMuonRef_(),
-    embeddedPFCandidate_(false),
+    embeddedPFCandidate_(false)
     //pfCandidateRef_()
 {
 }
@@ -66,7 +66,7 @@ Muon::Muon(const edm::Ptr<MuonType> & aMuonRef) :
     embeddedTpfmsMuon_(false),
     pickyMuonRef_(),
     tpfmsMuonRef_(),
-    embeddedPFCandidate_(false),
+    embeddedPFCandidate_(false)
     //pfCandidateRef_()
 {
 }
@@ -184,3 +184,11 @@ void Muon::embedTpfmsMuon() {
 }
 
 
+/// embed the Track reconstructed in the muon detector only	 
+void Muon::embedStandAloneMuon() {	 
+  standAloneMuon_.clear();	 
+  if (MuonType::outerTrack().isNonnull()) {	 
+      standAloneMuon_.push_back(*MuonType::outerTrack());	 
+      embeddedStandAloneMuon_ = true;	 
+  }	 
+}
