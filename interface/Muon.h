@@ -49,7 +49,7 @@ namespace pat {
   class Muon : public Lepton<MuonType> {
 
     public:
-      typedef std::pair<std::string,float> IdPair;
+
       /// default constructor
       Muon();
       /// constructor from a reco muon
