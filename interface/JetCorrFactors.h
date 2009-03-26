@@ -1,5 +1,5 @@
 //
-// $Id: JetCorrFactors.h,v 1.2 2008/11/04 13:53:52 auterman Exp $
+// $Id: JetCorrFactors.h,v 1.2.4.1 2009/02/16 23:32:25 rwolf Exp $
 //
 
 #ifndef DataFormats_PatCandidates_JetCorrFactors_h
@@ -15,7 +15,7 @@
    PAT Layer-1.
 
   \author   Giovanni Petrucciani
-  \version  $Id: JetCorrFactors.h,v 1.2 2008/11/04 13:53:52 auterman Exp $
+  \version  $Id: JetCorrFactors.h,v 1.2.4.1 2009/02/16 23:32:25 rwolf Exp $
 */
 
 #include <vector>
@@ -50,20 +50,14 @@ namespace pat {
    	  /// default constructor
           JetCorrFactors();
 	  /// constructor by value
-          JetCorrFactors(float l1, float l2, float l3, float l4, FlavourCorrections l5, float l6, FlavourCorrections l7);
+          JetCorrFactors(float l1, float l2, float l3, float l4, FlavourCorrections l5, FlavourCorrections l6, FlavourCorrections l7);
 
           /// default scale factor: raw & L1 & L2 & L3
           float scaleDefault() const { return correction(L3); };
-          /// returns true if a specific correction is available, false otherwise
-          bool  hasCorrection(CorrStep step) const;
-          /// returns true if a specific correction is available, false otherwise
-          bool  hasCorrection(const size_t step, const size_t flavour) const 
-	  {return hasCorrection((CorrStep)(step<<4|flavour));};
-	  /// returns the correction for a jet up to a given step, starting from 
-	  /// another step.
-          float correction(CorrStep step, CorrStep begin=Raw) const ;
+	  /// returns the correction for a jet up to a given step, starting from another step
+          float correction(CorrStep target, CorrStep begin=Raw) const ;
           /// convert a string into a CorrStep
-          static CorrStep const corrStep(const std::string &step, const std::string &flavour="");  
+          static CorrStep const corrStep(const std::string& step, const std::string& flavour="");  
           /// convert a CorrStep into a string
           std::string corrStep(CorrStep step) const;
           /// return flavour string
@@ -82,12 +76,12 @@ namespace pat {
 	  /// can be shorter (or even empty)
           std::vector<FlavourCorrections>  flavourDepCorrections_;
 
-          /// convert a CorrStep into a number 1-7
-          static inline size_t istep(const CorrStep &cstep ) { return (static_cast<size_t>(cstep)) >> 4; }
+          /// convert a CorrStep into a number 0-7
+          static inline size_t istep(const CorrStep& cstep ) { return (static_cast<size_t>(cstep)) >> 4; }
           /// convert a CorrStep into a flavour code 0-5
-          static inline size_t iflav(const CorrStep &cstep ) { return (static_cast<size_t>(cstep)) & 0xF; }
+          static inline size_t iflav(const CorrStep& cstep ) { return (static_cast<size_t>(cstep)) & 0xF; }
           /// get a flavour correction out of a CorrStep
-          static float getFlavCorr(const FlavourCorrections &, const size_t & flavcode );
+          static float getFlavorCorrection(const FlavourCorrections& item, const size_t& flav);
   };
 }
 
