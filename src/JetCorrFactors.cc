@@ -1,5 +1,5 @@
 //
-// $Id: JetCorrFactors.cc,v 1.2.4.2 2009/03/24 13:27:04 rwolf Exp $
+// $Id: JetCorrFactors.cc,v 1.2.4.3 2009/03/26 18:37:21 rwolf Exp $
 //
 
 #include "FWCore/Utilities/interface/EDMException.h"
@@ -145,7 +145,7 @@ JetCorrFactors::corrStep(CorrStep step) const {
 
 std::string 
 JetCorrFactors::flavour(CorrStep step) const {
-  switch ((int)iflav){
+  switch (iflav(step)){
   case 0:
     return "glu";
   case 1:
