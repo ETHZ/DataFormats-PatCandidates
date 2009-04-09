@@ -1,5 +1,5 @@
 //
-// $Id: Tau.h,v 1.20.4.1 2009/02/10 10:34:57 gpetrucc Exp $
+// $Id: Tau.h,v 1.20.2.1 2009/02/10 10:38:08 gpetrucc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Tau_h
@@ -17,7 +17,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Christophe Delaere, Giovanni Petrucciani, Frederic Ronga, Colin Bernet
-  \version  $Id: Tau.h,v 1.20.4.1 2009/02/10 10:34:57 gpetrucc Exp $
+  \version  $Id: Tau.h,v 1.20.2.1 2009/02/10 10:38:08 gpetrucc Exp $
 */
 
 
@@ -201,6 +201,11 @@ namespace pat {
       /// Method copied from reco::PFTau. 
       /// Throws an exception if this pat::Tau was not made from a reco::PFTau
       bool  muonDecision() const { return pfSpecific().muonDecision_; }
+
+      /// reconstructed tau decay mode (specific to PFTau)
+      int decayMode() const { return pfSpecific().decayMode_; }
+      /// set decay mode
+      void setDecayMode(int);
 
       // ---- methods for tau ID ----
       /// Returns a specific tau ID associated to the pat::Tau given its name
