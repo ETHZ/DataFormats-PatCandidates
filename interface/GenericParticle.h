@@ -1,5 +1,5 @@
 //
-// $Id: GenericParticle.h,v 1.5 2008/10/08 11:44:31 fronga Exp $
+// $Id: GenericParticle.h,v 1.6 2008/11/28 19:02:15 lowette Exp $
 //
 
 #ifndef DataFormats_PatCandidates_GenericParticle_h
@@ -13,7 +13,7 @@
    namespace.
 
   \author   Giovanni Petrucciani
-  \version  $Id: GenericParticle.h,v 1.5 2008/10/08 11:44:31 fronga Exp $
+  \version  $Id: GenericParticle.h,v 1.6 2008/11/28 19:02:15 lowette Exp $
 */
 
 #include "DataFormats/PatCandidates/interface/PATObject.h"
@@ -39,7 +39,7 @@ namespace pat {
 namespace pat {
 
 
-  class GenericParticle : public PATObject<reco::RecoCandidate> {
+  class GenericParticle : public reco::RecoCandidate, public PATObject {
 
     public:
 

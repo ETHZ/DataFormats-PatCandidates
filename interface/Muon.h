@@ -1,5 +1,5 @@
 //
-// $Id: Muon.h,v 1.23 2009/03/26 15:19:29 tucker Exp $
+// $Id: Muon.h,v 1.24 2009/03/26 22:36:54 hegner Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Muon_h
@@ -16,7 +16,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga, Colin Bernet
-  \version  $Id: Muon.h,v 1.23 2009/03/26 15:19:29 tucker Exp $
+  \version  $Id: Muon.h,v 1.24 2009/03/26 22:36:54 hegner Exp $
 */
 
 
@@ -42,7 +42,7 @@ namespace pat {
 namespace pat {
 
 
-  class Muon : public Lepton<reco::Muon> {
+  class Muon : public reco::Muon, public Lepton {
 
     public:
 

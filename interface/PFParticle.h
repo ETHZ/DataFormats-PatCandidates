@@ -1,5 +1,5 @@
 //
-// $Id: PFParticle.h,v 1.2 2008/10/08 19:04:42 gpetrucc Exp $
+// $Id: PFParticle.h,v 1.3 2008/11/28 19:02:15 lowette Exp $
 //
 
 #ifndef DataFormats_PatCandidates_PFParticle_h
@@ -14,7 +14,7 @@
    isolated leptons or photons, or inside jets, end up as pat::PFParticles.
 
   \author   Colin Bernet
-  \version  $Id: PFParticle.h,v 1.2 2008/10/08 19:04:42 gpetrucc Exp $
+  \version  $Id: PFParticle.h,v 1.3 2008/11/28 19:02:15 lowette Exp $
 */
 
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
@@ -34,14 +34,18 @@ namespace pat {
 namespace pat {
 
 
-  class PFParticle : public PATObject<reco::PFCandidate> {
+  class PFParticle : public reco::PFCandidate,  public PATObject {
     
     public:
     
       /// default constructor
       PFParticle() {}
+      /// constructor from val
+      PFParticle(const reco::PFCandidate & aPFParticle);
       /// constructor from ref
       PFParticle(const edm::RefToBase<reco::PFCandidate> & aPFParticle);
+      /// constructor from ptr
+      PFParticle(const edm::Ptr<reco::PFCandidate> & aPFParticle);
       /// destructor
       virtual ~PFParticle() {}
 

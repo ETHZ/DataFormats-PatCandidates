@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.34 2009/03/09 21:19:22 lowette Exp $
+// $Id: Jet.h,v 1.35 2009/03/26 20:04:10 rwolf Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,7 +13,7 @@
    'pat' namespace
 
   \author   Steven Lowette, Giovanni Petrucciani, Roger Wolf, Christian Autermann
-  \version  $Id: Jet.h,v 1.34 2009/03/09 21:19:22 lowette Exp $
+  \version  $Id: Jet.h,v 1.35 2009/03/26 20:04:10 rwolf Exp $
 */
 
 
@@ -54,7 +54,7 @@ namespace pat {
   typedef reco::CaloJet::Specific CaloSpecific;
   typedef reco::PFJet::Specific PFSpecific;
 
-  class Jet : public PATObject<reco::Jet> {
+  class Jet : public reco::Jet, public PATObject {
 
     public:
 

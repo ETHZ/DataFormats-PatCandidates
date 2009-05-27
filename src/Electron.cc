@@ -1,5 +1,5 @@
 //
-// $Id: Electron.cc,v 1.14 2008/11/28 19:02:15 lowette Exp $
+// $Id: Electron.cc,v 1.15 2009/03/26 06:23:10 hegner Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -10,7 +10,8 @@ using namespace pat;
 
 /// default constructor
 Electron::Electron() :
-    Lepton<reco::GsfElectron>(),
+    reco::GsfElectron(),
+    Lepton(),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -25,7 +26,8 @@ Electron::Electron() :
 
 /// constructor from reco::GsfElectron
 Electron::Electron(const reco::GsfElectron & anElectron) :
-    Lepton<reco::GsfElectron>(anElectron),
+    reco::GsfElectron(anElectron),
+    Lepton(),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -39,8 +41,9 @@ Electron::Electron(const reco::GsfElectron & anElectron) :
 
 
 /// constructor from ref to reco::GsfElectron
-Electron::Electron(const edm::RefToBase<reco::GsfElectron> & anElectronRef) :
-    Lepton<reco::GsfElectron>(anElectronRef),
+Electron::Electron(const edm::RefToBase<reco::GsfElectron> & ref) :
+    reco::GsfElectron(*ref),
+    Lepton(),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -50,11 +53,13 @@ Electron::Electron(const edm::RefToBase<reco::GsfElectron> & anElectronRef) :
     scE2x5Max_(0), 
     scE5x5_(0) 
 {
+  refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 /// constructor from Ptr to reco::GsfElectron
-Electron::Electron(const edm::Ptr<reco::GsfElectron> & anElectronRef) :
-    Lepton<reco::GsfElectron>(anElectronRef),
+Electron::Electron(const edm::Ptr<reco::GsfElectron> & ref) :
+    reco::GsfElectron(*ref),
+    Lepton(),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -64,6 +69,7 @@ Electron::Electron(const edm::Ptr<reco::GsfElectron> & anElectronRef) :
     scE2x5Max_(0), 
     scE5x5_(0) 
 {
+  refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 

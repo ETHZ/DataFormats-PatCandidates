@@ -1,5 +1,5 @@
 //
-// $Id: Photon.h,v 1.19 2008/11/28 19:02:15 lowette Exp $
+// $Id: Photon.h,v 1.20 2008/12/05 12:32:42 hegner Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Photon_h
@@ -16,7 +16,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga
-  \version  $Id: Photon.h,v 1.19 2008/11/28 19:02:15 lowette Exp $
+  \version  $Id: Photon.h,v 1.20 2008/12/05 12:32:42 hegner Exp $
 */
 
 #include "DataFormats/PatCandidates/interface/PATObject.h"
@@ -39,7 +39,7 @@ namespace pat {
 namespace pat {
 
 
-  class Photon : public PATObject<reco::Photon> {
+  class Photon : public reco::Photon,  public PATObject {
 
     public:
 

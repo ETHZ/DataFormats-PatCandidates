@@ -1,5 +1,5 @@
 //
-// $Id: Muon.cc,v 1.17 2009/03/26 15:19:30 tucker Exp $
+// $Id: Muon.cc,v 1.18 2009/03/26 22:36:55 hegner Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -10,7 +10,8 @@ using namespace pat;
 
 /// default constructor
 Muon::Muon() :
-    Lepton<reco::Muon>(),
+    reco::Muon(),
+    Lepton(),
     embeddedTrack_(false),
     embeddedStandAloneMuon_(false),
     embeddedCombinedMuon_(false),
@@ -26,7 +27,8 @@ Muon::Muon() :
 
 /// constructor from reco::Muon
 Muon::Muon(const reco::Muon & aMuon) :
-    Lepton<reco::Muon>(aMuon),
+    reco::Muon(aMuon),
+    Lepton(),
     embeddedTrack_(false),
     embeddedStandAloneMuon_(false),
     embeddedCombinedMuon_(false),
@@ -41,8 +43,9 @@ Muon::Muon(const reco::Muon & aMuon) :
 
 
 /// constructor from ref to reco::Muon
-Muon::Muon(const edm::RefToBase<reco::Muon> & aMuonRef) :
-    Lepton<reco::Muon>(aMuonRef),
+Muon::Muon(const edm::RefToBase<reco::Muon> & ref) :
+    reco::Muon(*ref),
+    Lepton(),
     embeddedTrack_(false),
     embeddedStandAloneMuon_(false),
     embeddedCombinedMuon_(false),
@@ -53,12 +56,14 @@ Muon::Muon(const edm::RefToBase<reco::Muon> & aMuonRef) :
     embeddedPFCandidate_(false),
     pfCandidateRef_()
 {
+  refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 
 /// constructor from ref to reco::Muon
-Muon::Muon(const edm::Ptr<reco::Muon> & aMuonRef) :
-    Lepton<reco::Muon>(aMuonRef),
+Muon::Muon(const edm::Ptr<reco::Muon> & ref) :
+    reco::Muon(*ref),
+    Lepton(),
     embeddedTrack_(false),
     embeddedStandAloneMuon_(false),
     embeddedCombinedMuon_(false),
@@ -69,6 +74,7 @@ Muon::Muon(const edm::Ptr<reco::Muon> & aMuonRef) :
     embeddedPFCandidate_(false),
     pfCandidateRef_()
 {
+  refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 

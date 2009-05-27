@@ -1,5 +1,5 @@
 //
-// $Id: Photon.cc,v 1.16 2008/11/17 22:41:51 askew Exp $
+// $Id: Photon.cc,v 1.17 2008/11/28 19:02:15 lowette Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
@@ -10,31 +10,37 @@ using pat::Photon;
 
 /// default constructor
 Photon::Photon() :
-    PATObject<reco::Photon>(reco::Photon()),
-    embeddedSuperCluster_(false)
+  reco::Photon(reco::Photon()),
+  PATObject(),
+  embeddedSuperCluster_(false)
 {
 }
 
 
 /// constructor from reco::Photon
 Photon::Photon(const reco::Photon & aPhoton) :
-    PATObject<reco::Photon>(aPhoton),
-    embeddedSuperCluster_(false)
+  reco::Photon(aPhoton),
+  PATObject(),
+  embeddedSuperCluster_(false)
 {
 }
 
 /// constructor from ref to reco::Photon
-Photon::Photon(const edm::RefToBase<reco::Photon> & aPhotonRef) :
-    PATObject<reco::Photon>(aPhotonRef),
-    embeddedSuperCluster_(false)
+Photon::Photon(const edm::RefToBase<reco::Photon> & ref) :
+  reco::Photon(*ref),
+  PATObject(),
+  embeddedSuperCluster_(false)
 {
+  refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 /// constructor from ref to reco::Photon
-Photon::Photon(const edm::Ptr<reco::Photon> & aPhotonRef) :
-    PATObject<reco::Photon>(aPhotonRef),
-    embeddedSuperCluster_(false)
+Photon::Photon(const edm::Ptr<reco::Photon> & ref) :
+  reco::Photon(*ref),
+  PATObject(),
+  embeddedSuperCluster_(false)
 {
+  refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 /// destructor

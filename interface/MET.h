@@ -1,5 +1,5 @@
 //
-// $Id: MET.h,v 1.18 2008/11/28 19:02:15 lowette Exp $
+// $Id: MET.h,v 1.19 2009/03/09 11:20:55 slava77 Exp $
 //
 
 #ifndef DataFormats_PatCandidates_MET_h
@@ -16,7 +16,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga, Slava Krutelyov
-  \version  $Id: MET.h,v 1.18 2008/11/28 19:02:15 lowette Exp $
+  \version  $Id: MET.h,v 1.19 2009/03/09 11:20:55 slava77 Exp $
 */
 
 
@@ -38,7 +38,7 @@ namespace pat {
 namespace pat {
 
 
-  class MET : public PATObject<reco::MET> {
+  class MET : public reco::MET,  public PATObject {
 
     public:
 

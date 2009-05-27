@@ -166,19 +166,8 @@
               PAT Dataformats: PatObjects
        ========================================================================================================================== -->
   <!-- PAT Base Templates -->
-  <class name="pat::PATObject<reco::GsfElectron>" />
-  <class name="pat::PATObject<reco::Muon>" />
-  <class name="pat::PATObject<reco::BaseTau>" />
-  <class name="pat::PATObject<reco::Photon>" />
-  <class name="pat::PATObject<reco::Jet>" />
-  <class name="pat::PATObject<reco::MET>" />
-  <class name="pat::PATObject<reco::LeafCandidate>" />
-  <class name="pat::PATObject<reco::CompositeCandidate>" />
-  <class name="pat::PATObject<reco::PFCandidate>" />
-  <class name="pat::PATObject<reco::RecoCandidate>" />
-  <class name="pat::Lepton<reco::GsfElectron>" />
-  <class name="pat::Lepton<reco::Muon>" />
-  <class name="pat::Lepton<reco::BaseTau>" />
+  <class name="pat::PATObject" />
+  <class name="pat::Lepton" />
 
   <!-- PAT Objects, and embedded data  -->
   <class name="pat::Electron" />
@@ -197,7 +186,6 @@
   </class>
   <class name="pat::MHT" />
      <class name="std::vector<SpecificCaloMETData> "/>
-  <class name="pat::Particle" />
   <class name="pat::CompositeCandidate" />
   <class name="pat::PFParticle" />
   <class name="pat::GenericParticle" />
@@ -211,7 +199,6 @@
   <class name="std::vector<pat::Jet>" />
   <class name="std::vector<pat::MET>" />
   <class name="std::vector<pat::MHT>" />
-  <class name="std::vector<pat::Particle>" />
   <class name="std::vector<pat::CompositeCandidate>" />
   <class name="std::vector<pat::PFParticle>" />
   <class name="std::vector<pat::GenericParticle>" />
@@ -225,7 +212,6 @@
   <class name="std::vector<pat::Jet>::const_iterator" />
   <class name="std::vector<pat::MET>::const_iterator" />
   <class name="std::vector<pat::MHT>::const_iterator" />
-  <class name="std::vector<pat::Particle>::const_iterator" />
   <class name="std::vector<pat::CompositeCandidate>::const_iterator" />
   <class name="std::vector<pat::PFParticle>::const_iterator" />
   <class name="std::vector<pat::GenericParticle>::const_iterator" />
@@ -239,7 +225,6 @@
   <class name="edm::Wrapper<std::vector<pat::Jet> >" />
   <class name="edm::Wrapper<std::vector<pat::MET> >" />
   <class name="edm::Wrapper<std::vector<pat::MHT> >" />
-  <class name="edm::Wrapper<std::vector<pat::Particle> >" />
   <class name="edm::Wrapper<std::vector<pat::CompositeCandidate> >" />
   <class name="edm::Wrapper<std::vector<pat::PFParticle> >" />
   <class name="edm::Wrapper<std::vector<pat::GenericParticle> >" />
@@ -253,7 +238,6 @@
   <class name="pat::JetRef" />
   <class name="pat::METRef" />
 <!-- no ref needed for pat::MHT as it is filled from PAT objects -->
-  <class name="pat::ParticleRef" />
   <class name="pat::CompositeCandidateRef" />
   <class name="pat::PFParticleRef" />
   <class name="pat::GenericParticleRef" />
@@ -266,7 +250,6 @@
   <class name="pat::PhotonRefVector" />
   <class name="pat::JetRefVector" />
   <class name="pat::METRefVector" />
-  <class name="pat::ParticleRefVector" />
   <class name="pat::CompositeCandidateRefVector" />
   <class name="pat::PFParticleRefVector" />
   <class name="pat::GenericParticleRefVector" />
@@ -279,7 +262,6 @@
   <class name="edm::Wrapper<pat::PhotonRefVector>" />
   <class name="edm::Wrapper<pat::JetRefVector>" />
   <class name="edm::Wrapper<pat::METRefVector>" />
-  <class name="edm::Wrapper<pat::ParticleRefVector>" />
   <class name="edm::Wrapper<pat::CompositeCandidateRefVector>" />
   <class name="edm::Wrapper<pat::PFParticleRefVector>" />
   <class name="edm::Wrapper<pat::GenericParticleRefVector>" />
@@ -294,7 +276,6 @@
   <class name="edm::reftobase::Holder<reco::Candidate, pat::JetRef>" />
   <class name="edm::reftobase::Holder<reco::Candidate, pat::METRef>" />
 <!-- no reftobase needed for pat::MHT as it is filled from PAT objects -->
-  <class name="edm::reftobase::Holder<reco::Candidate, pat::ParticleRef>" />
   <class name="edm::reftobase::Holder<reco::Candidate, pat::CompositeCandidateRef>" />
   <class name="edm::reftobase::Holder<reco::Candidate, pat::PFParticleRef>" />
   <class name="edm::reftobase::Holder<reco::Candidate, pat::GenericParticleRef>" />
@@ -306,7 +287,6 @@
   <class name="edm::reftobase::RefHolder<pat::JetRef>" />
   <class name="edm::reftobase::RefHolder<pat::METRef>" />
 <!-- no reftobase needed for pat::MHT as it is filled from PAT objects -->
-  <class name="edm::reftobase::RefHolder<pat::ParticleRef>" />
   <class name="edm::reftobase::RefHolder<pat::CompositeCandidateRef>" />
   <class name="edm::reftobase::RefHolder<pat::PFParticleRef>" />
   <class name="edm::reftobase::RefHolder<pat::GenericParticleRef>" />
@@ -319,7 +299,6 @@
   <class name="edm::reftobase::VectorHolder<reco::Candidate, pat::PhotonRefVector>" />
   <class name="edm::reftobase::VectorHolder<reco::Candidate, pat::JetRefVector>" />
   <class name="edm::reftobase::VectorHolder<reco::Candidate, pat::METRefVector>" />
-  <class name="edm::reftobase::VectorHolder<reco::Candidate, pat::ParticleRefVector>" />
   <class name="edm::reftobase::VectorHolder<reco::Candidate, pat::PFParticleRefVector>" />
   <class name="edm::reftobase::VectorHolder<reco::Candidate, pat::GenericParticleRefVector>" />
   -->
@@ -331,7 +310,6 @@
   <class name="edm::reftobase::RefVectorHolder<pat::PhotonRefVector>" />
   <class name="edm::reftobase::RefVectorHolder<pat::JetRefVector>" />
   <class name="edm::reftobase::RefVectorHolder<pat::METRefVector>" />
-  <class name="edm::reftobase::RefVectorHolder<pat::ParticleRefVector>" />
   <class name="edm::reftobase::RefVectorHolder<pat::PFParticleRefVector>" />
   <class name="edm::reftobase::RefVectorHolder<pat::GenericParticleRefVector>" />
   -->

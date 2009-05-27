@@ -1,5 +1,5 @@
 //
-// $Id: Lepton.h,v 1.13 2008/07/08 20:56:48 gpetrucc Exp $
+// $Id: Lepton.h,v 1.14 2008/10/07 18:15:13 lowette Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Lepton_h
@@ -17,7 +17,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga
-  \version  $Id: Lepton.h,v 1.13 2008/07/08 20:56:48 gpetrucc Exp $
+  \version  $Id: Lepton.h,v 1.14 2008/10/07 18:15:13 lowette Exp $
 */
 
 #include "DataFormats/Candidate/interface/Particle.h"
@@ -27,56 +27,27 @@
 
 namespace pat {
 
-
-  template <class LeptonType>
-  class Lepton : public PATObject<LeptonType> {
+  class Lepton : public PATObject {
 
     public:
 
       Lepton();
-      Lepton(const LeptonType & aLepton);
-      Lepton(const edm::RefToBase<LeptonType> & aLeptonRef);
-      Lepton(const edm::Ptr<LeptonType> & aLeptonRef);
-      virtual ~Lepton();
+      virtual ~Lepton() {}
 
-      virtual Lepton<LeptonType> * clone() const { return new Lepton<LeptonType>(*this); }
+      virtual Lepton * clone() const = 0;
 
-      const reco::GenParticle * genLepton() const { return PATObject<LeptonType>::genParticle(); }
+      const reco::GenParticle * genLepton() const { return PATObject::genParticle(); }
 
-      void setGenLepton(const reco::GenParticleRef & gl, bool embed=false) { PATObject<LeptonType>::setGenParticleRef(gl, embed); }
+      void setGenLepton(const reco::GenParticleRef & gl, bool embed=false) { PATObject::setGenParticleRef(gl, embed); }
+
 
       //============ BEGIN ISOLATION BLOCK =====
       /// Returns the isolation variable for a specifc key (or pseudo-key like CaloIso), or -1.0 if not available
-      float isolation(IsolationKeys key) const { 
-          if (key >= 0) {
-              //if (key >= isolations_.size()) throw cms::Excepton("Missing Data") << "Isolation corresponding to key " << key << " was not stored for this particle.";
-              if (size_t(key) >= isolations_.size()) return -1.0;
-              return isolations_[key];
-          } else switch (key) {
-              case CaloIso:  
-                  //if (isolations_.size() <= HCalIso) throw cms::Excepton("Missing Data") << "CalIsoo Isolation was not stored for this particle.";
-                  if (isolations_.size() <= HCalIso) return -1.0; 
-                  return isolations_[ECalIso] + isolations_[HCalIso];
-              default:
-                  return -1.0;
-                  //throw cms::Excepton("Missing Data") << "Isolation corresponding to key " << key << " was not stored for this particle.";
-          }
-      }
+      float isolation(IsolationKeys key) const;
 
       /// Sets the isolation variable for a specifc key.
       /// Note that you can't set isolation for a pseudo-key like CaloIso
-      void setIsolation(IsolationKeys key, float value) {
-          if (key >= 0) {
-              if (size_t(key) >= isolations_.size()) isolations_.resize(key+1, -1.0);
-              isolations_[key] = value;
-          } else {
-              throw cms::Exception("Illegal Argument") << 
-                  "The key for which you're setting isolation does not correspond " <<
-                  "to an individual isolation but to the sum of more independent isolations " <<
-                  "(e.g. Calo = ECal + HCal), so you can't SET the value, just GET it.\n" <<
-                  "Please set up each component independly.\n";
-          }
-      }
+      void setIsolation(IsolationKeys key, float value);
 
       // ---- specific getters ----
       /// Return the tracker isolation variable that was stored in this object when produced, or -1.0 if there is none
@@ -103,23 +74,10 @@ namespace pat {
 
       //============ BEGIN ISODEPOSIT BLOCK =====
       /// Returns the IsoDeposit associated with some key, or a null pointer if it is not available
-      const IsoDeposit * isoDeposit(IsolationKeys key) const {
-          for (IsoDepositPairs::const_iterator it = isoDeposits_.begin(), ed = isoDeposits_.end(); 
-                  it != ed; ++it) 
-          {
-              if (it->first == key) return & it->second;
-          }
-          return 0;
-      } 
+      const IsoDeposit * isoDeposit(IsolationKeys key) const ;
 
       /// Sets the IsoDeposit associated with some key; if it is already existent, it is overwritten.
-      void setIsoDeposit(IsolationKeys key, const IsoDeposit &dep) {
-          IsoDepositPairs::iterator it = isoDeposits_.begin(), ed = isoDeposits_.end();
-          for (; it != ed; ++it) {
-              if (it->first == key) { it->second = dep; return; }
-          }
-          isoDeposits_.push_back(std::make_pair(key,dep));
-      } 
+      void setIsoDeposit(IsolationKeys key, const IsoDeposit &dep);
 
       // ---- specific getters ----
       const IsoDeposit * trackerIsoDeposit() const { return isoDeposit(TrackerIso); }
@@ -141,43 +99,6 @@ namespace pat {
       std::vector<float> isolations_;
   };
 
-
-  /// default constructor
-  template <class LeptonType>
-  Lepton<LeptonType>::Lepton() :
-    PATObject<LeptonType>(LeptonType()) {
-    // no common constructor, so initialize the candidate manually
-    this->setCharge(0);
-    this->setP4(reco::Particle::LorentzVector(0, 0, 0, 0));
-    this->setVertex(reco::Particle::Point(0, 0, 0));
-  }
-
-
-  /// constructor from LeptonType
-  template <class LeptonType>
-  Lepton<LeptonType>::Lepton(const LeptonType & aLepton) :
-    PATObject<LeptonType>(aLepton) {
-  }
-
-
-  /// constructor from ref to LeptonType
-  template <class LeptonType>
-  Lepton<LeptonType>::Lepton(const edm::RefToBase<LeptonType> & aLeptonRef) :
-    PATObject<LeptonType>(aLeptonRef) {
-  }
-
-
-  /// constructor from ref to LeptonType
-  template <class LeptonType>
-  Lepton<LeptonType>::Lepton(const edm::Ptr<LeptonType> & aLeptonRef) :
-    PATObject<LeptonType>(aLeptonRef) {
-  }
-
-
-  /// destructor
-  template <class LeptonType>
-  Lepton<LeptonType>::~Lepton() {
-  }
 }
 
 #endif

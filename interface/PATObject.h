@@ -1,5 +1,5 @@
 //
-// $Id: PATObject.h,v 1.24 2009/04/20 19:33:07 vadler Exp $
+// $Id: PATObject.h,v 1.25 2009/04/20 19:47:18 vadler Exp $
 //
 
 #ifndef DataFormats_PatCandidates_PATObject_h
@@ -15,7 +15,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga, Volker Adler, Sal Rappoccio
-  \version  $Id: PATObject.h,v 1.24 2009/04/20 19:33:07 vadler Exp $
+  \version  $Id: PATObject.h,v 1.25 2009/04/20 19:47:18 vadler Exp $
 */
 
 
@@ -37,29 +37,27 @@
 namespace pat {
 
 
-  template <class ObjectType>
-  class PATObject : public ObjectType {
+   class PATObject : virtual public reco::Candidate {
     public:
 
-      typedef  ObjectType             base_type;
+      typedef  reco::Candidate             base_type;
 
       /// default constructor
-      PATObject();
-      /// constructor from a base object (leaves invalid reference to original object!)
-      PATObject(const ObjectType & obj);
-      /// constructor from reference
-      PATObject(const edm::RefToBase<ObjectType> & ref);
-      /// constructor from reference
-      PATObject(const edm::Ptr<ObjectType> & ref);
+      PATObject() {}
       /// destructor
-      virtual ~PATObject() {}    
-    // returns a clone                                  // NO: ObjectType can be an abstract type like reco::Candidate
-    //  virtual PATObject<ObjectType> * clone() const ; //     for which the clone() can't be defined
+      virtual ~PATObject() {}
+      /// returns a clone 
+      virtual PATObject * clone() const = 0;
 
       /// access to the original object; returns zero for null Ref and throws for unavailable collection
-      const reco::Candidate * originalObject() const;
+      virtual const reco::Candidate * originalObject() const;
       /// reference to original object. Returns a null reference if not available
-      const edm::Ptr<reco::Candidate> & originalObjectRef() const;
+      virtual const edm::Ptr<reco::Candidate> & originalObjectRef() const;
+
+      /// set original object reference from RefToBase
+      virtual void setOriginalObjectRef(const edm::RefToBase<reco::Candidate> & ref);
+      /// set original object reference from Ptr
+      virtual void setOriginalObjectRef(const edm::Ptr<reco::Candidate> & ref);
 
       /// embedded trigger matches
       const TriggerObjectStandAloneCollection & triggerObjectMatches() const;
@@ -234,248 +232,6 @@ namespace pat {
   };
 
 
-  template <class ObjectType> PATObject<ObjectType>::PATObject() {
-  }
-
-  template <class ObjectType> PATObject<ObjectType>::PATObject(const ObjectType & obj) :
-    ObjectType(obj),
-    refToOrig_() {
-  }
-
-  template <class ObjectType> PATObject<ObjectType>::PATObject(const edm::RefToBase<ObjectType> & ref) :
-    ObjectType(*ref),
-    refToOrig_(ref.id(), ref.get(), ref.key()) // correct way to convert RefToBase=>Ptr, if ref is guaranteed to be available
-                                               // which happens to be true, otherwise the line before this throws ex. already
-      {
-      }
-
-  template <class ObjectType> PATObject<ObjectType>::PATObject(const edm::Ptr<ObjectType> & ref) :
-    ObjectType(*ref),
-    refToOrig_(ref) {
-  }
-
-
-  template <class ObjectType> const reco::Candidate * PATObject<ObjectType>::originalObject() const {
-    if (refToOrig_.isNull()) {
-      // this object was not produced from a reference, so no link to the
-      // original object exists -> return a 0-pointer
-      return 0;
-    } else if (!refToOrig_.isAvailable()) {
-      throw edm::Exception(edm::errors::ProductNotFound) << "The original collection from which this PAT object was made is not present any more in the event, hence you cannot access the originating object anymore.";
-    } else {
-      return refToOrig_.get();
-    }
-  }
-
-  template <class ObjectType> 
-  const edm::Ptr<reco::Candidate> & PATObject<ObjectType>::originalObjectRef() const { return refToOrig_; }
-
-  template <class ObjectType>
-  const TriggerObjectStandAloneCollection & PATObject<ObjectType>::triggerObjectMatches() const { return triggerObjectMatchesEmbedded_; }
-
-  template <class ObjectType>
-  const TriggerObjectStandAloneCollection PATObject<ObjectType>::triggerObjectMatchesByFilterID( const unsigned id ) const {
-    TriggerObjectStandAloneCollection matches;
-    for ( size_t i = 0; i < triggerObjectMatches().size(); ++i ) {
-      if ( triggerObjectMatches().at( i ).hasFilterId( id ) ) matches.push_back( triggerObjectMatches().at( i ) );
-    }
-    return matches;
-  }
-
-  template <class ObjectType>
-  const TriggerObjectStandAloneCollection PATObject<ObjectType>::triggerObjectMatchesByCollection( const std::string & coll ) const {
-    TriggerObjectStandAloneCollection matches;
-    for ( size_t i = 0; i < triggerObjectMatches().size(); ++i ) {
-      if ( triggerObjectMatches().at( i ).collection() == coll ) matches.push_back( triggerObjectMatches().at( i ) );
-    }
-    return matches;
-  }
-
-  template <class ObjectType>
-  const TriggerObjectStandAloneCollection PATObject<ObjectType>::triggerObjectMatchesByFilter( const std::string & labelFilter ) const {
-    TriggerObjectStandAloneCollection matches;
-    for ( size_t i = 0; i < triggerObjectMatches().size(); ++i ) {
-      if ( triggerObjectMatches().at( i ).hasFilterLabel( labelFilter ) ) matches.push_back( triggerObjectMatches().at( i ) );
-    }
-    return matches;
-  }
-
-  template <class ObjectType>
-  const TriggerObjectStandAloneCollection PATObject<ObjectType>::triggerObjectMatchesByPath( const std::string & namePath ) const {
-    TriggerObjectStandAloneCollection matches;
-    for ( size_t i = 0; i < triggerObjectMatches().size(); ++i ) {
-      if ( triggerObjectMatches().at( i ).hasPathName( namePath ) ) matches.push_back( triggerObjectMatches().at( i ) );
-    }
-    return matches;
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::addTriggerObjectMatch( const TriggerObjectStandAlone & trigObj ) {
-    triggerObjectMatchesEmbedded_.push_back( trigObj );
-  }
-
-  template <class ObjectType>
-  const pat::LookupTableRecord &  
-  PATObject<ObjectType>::efficiency(const std::string &name) const {
-    // find the name in the (sorted) list of names
-    std::vector<std::string>::const_iterator it = std::lower_bound(efficiencyNames_.begin(), efficiencyNames_.end(), name);
-    if ((it == efficiencyNames_.end()) || (*it != name)) {
-        throw cms::Exception("Invalid Label") << "There is no efficiency with name '" << name << "' in this PAT Object\n";
-    }
-    return efficiencyValues_[it - efficiencyNames_.begin()];
-  }
-
-  template <class ObjectType>
-  std::vector<std::pair<std::string,pat::LookupTableRecord> > 
-  PATObject<ObjectType>::efficiencies() const {
-    std::vector<std::pair<std::string,pat::LookupTableRecord> > ret;
-    std::vector<std::string>::const_iterator itn = efficiencyNames_.begin(), edn = efficiencyNames_.end();
-    std::vector<pat::LookupTableRecord>::const_iterator itv = efficiencyValues_.begin();
-    for ( ; itn != edn; ++itn, ++itv) {
-        ret.push_back( std::pair<std::string,pat::LookupTableRecord>(*itn, *itv) );
-    }
-    return ret;
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::setEfficiency(const std::string &name, const pat::LookupTableRecord & value) {
-    // look for the name, or to the place where we can insert it without violating the alphabetic order
-    std::vector<std::string>::iterator it = std::lower_bound(efficiencyNames_.begin(), efficiencyNames_.end(), name);
-    if (it == efficiencyNames_.end()) { // insert at the end
-        efficiencyNames_.push_back(name);
-        efficiencyValues_.push_back(value);
-    } else if (*it == name) {           // replace existing
-        efficiencyValues_[it - efficiencyNames_.begin()] = value;
-    } else {                            // insert in the middle :-(
-        efficiencyNames_. insert(it, name);
-        efficiencyValues_.insert( efficiencyValues_.begin() + (it - efficiencyNames_.begin()), value );
-    }
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::setGenParticleRef(const reco::GenParticleRef &ref, bool embed) {
-          genParticleRef_ = std::vector<reco::GenParticleRef>(1,ref);
-          genParticleEmbedded_.clear(); 
-          if (embed) embedGenParticle();
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::addGenParticleRef(const reco::GenParticleRef &ref) {
-      if (!genParticleEmbedded_.empty()) { // we're embedding
-          if (ref.isNonnull()) genParticleEmbedded_.push_back(*ref);
-      } else {
-          genParticleRef_.push_back(ref);
-      }
-  }
-  
-  template <class ObjectType>
-  void PATObject<ObjectType>::setGenParticle( const reco::GenParticle &particle ) {
-      genParticleEmbedded_.clear(); 
-      genParticleEmbedded_.push_back(particle);
-      genParticleRef_.clear();
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::embedGenParticle() {
-      genParticleEmbedded_.clear(); 
-      for (std::vector<reco::GenParticleRef>::const_iterator it = genParticleRef_.begin(); it != genParticleRef_.end(); ++it) {
-          if (it->isNonnull()) genParticleEmbedded_.push_back(**it); 
-      }
-      genParticleRef_.clear();
-  }
-
-  template <class ObjectType>
-  std::vector<reco::GenParticleRef> PATObject<ObjectType>::genParticleRefs() const {
-        if (genParticleEmbedded_.empty()) return genParticleRef_;
-        std::vector<reco::GenParticleRef> ret(genParticleEmbedded_.size());
-        for (size_t i = 0, n = ret.size(); i < n; ++i) {
-            ret[i] = reco::GenParticleRef(&genParticleEmbedded_, i);
-        }
-        return ret;
-  }
-
-  template <class ObjectType>
-  reco::GenParticleRef PATObject<ObjectType>::genParticleById(int pdgId, int status) const {
-        // get a vector, avoiding an unneeded copy if there is no embedding
-        const std::vector<reco::GenParticleRef> & vec = (genParticleEmbedded_.empty() ? genParticleRef_ : genParticleRefs());
-        for (std::vector<reco::GenParticleRef>::const_iterator ref = vec.begin(), end = vec.end(); ref != end; ++ref) {
-            if (ref->isNonnull() && ((*ref)->pdgId() == pdgId) && ((*ref)->status() == status)) return *ref;
-        }
-        return reco::GenParticleRef();
-  }
-
-  template <class ObjectType>
-  bool PATObject<ObjectType>::hasOverlaps(const std::string &label) const {
-        return std::find(overlapLabels_.begin(), overlapLabels_.end(), label) != overlapLabels_.end();
-  }
-
-  template <class ObjectType>
-  const reco::CandidatePtrVector & PATObject<ObjectType>::overlaps(const std::string &label) const {
-        static const reco::CandidatePtrVector EMPTY;
-        std::vector<std::string>::const_iterator match = std::find(overlapLabels_.begin(), overlapLabels_.end(), label);
-        if (match == overlapLabels_.end()) return EMPTY;
-        return overlapItems_[match - overlapLabels_.begin()];
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::setOverlaps(const std::string &label, const reco::CandidatePtrVector & overlaps) {
-        if (!overlaps.empty()) {
-            std::vector<std::string>::const_iterator match = std::find(overlapLabels_.begin(), overlapLabels_.end(), label);
-            if (match == overlapLabels_.end()) {
-                overlapLabels_.push_back(label);
-                overlapItems_.push_back(overlaps);
-            } else {
-                overlapItems_[match - overlapLabels_.begin()] = overlaps;
-            }
-        }
-  }
-
-  template <class ObjectType>
-  const pat::UserData * PATObject<ObjectType>::userDataObject_( const std::string & key ) const
-  {
-    std::vector<std::string>::const_iterator it = std::find(userDataLabels_.begin(), userDataLabels_.end(), key);
-    if (it != userDataLabels_.end()) {
-        return & userDataObjects_[it - userDataLabels_.begin()];
-    }
-    return 0;
-  }
-
-  template <class ObjectType>
-  float PATObject<ObjectType>::userFloat( const std::string &key ) const
-  {
-    std::vector<std::string>::const_iterator it = std::find(userFloatLabels_.begin(), userFloatLabels_.end(), key);
-    if (it != userFloatLabels_.end()) {
-        return userFloats_[it - userFloatLabels_.begin()];
-    }
-    return 0.0;
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::addUserFloat( const std::string & label,
-					    float data )
-  {
-    userFloatLabels_.push_back(label);
-    userFloats_.push_back( data );
-  }
-
-
-  template <class ObjectType>
-  int PATObject<ObjectType>::userInt( const std::string & key ) const
-  {
-    std::vector<std::string>::const_iterator it = std::find(userIntLabels_.begin(), userIntLabels_.end(), key);
-    if (it != userIntLabels_.end()) {
-        return userInts_[it - userIntLabels_.begin()];
-    }
-    return 0;
-  }
-
-  template <class ObjectType>
-  void PATObject<ObjectType>::addUserInt( const std::string &label,
-					   int data )
-  {
-    userIntLabels_.push_back(label);
-    userInts_.push_back( data );
-  }
 
 
 }

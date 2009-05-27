@@ -1,5 +1,5 @@
 //
-// $Id: Tau.h,v 1.22 2009/03/26 10:54:35 veelken Exp $
+// $Id: Tau.h,v 1.23 2009/04/09 12:01:40 veelken Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Tau_h
@@ -17,7 +17,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Christophe Delaere, Giovanni Petrucciani, Frederic Ronga, Colin Bernet
-  \version  $Id: Tau.h,v 1.22 2009/03/26 10:54:35 veelken Exp $
+  \version  $Id: Tau.h,v 1.23 2009/04/09 12:01:40 veelken Exp $
 */
 
 
@@ -44,7 +44,7 @@ namespace pat {
 // Class definition
 namespace pat {
 
-  class Tau : public Lepton<reco::BaseTau> {
+  class Tau : public reco::BaseTau, public Lepton {
 
     public:
 

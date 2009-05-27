@@ -1,5 +1,5 @@
 //
-// $Id: GenericParticle.cc,v 1.3 2008/07/08 20:56:48 gpetrucc Exp $
+// $Id: GenericParticle.cc,v 1.4 2009/03/25 22:33:29 hegner Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/GenericParticle.h"
@@ -10,33 +10,37 @@ using pat::GenericParticle;
 
 /// default constructor
 GenericParticle::GenericParticle() :
-    PATObject<reco::RecoCandidate>()
+    RecoCandidate(),
+    PATObject()
 {
 }
 
 
 /// constructor from Candidate
 GenericParticle::GenericParticle(const Candidate & cand) :
-    PATObject<reco::RecoCandidate>()
+    RecoCandidate(),
+    PATObject()
 {
     fillInFrom(cand);
 }
 
 
 /// constructor from ref to RecoCandidate
-GenericParticle::GenericParticle(const edm::RefToBase<Candidate> & cand) :
-    PATObject<reco::RecoCandidate>()
+GenericParticle::GenericParticle(const edm::RefToBase<Candidate> & ref) :
+    RecoCandidate(),
+    PATObject()
 {
-    fillInFrom(*cand);
-    refToOrig_ = edm::Ptr<reco::Candidate>(cand.id(), cand.get(), cand.key()); // correct RefToBase=>Ptr conversion
+    fillInFrom(*ref);
+    refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 /// constructor from ref to RecoCandidate
-GenericParticle::GenericParticle(const edm::Ptr<Candidate> & cand) :
-    PATObject<reco::RecoCandidate>()
+GenericParticle::GenericParticle(const edm::Ptr<Candidate> & ref) :
+    RecoCandidate(),
+    PATObject()
 {
-    fillInFrom(*cand);
-    refToOrig_ = cand;
+    fillInFrom(*ref);
+    refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 

@@ -1,5 +1,5 @@
 //
-// $Id: Tau.cc,v 1.13 2009/03/26 10:54:35 veelken Exp $
+// $Id: Tau.cc,v 1.14 2009/04/09 12:02:15 veelken Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Tau.h"
@@ -11,7 +11,8 @@ using namespace pat;
 
 /// default constructor
 Tau::Tau() :
-    Lepton<reco::BaseTau>(),
+    reco::BaseTau(),
+    Lepton(),
     embeddedIsolationTracks_(false),
     embeddedLeadTrack_(false),
     embeddedSignalTracks_(false)
@@ -21,7 +22,8 @@ Tau::Tau() :
 
 /// constructor from reco::BaseTau
 Tau::Tau(const reco::BaseTau & aTau) :
-    Lepton<reco::BaseTau>(aTau),
+    reco::BaseTau(aTau),
+    Lepton(),    
     embeddedIsolationTracks_(false),
     embeddedLeadTrack_(false),
     embeddedSignalTracks_(false)
@@ -34,29 +36,33 @@ Tau::Tau(const reco::BaseTau & aTau) :
 
 
 /// constructor from ref to reco::BaseTau
-Tau::Tau(const edm::RefToBase<reco::BaseTau> & aTauRef) :
-    Lepton<reco::BaseTau>(aTauRef),
+Tau::Tau(const edm::RefToBase<reco::BaseTau> & ref) :
+    reco::BaseTau(*ref),
+    Lepton(),
     embeddedIsolationTracks_(false),
     embeddedLeadTrack_(false),
     embeddedSignalTracks_(false)
 {
-    const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(aTauRef.get());
+    const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(ref.get());
     if (pfTau != 0) pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
-    const reco::CaloTau * caloTau = dynamic_cast<const reco::CaloTau *>(aTauRef.get());
+    const reco::CaloTau * caloTau = dynamic_cast<const reco::CaloTau *>(ref.get());
     if (caloTau != 0) caloSpecific_.push_back(pat::tau::TauCaloSpecific(*caloTau));
+    refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 /// constructor from ref to reco::BaseTau
-Tau::Tau(const edm::Ptr<reco::BaseTau> & aTauRef) :
-    Lepton<reco::BaseTau>(aTauRef),
+Tau::Tau(const edm::Ptr<reco::BaseTau> & ref) :
+    reco::BaseTau(*ref),
+    Lepton(),
     embeddedIsolationTracks_(false),
     embeddedLeadTrack_(false),
     embeddedSignalTracks_(false)
 {
-    const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(aTauRef.get());
+    const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(ref.get());
     if (pfTau != 0) pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
-    const reco::CaloTau * caloTau = dynamic_cast<const reco::CaloTau *>(aTauRef.get());
+    const reco::CaloTau * caloTau = dynamic_cast<const reco::CaloTau *>(ref.get());
     if (caloTau != 0) caloSpecific_.push_back(pat::tau::TauCaloSpecific(*caloTau));
+    refToOrig_ = edm::Ptr<reco::Candidate>(ref.id(), ref.get(), ref.key());
 }
 
 

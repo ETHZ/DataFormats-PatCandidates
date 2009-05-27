@@ -1,5 +1,5 @@
 //
-// $Id: Electron.h,v 1.22 2009/03/09 21:01:53 lowette Exp $
+// $Id: Electron.h,v 1.23 2009/03/26 06:23:10 hegner Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Electron_h
@@ -16,7 +16,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga
-  \version  $Id: Electron.h,v 1.22 2009/03/09 21:01:53 lowette Exp $
+  \version  $Id: Electron.h,v 1.23 2009/03/26 06:23:10 hegner Exp $
 */
 
 
@@ -41,7 +41,7 @@ namespace pat {
 namespace pat {
 
 
-  class Electron : public Lepton<reco::GsfElectron> {
+  class Electron : public reco::GsfElectron, public Lepton {
 
     public:
 
