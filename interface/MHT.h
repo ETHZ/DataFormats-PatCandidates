@@ -29,10 +29,17 @@ namespace pat {
     double getNumberOfMuons() const;
     void   setNumberOfMuons(const double & numberOfMuons);
 
+    void   setUncorMET(const double & uncor_met);
+    double getUncorMET() const ;
+    void   setUncorMETsignificance(const double & uncor_met_significance);
+    double getUncorMETsignificance() const ;
+    
+    void   setMET(const double & met);
+    double getMET() const ;
     void   setMETsignificance(const double & met_significance);
     double getMETsignificance() const ;
     
-  private:
+   private:
     
     double ht_;
     double significance_;
@@ -40,8 +47,12 @@ namespace pat {
     double number_of_electrons_;
     double number_of_muons_;
     
+    double uncor_met_;
+    double uncor_met_significance_;
+
+    double met_;
     double met_significance_;
-                                                                                                                
+  
   };
   
   typedef std::vector<pat::MHT> MHTCollection;
