@@ -1,5 +1,5 @@
 //
-// $Id: Tau.h,v 1.20 2008/10/16 13:33:03 veelken Exp $
+// $Id: Tau.h,v 1.20.4.1 2009/02/10 10:34:57 gpetrucc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Tau_h
@@ -17,7 +17,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Christophe Delaere, Giovanni Petrucciani, Frederic Ronga, Colin Bernet
-  \version  $Id: Tau.h,v 1.20 2008/10/16 13:33:03 veelken Exp $
+  \version  $Id: Tau.h,v 1.20.4.1 2009/02/10 10:34:57 gpetrucc Exp $
 */
 
 
@@ -206,8 +206,11 @@ namespace pat {
       /// Returns a specific tau ID associated to the pat::Tau given its name
       /// For cut-based IDs, the value is 1.0 for good, 0.0 for bad.
       /// Note: an exception is thrown if the specified ID is not available
-      float tauID(const std::string & name) const;
-      /// Returns true if a specific ID is available in this pat::Tau
+      float tauID(const std::string& name) const;
+      
+      /// needed for compatibility with TTree::Draw
+      float tauID(const char* name) const;
+      
       bool isTauIDAvailable(const std::string & name) const;
       /// Returns all the tau IDs in the form of <name,value> pairs
       /// The 'default' ID is the first in the list
@@ -215,6 +218,7 @@ namespace pat {
       /// Store multiple tau ID values, discarding existing ones
       /// The first one in the list becomes the 'default' tau id 
       void setTauIDs(const std::vector<IdPair> & ids) { tauIDs_ = ids; }
+
 
     protected:
 

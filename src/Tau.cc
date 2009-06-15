@@ -1,5 +1,5 @@
 //
-// $Id: Tau.cc,v 1.11 2008/10/16 13:33:03 veelken Exp $
+// $Id: Tau.cc,v 1.11.4.1 2009/02/10 10:34:57 gpetrucc Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Tau.h"
@@ -157,7 +157,9 @@ const reco::GenJet * Tau::genJet() const {
 
 
 // method to retrieve a tau ID (or throw)
-float Tau::tauID(const std::string & name) const {
+float Tau::tauID(const std::string& name) const {
+  // std::string name = cname;
+  
   for (std::vector<IdPair>::const_iterator it = tauIDs_.begin(), ed = tauIDs_.end(); it != ed; ++it) {
     if (it->first == name) return it->second;
   }
@@ -170,6 +172,20 @@ float Tau::tauID(const std::string & name) const {
   ex << ".\n";
   throw ex;
 }
+
+
+float Tau::tauID(const char* name) const { 
+
+  try{
+    return tauID(std::string(name) ); 
+  }
+  catch( const cms::Exception& e) {
+    std::cout<<e.what()<<std::endl;
+    return -99;
+  }
+}
+
+
 // check if an ID is there
 bool Tau::isTauIDAvailable(const std::string & name) const {
   for (std::vector<IdPair>::const_iterator it = tauIDs_.begin(), ed = tauIDs_.end(); it != ed; ++it) {
