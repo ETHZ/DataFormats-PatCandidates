@@ -34,6 +34,17 @@ pat::MHT::getNumberOfElectrons() const{
 }
 
 void 
+pat::MHT::setMET(const double & met){
+  met_  = met;
+}
+
+
+double 
+pat::MHT::getMET() const{
+  return met_;
+}
+
+void 
 pat::MHT::setMETsignificance(const double & met_significance){
   met_significance_  = met_significance;
 }
@@ -42,5 +53,27 @@ pat::MHT::setMETsignificance(const double & met_significance){
 double 
 pat::MHT::getMETsignificance() const{
   return met_significance_;
+}
+
+void 
+pat::MHT::setUncorMET(const double & uncor_met){
+  uncor_met_  = uncor_met;
+}
+
+
+double 
+pat::MHT::getUncorMET() const{
+  return uncor_met_;
+}
+
+void 
+pat::MHT::setUncorMETsignificance(const double & uncor_met_significance){
+  uncor_met_significance_  = uncor_met_significance;
+}
+
+
+double 
+pat::MHT::getUncorMETsignificance() const{
+  return uncor_met_significance_;
 }
 
