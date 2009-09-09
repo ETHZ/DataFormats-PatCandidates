@@ -1,5 +1,5 @@
 //
-// $Id: TriggerEvent.cc,v 1.1.2.7 2009/06/24 14:38:01 vadler Exp $
+// $Id: TriggerEvent.cc,v 1.1.2.8 2009/09/09 14:00:34 vadler Exp $
 //
 
 
@@ -144,7 +144,7 @@ TriggerFilterRefVector TriggerEvent::pathModules( const std::string & namePath, 
 TriggerFilterRefVector TriggerEvent::pathFilters( const std::string & namePath ) const
 {
   TriggerFilterRefVector thePathFilters;
-  if ( path( namePath ) && path( namePath )->modules().size() > 0 ) {
+  if ( path( namePath ) ) {
     for ( unsigned iF = 0; iF < path( namePath )->filterIndices().size(); ++iF ) {
       const TriggerFilterRef filterRef( filters(), path( namePath )->filterIndices().at( iF ) );
       thePathFilters.push_back( filterRef );
