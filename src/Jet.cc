@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.30 2009/03/26 20:04:10 rwolf Exp $
+// $Id: Jet.cc,v 1.31 2009/09/21 09:10:42 fronga Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -16,6 +16,16 @@ Jet::Jet() :
   partonFlavour_(0), 
   jetCharge_(0.)
 {
+  fHPD_ = 0.;
+  fRBX_ = 0.;
+  n90Hits_ = 0;
+  fSubDetector1_ = 0.;
+  fSubDetector2_ = 0.;
+  fSubDetector3_ = 0.;
+  fSubDetector4_ = 0.;
+  restrictedEMF_ = 0.;
+  nHCALTowers_ = 0;
+  nECALTowers_ = 0;  
 }
 
 /// constructor from a reco::Jet
@@ -26,6 +36,16 @@ Jet::Jet(const reco::Jet & aJet) :
   jetCharge_(0.0)
 {
   tryImportSpecific(aJet);
+  fHPD_ = 0.;
+  fRBX_ = 0.;
+  n90Hits_ = 0;
+  fSubDetector1_ = 0.;
+  fSubDetector2_ = 0.;
+  fSubDetector3_ = 0.;
+  fSubDetector4_ = 0.;
+  restrictedEMF_ = 0.;
+  nHCALTowers_ = 0;
+  nECALTowers_ = 0; 
 }
 
 /// constructor from ref to reco::Jet
@@ -36,6 +56,16 @@ Jet::Jet(const edm::Ptr<reco::Jet> & aJetRef) :
   jetCharge_(0.0)
 {
   tryImportSpecific(*aJetRef);
+  fHPD_ = 0.;
+  fRBX_ = 0.;
+  n90Hits_ = 0;
+  fSubDetector1_ = 0.;
+  fSubDetector2_ = 0.;
+  fSubDetector3_ = 0.;
+  fSubDetector4_ = 0.;
+  restrictedEMF_ = 0.;
+  nHCALTowers_ = 0;
+  nECALTowers_ = 0; 
 }
 
 /// constructor from ref to reco::Jet
@@ -46,6 +76,16 @@ Jet::Jet(const edm::RefToBase<reco::Jet> & aJetRef) :
   jetCharge_(0.0)
 {
   tryImportSpecific(*aJetRef);
+  fHPD_ = 0.;
+  fRBX_ = 0.;
+  n90Hits_ = 0;
+  fSubDetector1_ = 0.;
+  fSubDetector2_ = 0.;
+  fSubDetector3_ = 0.;
+  fSubDetector4_ = 0.;
+  restrictedEMF_ = 0.;
+  nHCALTowers_ = 0;
+  nECALTowers_ = 0; 
 }
 
 /// constructor helper that tries to import the specific info from the source jet
