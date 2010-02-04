@@ -28,7 +28,10 @@
      <class name="pat::tau::TauCaloSpecific" />
      <class name="std::vector<pat::tau::TauCaloSpecific>" />
   <class name="pat::Photon" />
-  <class name="pat::Jet" />
+  <class name="pat::Jet" >
+    <field name="caloTowersTemp_" transient="true"/>
+    <field name="pfCandidatesTemp_" transient="true"/>
+  </class>
   <class name="pat::MET" >
     <field name="uncorInfo_" transient="true"/>     
     <field name="nCorrections_" transient="true"/>     
