@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.41 2009/11/13 17:30:02 cbern Exp $
+// $Id: Jet.h,v 1.41.2.1 2010/02/04 17:48:10 srappocc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,7 +13,7 @@
    'pat' namespace
 
   \author   Steven Lowette, Giovanni Petrucciani, Roger Wolf, Christian Autermann
-  \version  $Id: Jet.h,v 1.41 2009/11/13 17:30:02 cbern Exp $
+  \version  $Id: Jet.h,v 1.41.2.1 2010/02/04 17:48:10 srappocc Exp $
 */
 
 
@@ -40,7 +40,7 @@
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 
 #include "DataFormats/Common/interface/Ptr.h"
-#include "DataFormats/Common/interface/FwdRef.h"
+#include "DataFormats/Common/interface/FwdPtr.h"
 #include "DataFormats/Common/interface/OwnVector.h"
 
 
@@ -58,9 +58,9 @@ namespace pat {
 
   typedef reco::CaloJet::Specific CaloSpecific;
   typedef reco::PFJet::Specific PFSpecific;
-  typedef std::vector<edm::FwdRef<std::vector<reco::BaseTagInfo> > > TagInfoFwdRefCollection;
-  typedef std::vector<edm::FwdRef<reco::PFCandidateCollection> > PFCandidateFwdRefCollection;
-  typedef std::vector<edm::FwdRef<CaloTowerCollection> > CaloTowerFwdRefCollection;
+  typedef std::vector<edm::FwdPtr<reco::BaseTagInfo> > TagInfoFwdPtrCollection;
+  typedef std::vector<edm::FwdPtr<reco::PFCandidate> > PFCandidateFwdPtrCollection;
+  typedef std::vector<edm::FwdPtr<CaloTower> > CaloTowerFwdPtrCollection;
 
   class Jet : public PATObject<reco::Jet> {
 
@@ -172,7 +172,7 @@ namespace pat {
       /// sets a tagInfo with the given name from an edm::Ptr<T> to it. 
       /// If the label ends with 'TagInfos', the 'TagInfos' is stripped out.
       void  addTagInfo(const std::string &label, 
-		       const edm::FwdRef<std::vector<reco::BaseTagInfo> > &info) ;
+		       const TagInfoFwdPtrCollection::value_type &info) ;
 
       // ---- track related methods ----
 
@@ -188,13 +188,13 @@ namespace pat {
       // ---- methods for content embedding ----
 
       /// method to store the CaloJet constituents internally
-      void setCaloTowers(const CaloTowerFwdRefCollection & caloTowers);
+      void setCaloTowers(const CaloTowerFwdPtrCollection & caloTowers);
       /// method to store the PFCandidate constituents internally
-      void setPFCandidates(const PFCandidateFwdRefCollection & pfCandidates);
+      void setPFCandidates(const PFCandidateFwdPtrCollection & pfCandidates);
       /// method to set the matched parton
       void setGenParton(const reco::GenParticleRef & gp, bool embed=false) { setGenParticleRef(gp, embed); }
       /// method to set the matched generated jet
-      void setGenJetRef(const edm::FwdRef< std::vector<reco::GenJet> > & gj);
+      void setGenJetRef(const edm::FwdRef< reco::GenJetCollection > & gj);
       /// method to set the flavour of the parton underlying the jet
       void setPartonFlavour(int partonFl);
 
@@ -342,11 +342,11 @@ namespace pat {
 
       bool embeddedCaloTowers_;
       mutable std::vector<CaloTowerPtr> caloTowersTemp_; // to simplify user interface
-      CaloTowerFwdRefCollection caloTowers_;
+      CaloTowerFwdPtrCollection caloTowers_;
       
       bool embeddedPFCandidates_;
       mutable std::vector<reco::PFCandidatePtr> pfCandidatesTemp_; // to simplify user interface
-      PFCandidateFwdRefCollection pfCandidates_;
+      PFCandidateFwdPtrCollection pfCandidates_;
 
       // ---- MC info ----
       edm::FwdRef<reco::GenJetCollection>  genJetRef_;
@@ -365,7 +365,7 @@ namespace pat {
 
       std::vector<std::pair<std::string, float> >           pairDiscriVector_;
       std::vector<std::string>          tagInfoLabels_;
-      TagInfoFwdRefCollection tagInfos_;
+      TagInfoFwdPtrCollection tagInfos_;
 
       // ---- track related members ----
 

@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.36 2009/11/13 17:30:03 cbern Exp $
+// $Id: Jet.cc,v 1.36.2.1 2010/02/04 17:48:10 srappocc Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -284,7 +284,8 @@ float Jet::bDiscriminator(const std::string & aLabel) const {
 const reco::BaseTagInfo * Jet::tagInfo(const std::string &label) const {
     std::vector<std::string>::const_iterator it = std::find(tagInfoLabels_.begin(), tagInfoLabels_.end(), label);
     if (it != tagInfoLabels_.end()) {
-      return tagInfos_[it - tagInfoLabels_.begin()].get();
+      TagInfoFwdPtrCollection::value_type const & item = tagInfos_[it - tagInfoLabels_.begin()];
+      return item.get();
     }
     return 0;
 }
@@ -292,8 +293,11 @@ const reco::BaseTagInfo * Jet::tagInfo(const std::string &label) const {
 template<typename T> 
 const T *  Jet::tagInfoByType() const {
     for (size_t i = 0, n = tagInfos_.size(); i < n; ++i) {
-        if ( typeid(tagInfos_[i]) == typeid(T) )
-	  return static_cast<const T *>(tagInfos_[i].get());
+      TagInfoFwdPtrCollection::value_type const & val = tagInfos_[i];
+      reco::BaseTagInfo const * baseTagInfo = val.get();
+      if ( typeid(*baseTagInfo) == typeid(T) ) {
+	return static_cast<const T *>( baseTagInfo );
+      }
     }
     return 0;
 }
@@ -318,7 +322,7 @@ Jet::tagInfoSecondaryVertex(const std::string &label) const {
 
 void
 Jet::addTagInfo(const std::string &label, 
-		const edm::FwdRef<std::vector<reco::BaseTagInfo> > &info) {
+		const TagInfoFwdPtrCollection::value_type &info) {
     std::string::size_type idx = label.find("TagInfos");
     if (idx == std::string::npos) {
       tagInfoLabels_.push_back(label);
@@ -344,7 +348,7 @@ void Jet::setAssociatedTracks(const reco::TrackRefVector &tracks) {
 }
 
 /// method to store the CaloJet constituents internally
-void Jet::setCaloTowers(const CaloTowerFwdRefCollection & caloTowers) {
+void Jet::setCaloTowers(const CaloTowerFwdPtrCollection & caloTowers) {
   for(unsigned int i = 0; i < caloTowers.size(); ++i) {
     caloTowers_.push_back( caloTowers.at(i) );
   }
@@ -354,7 +358,7 @@ void Jet::setCaloTowers(const CaloTowerFwdRefCollection & caloTowers) {
 
 
 /// method to store the CaloJet constituents internally
-void Jet::setPFCandidates(const PFCandidateFwdRefCollection & pfCandidates) {
+void Jet::setPFCandidates(const PFCandidateFwdPtrCollection & pfCandidates) {
   for(unsigned int i = 0; i < pfCandidates.size(); ++i) {
     pfCandidates_.push_back(pfCandidates.at(i));
   }
@@ -363,7 +367,7 @@ void Jet::setPFCandidates(const PFCandidateFwdRefCollection & pfCandidates) {
 }
 
 /// method to set the matched generated jet reference, embedding if requested
-void Jet::setGenJetRef(const edm::FwdRef< std::vector<reco::GenJet> > & gj)
+void Jet::setGenJetRef(const edm::FwdRef< reco::GenJetCollection> & gj)
 {
   genJetRef_ = gj;
 }
@@ -390,7 +394,7 @@ void Jet::setJetCharge(float jetCharge) {
 void Jet::cacheCaloTowers() const {
   caloTowersTemp_.clear();
   if ( embeddedCaloTowers_ ) {
-    for ( CaloTowerFwdRefCollection::const_iterator ibegin=caloTowers_.begin(),
+    for ( CaloTowerFwdPtrCollection::const_iterator ibegin=caloTowers_.begin(),
 	    iend = caloTowers_.end(),
 	    itow = ibegin;
 	  itow != iend; ++itow ) {
@@ -416,7 +420,7 @@ void Jet::cacheCaloTowers() const {
 void Jet::cachePFCandidates() const {
   pfCandidatesTemp_.clear();
   if ( embeddedPFCandidates_ ) {
-    for ( PFCandidateFwdRefCollection::const_iterator ibegin=pfCandidates_.begin(),
+    for ( PFCandidateFwdPtrCollection::const_iterator ibegin=pfCandidates_.begin(),
 	    iend = pfCandidates_.end(),
 	    ipf = ibegin;
 	  ipf != iend; ++ipf ) {
