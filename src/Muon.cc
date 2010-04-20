@@ -1,5 +1,5 @@
 //
-// $Id: Muon.cc,v 1.21.2.1 2009/10/08 04:18:08 srappocc Exp $
+// $Id: Muon.cc,v 1.22 2009/10/12 00:44:01 srappocc Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -27,6 +27,7 @@ Muon::Muon() :
     cachedNumberOfValidHits_(0),
     normChi2_(0.0),
     dB_(0.0),
+    edB_(0.0),
     numberOfValidHits_(0)
 {
 }
@@ -49,6 +50,7 @@ Muon::Muon(const reco::Muon & aMuon) :
     cachedNumberOfValidHits_(0),
     normChi2_(0.0),
     dB_(0.0),
+    edB_(0.0),
     numberOfValidHits_(0)
 {
 }
@@ -71,6 +73,7 @@ Muon::Muon(const edm::RefToBase<reco::Muon> & aMuonRef) :
     cachedNumberOfValidHits_(0),
     normChi2_(0.0),
     dB_(0.0),
+    edB_(0.0),
     numberOfValidHits_(0)
 {
 }
@@ -93,6 +96,7 @@ Muon::Muon(const edm::Ptr<reco::Muon> & aMuonRef) :
     cachedNumberOfValidHits_(0),
     normChi2_(0.0),
     dB_(0.0),
+    edB_(0.0),
     numberOfValidHits_(0)
 {
 }
@@ -254,6 +258,17 @@ unsigned int Muon::numberOfValidHits() const {
 double Muon::dB() const {
   if ( cachedDB_ ) {
     return dB_;
+  } else {
+    return std::numeric_limits<double>::max();
+  }
+}
+
+/// edB gives the uncertainty on the impact parameter wrt the beamline.
+/// If this is not cached it is not meaningful, since
+/// it relies on the distance to the beamline. 
+double Muon::edB() const {
+  if ( cachedDB_ ) {
+    return edB_;
   } else {
     return std::numeric_limits<double>::max();
   }
