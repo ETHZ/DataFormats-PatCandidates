@@ -1,5 +1,5 @@
 //
-// $Id: Jet.h,v 1.42 2010/02/08 17:38:11 eschliec Exp $
+// $Id: Jet.h,v 1.43 2010/04/08 16:03:15 srappocc Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Jet_h
@@ -13,7 +13,7 @@
    'pat' namespace
 
   \author   Steven Lowette, Giovanni Petrucciani, Roger Wolf, Christian Autermann
-  \version  $Id: Jet.h,v 1.42 2010/02/08 17:38:11 eschliec Exp $
+  \version  $Id: Jet.h,v 1.43 2010/04/08 16:03:15 srappocc Exp $
 */
 
 
@@ -261,32 +261,69 @@ namespace pat {
 
       // ---- PF Jet specific information ----
 
-      /// chargedHadronEnergy
-      float chargedHadronEnergy () const {return pfSpecific().mChargedHadronEnergy;}
-      /// chargedHadronEnergyFraction
-      float  chargedHadronEnergyFraction () const {return chargedHadronEnergy () / energy ();}
-      /// neutralHadronEnergy
-      float neutralHadronEnergy () const {return pfSpecific().mNeutralHadronEnergy;}
-      /// neutralHadronEnergyFraction
-      float neutralHadronEnergyFraction () const {return neutralHadronEnergy () / energy ();}
+      /// muonMultiplicity
+      int muonMultiplicity() const { return pfSpecific().mMuonMultiplicity;}
+      /// chargedMultiplicity
+      int chargedMultiplicity() const { return pfSpecific().mChargedMultiplicity;}
       /// chargedEmEnergy
-      float chargedEmEnergy () const {return pfSpecific().mChargedEmEnergy;}
+      float chargedEmEnergy()  const { return pfSpecific().mChargedEmEnergy;}
+      /// neutralEmEnergy
+      float neutralEmEnergy()  const { return pfSpecific().mNeutralEmEnergy;}
+      /// chargedHadronEnergy
+      float chargedHadronEnergy() const { return pfSpecific().mChargedHadronEnergy;}
+      /// neutralHadronEnergy
+      float neutralHadronEnergy() const { return pfSpecific().mNeutralHadronEnergy;}
+
+      /// chargedHadronEnergyFraction
+      float  chargedHadronEnergyFraction() const {return chargedHadronEnergy()/energy();}
+      /// neutralHadronEnergyFraction
+      float neutralHadronEnergyFraction()  const {return neutralHadronEnergy()/energy();}
       /// chargedEmEnergyFraction
-      float chargedEmEnergyFraction () const {return chargedEmEnergy () / energy ();}
+      float chargedEmEnergyFraction()      const {return chargedEmEnergy()/energy();}
+      /// neutralEmEnergyFraction
+      float neutralEmEnergyFraction()      const {return neutralEmEnergy()/energy();}
+
+      /// photonEnergy 
+      float photonEnergy () const {return pfSpecific().mPhotonEnergy;}
+      /// photonEnergyFraction
+      float photonEnergyFraction () const {return photonEnergy () / energy ();}
+      /// electronEnergy 
+      float electronEnergy () const {return pfSpecific().mElectronEnergy;}
+      /// muonEnergy 
+      float muonEnergy () const {return pfSpecific().mMuonEnergy;}
+      /// muonEnergyFraction
+      float muonEnergyFraction () const {return muonEnergy () / energy ();}
+      /// HFHadronEnergy 
+      float HFHadronEnergy () const {return pfSpecific().mHFHadronEnergy;}
+      /// HFHadronEnergyFraction
+      float HFHadronEnergyFraction () const {return HFHadronEnergy () / energy ();}
+      /// HFEMEnergy 
+      float HFEMEnergy () const {return pfSpecific().mHFEMEnergy;}
+      /// HFEMEnergyFraction
+      float HFEMEnergyFraction () const {return HFEMEnergy () / energy ();}
+
+      /// chargedHadronMultiplicity
+      int chargedHadronMultiplicity () const {return pfSpecific().mChargedHadronMultiplicity;}
+      /// neutralHadronMultiplicity
+      int neutralHadronMultiplicity () const {return pfSpecific().mNeutralHadronMultiplicity;}
+      /// photonMultiplicity
+      int photonMultiplicity () const {return pfSpecific().mPhotonMultiplicity;}
+      /// electronMultiplicity
+      int electronMultiplicity () const {return pfSpecific().mElectronMultiplicity;}
+      
+      /// HFHadronMultiplicity
+      int HFHadronMultiplicity () const {return pfSpecific().mHFHadronMultiplicity;}
+      /// HFEMMultiplicity
+      int HFEMMultiplicity () const {return pfSpecific().mHFEMMultiplicity;}
+      
       /// chargedMuEnergy
       float chargedMuEnergy () const {return pfSpecific().mChargedMuEnergy;}
       /// chargedMuEnergyFraction
       float chargedMuEnergyFraction () const {return chargedMuEnergy () / energy ();}
-      /// neutralEmEnergy
-      float neutralEmEnergy () const {return pfSpecific().mNeutralEmEnergy;}
-      /// neutralEmEnergyFraction
-      float neutralEmEnergyFraction () const {return neutralEmEnergy () / energy ();}
-      /// chargedMultiplicity
-      float chargedMultiplicity () const {return pfSpecific().mChargedMultiplicity;}
+      
       /// neutralMultiplicity
-      float neutralMultiplicity () const {return pfSpecific().mNeutralMultiplicity;}
-      /// muonMultiplicity
-      float muonMultiplicity () const {return pfSpecific().mMuonMultiplicity;}
+      int neutralMultiplicity () const {return pfSpecific().mNeutralMultiplicity;}
+
 
       /// convert generic constituent to specific type
       //  static CaloTowerPtr caloTower (const reco::Candidate* fConstituent);
