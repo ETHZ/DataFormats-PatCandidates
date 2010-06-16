@@ -1,5 +1,5 @@
 //
-// $Id: TriggerObject.cc,v 1.5 2010/02/25 16:15:32 vadler Exp $
+// $Id: TriggerObject.cc,v 1.7 2010/06/16 15:40:53 vadler Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/TriggerObject.h"
@@ -40,6 +40,19 @@ TriggerObject::TriggerObject( const reco::LeafCandidate & leafCand ) :
 }
 
 /// getters
+
+bool TriggerObject::hasCollection( const std::string & coll ) const
+{
+  if ( collection() == coll ) return true;
+  const edm::InputTag collectionTag( collection() );
+  const edm::InputTag collTag( coll );
+  if ( collTag.process().empty() ) {
+    if ( ( collTag.instance().empty() && collectionTag.instance().empty() ) || collTag.instance() == collectionTag.instance() ) {
+      if ( collTag.label() == collectionTag.label() ) return true;
+    }
+  }
+  return false;
+}
 
 bool TriggerObject::hasFilterId( int filterId ) const
 {
