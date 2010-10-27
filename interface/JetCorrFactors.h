@@ -63,7 +63,7 @@ namespace pat {
     // jet energy correction flavor from enum
     std::string jecFlavor(const Flavor& flavor) const;
     // jet energy correction flavor from std::string
-    Flavor jecFlavor(const std::string& flavor) const;
+    Flavor jecFlavor(std::string flavor) const;
 
     // correction factor up to a given level and flavor (per default the flavor is NONE)
     float correction(unsigned int level, Flavor flavor=NONE) const;

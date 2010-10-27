@@ -1,6 +1,7 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 #include "FWCore/Utilities/interface/EDMException.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -8,6 +9,7 @@
 
 
 using namespace pat;
+
 
 JetCorrFactors::JetCorrFactors(const std::string& label, const std::vector<CorrectionFactor>& jec): label_(label), jec_(jec)
 {
@@ -40,18 +42,19 @@ std::string
 JetCorrFactors::jecFlavor(const Flavor& flavor) const
 {
   std::map<Flavor, std::string> flavors;
-  flavors[UDS   ]="uds"; flavors[CHARM ]="charm"; flavors[BOTTOM]="bottom"; flavors[GLUON ]="gluon"; flavors[NONE  ]="none"; 
+  flavors[UDS]="uds"; flavors[CHARM]="charm"; flavors[BOTTOM]="bottom"; flavors[GLUON]="gluon"; flavors[NONE]="none"; 
   return flavors.find(flavor)->second;
 }
 
 JetCorrFactors::Flavor 
-JetCorrFactors::jecFlavor(const std::string& flavor) const
+JetCorrFactors::jecFlavor(std::string flavor) const
 {
   std::map<std::string, Flavor> flavors;
-  flavors["uds"   ]=UDS; flavors["charm" ]=CHARM; flavors["bottom"]=BOTTOM; flavors["gluon" ]=GLUON; flavors["none"  ]=NONE;
+  std::transform(flavor.begin(), flavor.end(), flavor.begin(), std::ptr_fun<int,int>(std::tolower));
+  flavors["uds"]=UDS; flavors["charm"]=CHARM; flavors["bottom"]=BOTTOM; flavors["gluon"]=GLUON; flavors["none"]=NONE;
   if(flavors.find(flavor)==flavors.end()){
     throw cms::Exception("InvalidRequest") << "You ask for a flavor, which does not exist. Available flavors are: \n"
-					   << "'uds', 'charm', 'bottom', 'gluon', 'none', (case sensitive).       \n";
+					   << "'uds', 'charm', 'bottom', 'gluon', 'none', (not case sensitive).   \n";
   }
   return flavors.find(flavor)->second;
 }
