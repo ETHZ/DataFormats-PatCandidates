@@ -57,6 +57,10 @@ namespace pat {
 
 
   class Jet : public PATObject<reco::Jet> {
+    /// make friends with PATJetProducer so that it can set the an initial 
+    /// jet energy scale unequal to raw calling the private initializeJEC
+    /// function, which should be non accessible to any other user 
+    friend class PATJetProducer;
 
     public:
       /// default constructor
@@ -150,6 +154,8 @@ namespace pat {
       void currentJECFlavor(const JetCorrFactors::Flavor& flavor) { currentJECFlavor_=flavor; };
       // add more sets of energy correction factors
       void addJECFactors(const JetCorrFactors& jec) {jec_.push_back(jec); };
+      // initialize the jet to a given JEC level during creation starting from raw
+      void initializeJEC(unsigned int jecLevel, const JetCorrFactors::Flavor& jecFlavor=JetCorrFactors::NONE , unsigned int jecSet=0) { setP4(jec_[jecSet].correction(jecLevel, jecFlavor) * p4()); currentJECSet(jecSet); currentJECLevel(jecLevel); currentJECFlavor(jecFlavor); };
       
   public:
       /// ---- methods for accessing b-tagging info ----
