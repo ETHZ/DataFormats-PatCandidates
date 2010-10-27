@@ -36,6 +36,26 @@ JetCorrFactors::JetCorrFactors(const std::string& label, const std::vector<Corre
   }
 }
 
+std::string 
+JetCorrFactors::jecFlavor(const Flavor& flavor) const
+{
+  std::map<Flavor, std::string> flavors;
+  flavors[UDS   ]="uds"; flavors[CHARM ]="charm"; flavors[BOTTOM]="bottom"; flavors[GLUON ]="gluon"; flavors[NONE  ]="none"; 
+  return flavors.find(flavor)->second;
+}
+
+JetCorrFactors::Flavor 
+JetCorrFactors::jecFlavor(const std::string& flavor) const
+{
+  std::map<std::string, Flavor> flavors;
+  flavors["uds"   ]=UDS; flavors["charm" ]=CHARM; flavors["bottom"]=BOTTOM; flavors["gluon" ]=GLUON; flavors["none"  ]=NONE;
+  if(flavors.find(flavor)==flavors.end()){
+    throw cms::Exception("InvalidRequest") << "You ask for a flavor, which does not exist. Available flavors are: \n"
+					   << "'uds', 'charm', 'bottom', 'gluon', 'none', (case sensitive).       \n";
+  }
+  return flavors.find(flavor)->second;
+}
+
 int  
 JetCorrFactors::jecLevel(const std::string& level) const
 {

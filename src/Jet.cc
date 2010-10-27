@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.40 2010/08/31 16:05:29 srappocc Exp $
+// $Id: Jet.cc,v 1.40.2.1 2010/10/27 11:08:48 rwolf Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -205,6 +205,24 @@ const std::vector<std::string> Jet::availableJECSets() const
 
 /// correction factor to the given level for a specific set 
 /// of correction factors, starting from the current level 
+float Jet::jecFactor(const std::string& level, const std::string& flavor, const std::string& set) const
+{
+  for(unsigned int idx=0; idx<jec_.size(); ++idx){
+    if(set.empty() || jec_.at(idx).jecSet()==set){
+      if(jec_[idx].jecLevel(level)>=0){
+	return jecFactor(level, flavor, set);
+      } 
+      else{ 
+	throw cms::Exception("InvalidRequest") << "This JEC level " << level << " does not exist. \n";	
+      }
+    }
+  }
+  throw cms::Exception("InvalidRequest") << "This jet does not carry any jet energy correction factor information \n"
+					 << "for a jet energy correction set with label " << set << "\n";
+}
+
+/// correction factor to the given level for a specific set 
+/// of correction factors, starting from the current level 
 float Jet::jecFactor(const unsigned int& level, const JetCorrFactors::Flavor& flavor, const unsigned int& set) const 
 {
   if(!jecSetsAvailable()){
@@ -212,9 +230,20 @@ float Jet::jecFactor(const unsigned int& level, const JetCorrFactors::Flavor& fl
   }
   if(!jecSetAvailable(set)){
     throw cms::Exception("InvalidRequest") << "This jet does not carry any jet energy correction factor information \n"
-					   << "for a jet energy correction set with label " << set << "\n";
+					   << "for a jet energy correction set with index " << set << "\n";
   }
   return jec_.at(set).correction(level, flavor)/jec_.at(set).correction(currentJECLevel_, currentJECFlavor_);
+}
+
+/// copy of the jet with correction factor to target step for
+/// the set of correction factors, which is currently in use 
+Jet Jet::correctedJet(const std::string& level, const std::string& flavor, const std::string& set) const 
+{
+  Jet correctedJet(*this);
+  // rescale p4 of the jet; the update of current values is 
+  // done within the called jecFactor function
+  correctedJet.setP4(jecFactor(level, flavor, set)*p4());
+  return correctedJet;
 }
 
 /// copy of the jet with correction factor to target step for

@@ -60,6 +60,10 @@ namespace pat {
     std::string jecLevel(const unsigned int& level) const { return jec_.at(level).first; };
     // correction level from std::string
     int jecLevel(const std::string& level) const;
+    // jet energy correction flavor from enum
+    std::string jecFlavor(const Flavor& flavor) const;
+    // jet energy correction flavor from std::string
+    Flavor jecFlavor(const std::string& flavor) const;
 
     // correction factor up to a given level and flavor (per default the flavor is NONE)
     float correction(unsigned int level, Flavor flavor=NONE) const;

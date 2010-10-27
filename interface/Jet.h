@@ -107,40 +107,22 @@ namespace pat {
       JetCorrFactors::Flavor currentJECFlavour() const { return currentJECFlavor_; };
       // correction factor to the given level for a specific set 
       // of correction factors, starting from the current level 
-      // ---> to be implemented once the rest is set <---
-      //float jecFactor(const std::string& level, const std::string& flavor, const std::string& set="") const;
-
+      float jecFactor(const std::string& level, const std::string& flavor="none", const std::string& set="") const;
       // correction factor to the given level for a specific set 
       // of correction factors, starting from the current level 
       float jecFactor(const unsigned int& level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, const unsigned int& set=0) const;
-
       // copy of the jet corrected up to the given level for the set 
       // of jet energy correction factors, which is currently in use 
-      // ---> to be implemented once the rest is set <---
-      //Jet correctedJet(const std::string& level, const std::string& flavor="") const;
-
+      Jet correctedJet(const std::string& level, const std::string& flavor="none", const std::string& set="") const;
       // copy of the jet corrected up to the given level for the set 
       // of jet energy correction factors, which is currently in use 
       Jet correctedJet(const unsigned int& level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, const unsigned int& set=0) const;
-
-      // copy of the jet corrected up to the given level for the  
-      // given set of jet energy correction factors
-      // ---> to be implemented once the rest is set <---
-      //Jet correctedJet(const std::string& level, const std::string& flavor, const std::string& set) const;
-
-
       // p4 of the jet corrected up to the given level for the set 
       // of jet energy correction factors, which is currently in use 
-      //const LorentzVector& correctedP4(const std::string& level, const std::string& flavor="") const { return correctedJet(level, flavor).p4(); };
+      const LorentzVector& correctedP4(const std::string& level, const std::string& flavor="none", const std::string& set="") const { return correctedJet(level, flavor, set).p4(); };
       // p4 of the jet corrected up to the given level for the set 
       // of jet energy correction factors, which is currently in use 
-      //const LorentzVector& correctedP4(const unsigned int& level, const JetCorrFactors::Flavor& flavor) const { return correctedJet(level, flavour).p4(); };
-      // p4 of the jet corrected up to the given level for the 
-      // given set of jet energy correction factors
-      //const LorentzVector& correctedP4(const std::string& level, const std::string& flavor, const std::string& set) const { return correctedJet(level, flavor, set).p4(); };
-      // p4 of the jet corrected up to the given level for the 
-      // given set of jet energy correction factors
-      //const LorentzVector& correctedP4(const unsigned int& level, const JetCorrFactors& flavor, const std::string& set) const { return correctedJet(level, flavor, set).p4(); };
+      const LorentzVector& correctedP4(const unsigned int& level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, const unsigned int& set=0) const { return correctedJet(level, flavor, set).p4(); };
 
   private:
       // index of the set of jec factors with given label; returns -1 if no set
