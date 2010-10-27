@@ -105,7 +105,7 @@ namespace {
   edm::Wrapper<pat::HemisphereRefVector>	p_rv_h;
 
   /*   RefToBase<Candidate> from PATObjects   */
-    /*   With direct Holder   */
+  /*   With direct Holder   */
   edm::reftobase::Holder<reco::Candidate, pat::ElectronRef>	 	rb_cand_h_p_e;
   edm::reftobase::Holder<reco::Candidate, pat::MuonRef>	         	rb_cand_h_p_mu;
   edm::reftobase::Holder<reco::Candidate, pat::TauRef>	         	rb_cand_h_p_t;
@@ -177,9 +177,11 @@ namespace {
        ==========================================================================================================================   */
   std::vector<edm::Ptr<CaloTower> > v_p_ct;
   std::vector<CaloTower> v_ct;
-
   edm::Wrapper<std::vector<CaloTower> > wv_ct;
 
+  std::vector<pat::JetCorrFactors> v_jcf;
+  edm::Wrapper<std::vector<pat::JetCorrFactors> >  w_v_jcf;
+  edm::ValueMap<pat::JetCorrFactors> vm_jcf;
   edm::Wrapper<edm::ValueMap<pat::JetCorrFactors> >  w_vm_jcf;
 
   edm::Wrapper<StringMap>   w_sm;
