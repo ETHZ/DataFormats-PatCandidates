@@ -136,8 +136,8 @@ namespace pat {
       void currentJECFlavor(const JetCorrFactors::Flavor& flavor) { currentJECFlavor_=flavor; };
       // add more sets of energy correction factors
       void addJECFactors(const JetCorrFactors& jec) {jec_.push_back(jec); };
-      // initialize the jet to a given JEC level during creation starting from raw
-      void initializeJEC(unsigned int jecLevel, const JetCorrFactors::Flavor& jecFlavor=JetCorrFactors::NONE , unsigned int jecSet=0) { setP4(jec_[jecSet].correction(jecLevel, jecFlavor) * p4()); currentJECSet(jecSet); currentJECLevel(jecLevel); currentJECFlavor(jecFlavor); };
+      // initialize the jet to a given JEC level during creation starting from Uncorrected
+      void initializeJEC(unsigned int level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, unsigned int set=0);
       
   public:
       /// ---- methods for accessing b-tagging info ----

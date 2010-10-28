@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.40.2.1 2010/10/27 11:08:48 rwolf Exp $
+// $Id: Jet.cc,v 1.40.2.2 2010/10/27 18:25:18 rwolf Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -185,6 +185,15 @@ int Jet::partonFlavour() const {
 }
 
 /// ============= Jet Energy Correction methods ============
+
+// initialize the jet to a given JEC level during creation starting from Uncorrected
+void Jet::initializeJEC(unsigned int level, const JetCorrFactors::Flavor& flavor, unsigned int set)
+{ 
+  currentJECSet(set); 
+  currentJECLevel(level); 
+  currentJECFlavor(flavor); 
+  setP4(jec_[set].correction(level, flavor)*p4()); 
+}
 
 /// return true if this jet carries the jet correction factors of a different set, for systematic studies
 int Jet::jecSet(const std::string& set) const 
