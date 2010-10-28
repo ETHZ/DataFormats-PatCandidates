@@ -67,7 +67,7 @@ namespace pat {
 
     // correction factor up to a given level and flavor (per default the flavor is NONE)
     float correction(unsigned int level, Flavor flavor=NONE) const;
-    // a list of the labels of all correction levels according to jetMET definitions, separated by ':'
+    // a list of the labels of all correction levels according to jetMET definitions, separated by '\n'
     std::string correctionLabels() const;
     // label of a specific correction factor according to jetMET definitions; for overflow a string ERROR is returned
     std::string correctionLabel(unsigned int level) const { return (level<jec_.size() ? jec_.at(level).first : std::string("ERROR")); };
