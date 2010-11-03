@@ -73,7 +73,8 @@ JetCorrFactors::correction(unsigned int level, Flavor flavor) const
 {
   if(!(level<jec_.size())){
     throw cms::Exception("InvalidRequest") << "You try to call a jet energy correction level wich does not exist. \n"
-					   << "Available jet energy correction levels are: \n" << correctionLabels();    
+					   << "Available jet energy correction levels are:                        \n" 
+					   << correctionLabelString();    
   }
   if(flavorDependent(jec_.at(level)) && flavor==NONE){
     throw cms::Exception("InvalidRequest") << "You try to call a flavor dependent jet energy correction level:    \n"
@@ -85,12 +86,22 @@ JetCorrFactors::correction(unsigned int level, Flavor flavor) const
 }
 
 std::string 
-JetCorrFactors::correctionLabels() const 
+JetCorrFactors::correctionLabelString() const 
 {
   std::string labels;
   for(std::vector<CorrectionFactor>::const_iterator corrFactor=jec_.begin(); corrFactor!=jec_.end(); ++corrFactor){
     std::stringstream idx; idx << (corrFactor-jec_.begin());
     labels.append(idx.str()).append(" ").append(corrFactor->first).append("\n");
+  }
+  return labels;
+}
+
+std::vector<std::string> 
+JetCorrFactors::correctionLabels() const 
+{
+  std::vector<std::string> labels;
+  for(std::vector<CorrectionFactor>::const_iterator corrFactor=jec_.begin(); corrFactor!=jec_.end(); ++corrFactor){
+    labels.push_back(corrFactor->first);
   }
   return labels;
 }

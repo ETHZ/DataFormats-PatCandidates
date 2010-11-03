@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.40.2.2 2010/10/27 18:25:18 rwolf Exp $
+// $Id: Jet.cc,v 1.40.2.3 2010/10/28 18:57:02 rwolf Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -212,6 +212,11 @@ const std::vector<std::string> Jet::availableJECSets() const
   return sets;      
 }
 
+const std::vector<std::string> Jet::availableJECLevels(const unsigned int& set) const
+{
+  return set>=0 ? jec_.at(set).correctionLabels() : std::vector<std::string>();
+}
+
 /// correction factor to the given level for a specific set 
 /// of correction factors, starting from the current level 
 float Jet::jecFactor(const std::string& level, const std::string& flavor, const std::string& set) const
@@ -219,7 +224,7 @@ float Jet::jecFactor(const std::string& level, const std::string& flavor, const 
   for(unsigned int idx=0; idx<jec_.size(); ++idx){
     if(set.empty() || jec_.at(idx).jecSet()==set){
       if(jec_[idx].jecLevel(level)>=0){
-	return jecFactor(level, flavor, set);
+	return jecFactor(jec_[idx].jecLevel(level), jec_[idx].jecFlavor(flavor), idx);
       } 
       else{ 
 	throw cms::Exception("InvalidRequest") << "This JEC level " << level << " does not exist. \n";	
