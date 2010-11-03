@@ -179,8 +179,8 @@ namespace {
   std::vector<CaloTower> v_ct;
   edm::Wrapper<std::vector<CaloTower> > wv_ct;
 
-  std::pair<std::string,std::vector<float> > jcfcf;
-  edm::Wrapper<std::pair<std::string,std::vector<float> > > w_jcfcf;
+  std::pair<std::string, std::vector<float> > jcfcf;
+  edm::Wrapper<std::pair<std::string, std::vector<float> > > w_jcfcf;
   std::vector<pat::JetCorrFactors::CorrectionFactor> v_jcfcf;
   edm::Wrapper<std::vector<pat::JetCorrFactors::CorrectionFactor> > w_v_jcfcf;
   std::vector<pat::JetCorrFactors> v_jcf;
