@@ -305,33 +305,33 @@ namespace pat {
       /// neutralHadronEnergy
       float neutralHadronEnergy() const;
 
-      /// chargedHadronEnergyFraction (for uncorrected jet energy scale)
-      float  chargedHadronEnergyFraction() const {return chargedHadronEnergy()/correctedJet(0).energy();}
-      /// neutralHadronEnergyFraction (for uncorrected jet energy scale)
-      float neutralHadronEnergyFraction()  const {return neutralHadronEnergy()/correctedJet(0).energy();}
-      /// chargedEmEnergyFraction (for uncorrected jet energy scale)
-      float chargedEmEnergyFraction()      const {return chargedEmEnergy()/correctedJet(0).energy();}
-      /// neutralEmEnergyFraction (for uncorrected jet energy scale)
-      float neutralEmEnergyFraction()      const {return neutralEmEnergy()/correctedJet(0).energy();}
+      /// chargedHadronEnergyFraction (relative to uncorrected jet energy)
+      float chargedHadronEnergyFraction() const {return chargedHadronEnergy()/(jecFactor(0) * energy());}
+      /// neutralHadronEnergyFraction (relative to uncorrected jet energy)
+      float neutralHadronEnergyFraction() const {return neutralHadronEnergy()/(jecFactor(0) * energy());}
+      /// chargedEmEnergyFraction (relative to uncorrected jet energy)
+      float chargedEmEnergyFraction()     const {return chargedEmEnergy()/(jecFactor(0) * energy());}
+      /// neutralEmEnergyFraction (relative to uncorrected jet energy)
+      float neutralEmEnergyFraction()     const {return neutralEmEnergy()/(jecFactor(0) * energy());}
 
       // ---- PF Jet specific information ----
       /// photonEnergy 
       float photonEnergy () const {return pfSpecific().mPhotonEnergy;}
-      /// photonEnergyFraction
+      /// photonEnergyFraction (relative to corrected jet energy)
       float photonEnergyFraction () const {return photonEnergy () / energy ();}
       /// electronEnergy 
       float electronEnergy () const {return pfSpecific().mElectronEnergy;}
       /// muonEnergy 
       float muonEnergy () const {return pfSpecific().mMuonEnergy;}
-      /// muonEnergyFraction
+      /// muonEnergyFraction (relative to corrected jet energy)
       float muonEnergyFraction () const {return muonEnergy () / energy ();}
       /// HFHadronEnergy 
       float HFHadronEnergy () const {return pfSpecific().mHFHadronEnergy;}
-      /// HFHadronEnergyFraction
+      /// HFHadronEnergyFraction (relative to corrected jet energy)
       float HFHadronEnergyFraction () const {return HFHadronEnergy () / energy ();}
       /// HFEMEnergy 
       float HFEMEnergy () const {return pfSpecific().mHFEMEnergy;}
-      /// HFEMEnergyFraction
+      /// HFEMEnergyFraction (relative to corrected jet energy)
       float HFEMEnergyFraction () const {return HFEMEnergy () / energy ();}
 
       /// chargedHadronMultiplicity
