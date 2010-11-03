@@ -88,55 +88,59 @@ namespace pat {
   public:
       /// ---- methods for jet corrections ----
 
-      // returns the labels of all available sets of jet energy corrections
+      /// returns the labels of all available sets of jet energy corrections
       const std::vector<std::string> availableJECSets() const;
-      // returns true if the jet carries jet energy correction information
-      // at all
+      // returns the available JEC Levels for a given jecSet
+      const std::vector<std::string> availableJECLevels(const unsigned int& set=0) const;
+      // returns the available JEC Levels for a given jecSet
+      const std::vector<std::string> availableJECLevels(const std::string& set) const { return availableJECLevels(jecSet(set)); };
+      /// returns true if the jet carries jet energy correction information
+      /// at all
       bool jecSetsAvailable() const { return !jec_.empty(); }
-      // returns true if the jet carries a set of jet energy correction 
-      // factors with the given label
-      bool jecSetAvailable(const std::string& set) const {return (jecSet(set)>0); };
-      // returns true if the jet carries a set of jet energy correction 
-      // factors with the given label
+      /// returns true if the jet carries a set of jet energy correction 
+      /// factors with the given label
+      bool jecSetAvailable(const std::string& set) const {return (jecSet(set)>=0); };
+      /// returns true if the jet carries a set of jet energy correction 
+      /// factors with the given label
       bool jecSetAvailable(const unsigned int& set) const {return (set<jec_.size()); };
-      // returns the label of the current set of jet energy corrections
+      /// returns the label of the current set of jet energy corrections
       std::string currentJECSet() const { return currentJECSet_<jec_.size() ? jec_.at(currentJECSet_).jecSet() : std::string("ERROR"); }
-      // return the name of the current step of jet energy corrections
+      /// return the name of the current step of jet energy corrections
       std::string currentJECLevel() const { return currentJECSet_<jec_.size() ? jec_.at(currentJECSet_).jecLevel(currentJECLevel_) : std::string("ERROR"); };
-      // return flavour of the current step of jet energy corrections
-      JetCorrFactors::Flavor currentJECFlavour() const { return currentJECFlavor_; };
-      // correction factor to the given level for a specific set 
-      // of correction factors, starting from the current level 
+      /// return flavour of the current step of jet energy corrections
+      JetCorrFactors::Flavor currentJECFlavor() const { return currentJECFlavor_; };
+      /// correction factor to the given level for a specific set 
+      /// of correction factors, starting from the current level 
       float jecFactor(const std::string& level, const std::string& flavor="none", const std::string& set="") const;
-      // correction factor to the given level for a specific set 
-      // of correction factors, starting from the current level 
+      /// correction factor to the given level for a specific set 
+      /// of correction factors, starting from the current level 
       float jecFactor(const unsigned int& level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, const unsigned int& set=0) const;
-      // copy of the jet corrected up to the given level for the set 
-      // of jet energy correction factors, which is currently in use 
+      /// copy of the jet corrected up to the given level for the set 
+      /// of jet energy correction factors, which is currently in use 
       Jet correctedJet(const std::string& level, const std::string& flavor="none", const std::string& set="") const;
-      // copy of the jet corrected up to the given level for the set 
-      // of jet energy correction factors, which is currently in use 
+      /// copy of the jet corrected up to the given level for the set 
+      /// of jet energy correction factors, which is currently in use 
       Jet correctedJet(const unsigned int& level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, const unsigned int& set=0) const;
-      // p4 of the jet corrected up to the given level for the set 
-      // of jet energy correction factors, which is currently in use 
+      /// p4 of the jet corrected up to the given level for the set 
+      /// of jet energy correction factors, which is currently in use 
       const LorentzVector& correctedP4(const std::string& level, const std::string& flavor="none", const std::string& set="") const { return correctedJet(level, flavor, set).p4(); };
-      // p4 of the jet corrected up to the given level for the set 
-      // of jet energy correction factors, which is currently in use 
+      /// p4 of the jet corrected up to the given level for the set 
+      /// of jet energy correction factors, which is currently in use 
       const LorentzVector& correctedP4(const unsigned int& level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, const unsigned int& set=0) const { return correctedJet(level, flavor, set).p4(); };
 
   private:
-      // index of the set of jec factors with given label; returns -1 if no set
-      // of jec factors exists with the given label
+      /// index of the set of jec factors with given label; returns -1 if no set
+      /// of jec factors exists with the given label
       int jecSet(const std::string& label) const;
-      // update the current JEC set; used by correctedJet
+      /// update the current JEC set; used by correctedJet
       void currentJECSet(const unsigned int& set) { currentJECSet_=set; };
-      // update the current JEC level; used by correctedJet
+      /// update the current JEC level; used by correctedJet
       void currentJECLevel(const unsigned int& level) { currentJECLevel_=level; };
-      // update the current JEC flavor; used by correctedJet
+      /// update the current JEC flavor; used by correctedJet
       void currentJECFlavor(const JetCorrFactors::Flavor& flavor) { currentJECFlavor_=flavor; };
-      // add more sets of energy correction factors
+      /// add more sets of energy correction factors
       void addJECFactors(const JetCorrFactors& jec) {jec_.push_back(jec); };
-      // initialize the jet to a given JEC level during creation starting from Uncorrected
+      /// initialize the jet to a given JEC level during creation starting from Uncorrected
       void initializeJEC(unsigned int level, const JetCorrFactors::Flavor& flavor=JetCorrFactors::NONE, unsigned int set=0);
       
   public:
