@@ -1,5 +1,5 @@
 //
-// $Id: Lepton.h,v 1.22 2010/02/22 11:10:00 veelken Exp $
+// $Id: Lepton.h,v 1.23 2010/03/02 21:01:48 rwolf Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Lepton_h
@@ -17,7 +17,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga
-  \version  $Id: Lepton.h,v 1.22 2010/02/22 11:10:00 veelken Exp $
+  \version  $Id: Lepton.h,v 1.23 2010/03/02 21:01:48 rwolf Exp $
 */
 
 #include "DataFormats/Candidate/interface/Particle.h"
@@ -177,6 +177,7 @@ namespace pat {
           }
           isoDeposits_.push_back(std::make_pair(key,dep));
       } 
+      void clearIsoDeposits() { isoDeposits_.clear(); }
 
       // ---- specific getters ----
       const IsoDeposit * trackIsoDeposit() const { return isoDeposit(pat::TrackIso); }
