@@ -1,5 +1,5 @@
 //
-// $Id: Jet.cc,v 1.40.2.3 2010/10/28 18:57:02 rwolf Exp $
+// $Id: Jet.cc,v 1.40.2.4 2010/11/03 21:24:21 rwolf Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -170,8 +170,6 @@ std::vector<reco::PFCandidatePtr> const & Jet::getPFConstituents () const {
   return pfCandidatesTemp_;
 }
 
-
-
 /// return the matched generated jet
 const reco::GenJet * Jet::genJet() const {
   if (genJet_.size()) return  &(genJet_.front());
@@ -253,11 +251,19 @@ float Jet::jecFactor(const unsigned int& level, const JetCorrFactors::Flavor& fl
 /// the set of correction factors, which is currently in use 
 Jet Jet::correctedJet(const std::string& level, const std::string& flavor, const std::string& set) const 
 {
-  Jet correctedJet(*this);
   // rescale p4 of the jet; the update of current values is 
   // done within the called jecFactor function
-  correctedJet.setP4(jecFactor(level, flavor, set)*p4());
-  return correctedJet;
+  for(unsigned int idx=0; idx<jec_.size(); ++idx){
+    if(set.empty() || jec_.at(idx).jecSet()==set){
+      if(jec_[idx].jecLevel(level)>=0){
+	return correctedJet(jec_[idx].jecLevel(level), jec_[idx].jecFlavor(flavor), idx);
+      } 
+      else{ 
+	throw cms::Exception("InvalidRequest") << "This JEC level " << level << " does not exist. \n";	
+      }
+    }
+  }
+  throw cms::Exception("InvalidRequest") << "This JEC set " << set << " does not exist. \n";	
 }
 
 /// copy of the jet with correction factor to target step for
