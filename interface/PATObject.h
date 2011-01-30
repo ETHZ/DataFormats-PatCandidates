@@ -1,5 +1,5 @@
 //
-// $Id: PATObject.h,v 1.29 2010/06/03 11:39:55 vadler Exp $
+// $Id: PATObject.h,v 1.30 2010/06/16 15:40:51 vadler Exp $
 //
 
 #ifndef DataFormats_PatCandidates_PATObject_h
@@ -15,7 +15,7 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga, Volker Adler, Sal Rappoccio
-  \version  $Id: PATObject.h,v 1.29 2010/06/03 11:39:55 vadler Exp $
+  \version  $Id: PATObject.h,v 1.30 2010/06/16 15:40:51 vadler Exp $
 */
 
 
@@ -76,10 +76,10 @@ namespace pat {
       const TriggerObjectStandAloneCollection   triggerObjectMatchesByFilter( const char        * labelFilter ) const { return triggerObjectMatchesByFilter( std::string( labelFilter ) ); };
       const TriggerObjectStandAlone           * triggerObjectMatchByFilter( const std::string & labelFilter, const size_t idx = 0 ) const;
       const TriggerObjectStandAlone           * triggerObjectMatchByFilter( const char        * labelFilter, const size_t idx = 0 ) const { return triggerObjectMatchByFilter( std::string( labelFilter ), idx ); };
-      const TriggerObjectStandAloneCollection   triggerObjectMatchesByPath( const std::string & namePath, const bool pathLastFilterAccepted = false ) const;
-      const TriggerObjectStandAloneCollection   triggerObjectMatchesByPath( const char        * namePath, const bool pathLastFilterAccepted = false ) const { return triggerObjectMatchesByPath( std::string( namePath ), pathLastFilterAccepted ); };
-      const TriggerObjectStandAlone           * triggerObjectMatchByPath( const std::string & namePath, const bool pathLastFilterAccepted = false, const size_t idx = 0 ) const;
-      const TriggerObjectStandAlone           * triggerObjectMatchByPath( const char        * namePath, const bool pathLastFilterAccepted = false, const size_t idx = 0 ) const { return triggerObjectMatchByPath( std::string( namePath ), pathLastFilterAccepted, idx ); };
+      const TriggerObjectStandAloneCollection   triggerObjectMatchesByPath( const std::string & namePath, const bool pathLastFilterAccepted = true ) const;
+      const TriggerObjectStandAloneCollection   triggerObjectMatchesByPath( const char        * namePath, const bool pathLastFilterAccepted = true ) const { return triggerObjectMatchesByPath( std::string( namePath ), pathLastFilterAccepted ); };
+      const TriggerObjectStandAlone           * triggerObjectMatchByPath( const std::string & namePath, const bool pathLastFilterAccepted = true, const size_t idx = 0 ) const;
+      const TriggerObjectStandAlone           * triggerObjectMatchByPath( const char        * namePath, const bool pathLastFilterAccepted = true, const size_t idx = 0 ) const { return triggerObjectMatchByPath( std::string( namePath ), pathLastFilterAccepted, idx ); };
       /// add a trigger match
       void addTriggerObjectMatch( const TriggerObjectStandAlone & trigObj ) { triggerObjectMatchesEmbedded_.push_back( trigObj ); };
 
