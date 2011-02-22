@@ -1,5 +1,5 @@
 //
-// $Id: Electron.cc,v 1.23 2010/10/14 13:55:24 beaudett Exp $
+// $Id: Electron.cc,v 1.22 2010/09/29 13:24:25 wreece Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -9,10 +9,10 @@
 
 using namespace pat;
 
+
 /// default constructor
 Electron::Electron() :
     Lepton<reco::GsfElectron>(),
-    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -29,7 +29,6 @@ Electron::Electron() :
 /// constructor from reco::GsfElectron
 Electron::Electron(const reco::GsfElectron & anElectron) :
     Lepton<reco::GsfElectron>(anElectron),
-    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -45,7 +44,6 @@ Electron::Electron(const reco::GsfElectron & anElectron) :
 /// constructor from ref to reco::GsfElectron
 Electron::Electron(const edm::RefToBase<reco::GsfElectron> & anElectronRef) :
     Lepton<reco::GsfElectron>(anElectronRef),
-    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -60,7 +58,6 @@ Electron::Electron(const edm::RefToBase<reco::GsfElectron> & anElectronRef) :
 /// constructor from Ptr to reco::GsfElectron
 Electron::Electron(const edm::Ptr<reco::GsfElectron> & anElectronRef) :
     Lepton<reco::GsfElectron>(anElectronRef),
-    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -87,15 +84,6 @@ reco::GsfTrackRef Electron::gsfTrack() const {
   }
 }
 
-/// override the virtual reco::GsfElectron::core method, so that the embedded core can be used by GsfElectron client methods
-reco::GsfElectronCoreRef Electron::core() const {
-  if (embeddedGsfElectronCore_) {
-    return reco::GsfElectronCoreRef(&gsfElectronCore_, 0);
-  } else {
-    return reco::GsfElectron::core();
-  }
-}
-
 
 /// override the reco::GsfElectron::superCluster method, to access the internal storage of the supercluster
 reco::SuperClusterRef Electron::superCluster() const {
@@ -113,15 +101,6 @@ reco::TrackRef Electron::track() const {
     return reco::TrackRef(&track_, 0);
   } else {
     return reco::GsfElectron::track();
-  }
-}
-
-/// method to store the electron's gsfElectronCore internally
-void Electron::embedGsfElectronCore() {
-  gsfElectronCore_.clear();
-  if (reco::GsfElectron::core().isNonnull()) {
-      gsfElectronCore_.push_back(*reco::GsfElectron::core());
-      embeddedGsfElectronCore_ = true;
   }
 }
 
@@ -197,7 +176,7 @@ void Electron::embedPFCandidate() {
 /// reference to the parent PF candidate for use in TopProjector
 reco::CandidatePtr Electron::sourceCandidatePtr( size_type i ) const {
   if (embeddedPFCandidate_) {
-    return reco::CandidatePtr( pfCandidateRef_.id(), pfCandidateRef_.get(), pfCandidateRef_.key() );
+    return reco::CandidatePtr( pfCandidateRef_.id(), pfCandidateRef_.get(), pfCandidateRef_.key() ); 
   } else {
     return reco::CandidatePtr();
   }
@@ -207,7 +186,7 @@ reco::CandidatePtr Electron::sourceCandidatePtr( size_type i ) const {
 
 /// dB gives the impact parameter wrt the beamline.
 /// If this is not cached it is not meaningful, since
-/// it relies on the distance to the beamline.
+/// it relies on the distance to the beamline. 
 double Electron::dB() const {
   if ( cachedDB_ ) {
     return dB_;
@@ -218,7 +197,7 @@ double Electron::dB() const {
 
 /// edB gives the uncertainty on the impact parameter wrt the beamline.
 /// If this is not cached it is not meaningful, since
-/// it relies on the distance to the beamline.
+/// it relies on the distance to the beamline. 
 double Electron::edB() const {
   if ( cachedDB_ ) {
     return edB_;
