@@ -147,7 +147,7 @@ namespace pat {
       const pat::tau::TauPFSpecific & pfSpecific() const ;
       /// Method copied from reco::PFTau. 
       /// Throws an exception if this pat::Tau was not made from a reco::PFTau
-      const reco::PFJetRef & pfJetRef() const { return pfSpecific().pfJetRef_; }
+      /// const reco::PFTauTagInfoRef & pfTauTagInfoRef() const { return pfSpecific().PFTauTagInfoRef_; }
       /// Method copied from reco::PFTau. 
       /// Throws an exception if this pat::Tau was not made from a reco::PFTau
       const reco::PFCandidateRef leadPFChargedHadrCand() const;

@@ -21,9 +21,9 @@ struct TauPFSpecific {
 // dummy constructor for ROOT I/O
     TauPFSpecific() {}
 // constructor from PFTau
-    TauPFSpecific(const reco::PFTau& tau);
+    TauPFSpecific(const reco::PFTau &tau) ;
 // datamembers 
-    reco::PFJetRef pfJetRef_;
+  //reco::PFTauTagInfoRef PFTauTagInfoRef_;
     reco::PFCandidateRef leadPFChargedHadrCand_;
     float leadPFChargedHadrCandsignedSipt_;
     reco::PFCandidateRef leadPFNeutralCand_;
