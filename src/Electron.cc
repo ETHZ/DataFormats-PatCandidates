@@ -1,5 +1,5 @@
 //
-// $Id: Electron.cc,v 1.22 2010/09/29 13:24:25 wreece Exp $
+// $Id: Electron.cc,v 1.24 2011/02/08 09:10:10 chamont Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -9,10 +9,10 @@
 
 using namespace pat;
 
-
 /// default constructor
 Electron::Electron() :
     Lepton<reco::GsfElectron>(),
+    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -22,6 +22,7 @@ Electron::Electron() :
     dB_(0.0),
     edB_(0.0)
 {
+  initImpactParameters();
 }
 
 
@@ -29,6 +30,7 @@ Electron::Electron() :
 /// constructor from reco::GsfElectron
 Electron::Electron(const reco::GsfElectron & anElectron) :
     Lepton<reco::GsfElectron>(anElectron),
+    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -38,12 +40,14 @@ Electron::Electron(const reco::GsfElectron & anElectron) :
     dB_(0.0),
     edB_(0.0)
 {
+  initImpactParameters();
 }
 
 
 /// constructor from ref to reco::GsfElectron
 Electron::Electron(const edm::RefToBase<reco::GsfElectron> & anElectronRef) :
     Lepton<reco::GsfElectron>(anElectronRef),
+    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -53,11 +57,13 @@ Electron::Electron(const edm::RefToBase<reco::GsfElectron> & anElectronRef) :
     dB_(0.0),
     edB_(0.0)
 {
+  initImpactParameters();
 }
 
 /// constructor from Ptr to reco::GsfElectron
 Electron::Electron(const edm::Ptr<reco::GsfElectron> & anElectronRef) :
     Lepton<reco::GsfElectron>(anElectronRef),
+    embeddedGsfElectronCore_(false),
     embeddedGsfTrack_(false),
     embeddedSuperCluster_(false),
     embeddedTrack_(false),
@@ -67,11 +73,22 @@ Electron::Electron(const edm::Ptr<reco::GsfElectron> & anElectronRef) :
     dB_(0.0),
     edB_(0.0)
 {
+  initImpactParameters();
 }
 
 
 /// destructor
 Electron::~Electron() {
+}
+
+
+// initialize impact parameter container vars
+void Electron::initImpactParameters() {
+  for (int i_ = 0; i_<5; ++i_){
+    ip_.push_back(0.0);
+    eip_.push_back(0.0);
+    cachedIP_.push_back(false);
+  }
 }
 
 
@@ -81,6 +98,15 @@ reco::GsfTrackRef Electron::gsfTrack() const {
     return reco::GsfTrackRef(&gsfTrack_, 0);
   } else {
     return reco::GsfElectron::gsfTrack();
+  }
+}
+
+/// override the virtual reco::GsfElectron::core method, so that the embedded core can be used by GsfElectron client methods
+reco::GsfElectronCoreRef Electron::core() const {
+  if (embeddedGsfElectronCore_) {
+    return reco::GsfElectronCoreRef(&gsfElectronCore_, 0);
+  } else {
+    return reco::GsfElectron::core();
   }
 }
 
@@ -101,6 +127,15 @@ reco::TrackRef Electron::track() const {
     return reco::TrackRef(&track_, 0);
   } else {
     return reco::GsfElectron::track();
+  }
+}
+
+/// method to store the electron's gsfElectronCore internally
+void Electron::embedGsfElectronCore() {
+  gsfElectronCore_.clear();
+  if (reco::GsfElectron::core().isNonnull()) {
+      gsfElectronCore_.push_back(*reco::GsfElectron::core());
+      embeddedGsfElectronCore_ = true;
   }
 }
 
@@ -176,7 +211,7 @@ void Electron::embedPFCandidate() {
 /// reference to the parent PF candidate for use in TopProjector
 reco::CandidatePtr Electron::sourceCandidatePtr( size_type i ) const {
   if (embeddedPFCandidate_) {
-    return reco::CandidatePtr( pfCandidateRef_.id(), pfCandidateRef_.get(), pfCandidateRef_.key() ); 
+    return reco::CandidatePtr( pfCandidateRef_.id(), pfCandidateRef_.get(), pfCandidateRef_.key() );
   } else {
     return reco::CandidatePtr();
   }
@@ -187,9 +222,18 @@ reco::CandidatePtr Electron::sourceCandidatePtr( size_type i ) const {
 /// dB gives the impact parameter wrt the beamline.
 /// If this is not cached it is not meaningful, since
 /// it relies on the distance to the beamline. 
-double Electron::dB() const {
-  if ( cachedDB_ ) {
-    return dB_;
+double Electron::dB(IpType type_) const {
+  // preserve old functionality exactly
+  if (type_ == None){
+    if ( cachedDB_ ) {
+      return dB_;
+    } else {
+      return std::numeric_limits<double>::max();
+    }
+  }
+  // more IP types (new)
+  else if ( cachedIP_[type_] ) {
+    return ip_[type_];
   } else {
     return std::numeric_limits<double>::max();
   }
@@ -198,10 +242,32 @@ double Electron::dB() const {
 /// edB gives the uncertainty on the impact parameter wrt the beamline.
 /// If this is not cached it is not meaningful, since
 /// it relies on the distance to the beamline. 
-double Electron::edB() const {
-  if ( cachedDB_ ) {
-    return edB_;
+double Electron::edB(IpType type_) const {
+  // preserve old functionality exactly
+  if (type_ == None) {
+    if ( cachedDB_ ) {
+      return edB_;
+    } else {
+      return std::numeric_limits<double>::max();
+    }
+  }
+  // more IP types (new)
+  else if ( cachedIP_[type_] ) {
+    return eip_[type_];
   } else {
     return std::numeric_limits<double>::max();
   }
+
 }
+
+void Electron::setDB(double dB, double edB, IpType type){
+  if (type == None) { // Preserve  old functionality exactly
+    dB_ = dB; edB_ = edB;
+    cachedDB_ = true;
+  } else {
+    ip_[type] = dB; 
+    eip_[type] = edB; 
+    cachedIP_[type] = true;
+  }
+}
+ 

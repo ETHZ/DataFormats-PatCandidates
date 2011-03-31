@@ -1,5 +1,5 @@
 //
-// $Id: Electron.h,v 1.30 2010/09/29 13:24:25 wreece Exp $
+// $Id: Electron.h,v 1.32 2011/02/08 09:10:10 chamont Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Electron_h
@@ -16,12 +16,14 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga
-  \version  $Id: Electron.h,v 1.30 2010/09/29 13:24:25 wreece Exp $
+  \version  $Id: Electron.h,v 1.32 2011/02/08 09:10:10 chamont Exp $
 */
 
 
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectronCore.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectronCoreFwd.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 
@@ -31,9 +33,9 @@
 // Define typedefs for convenience
 namespace pat {
   class Electron;
-  typedef std::vector<Electron>              ElectronCollection; 
-  typedef edm::Ref<ElectronCollection>       ElectronRef; 
-  typedef edm::RefVector<ElectronCollection> ElectronRefVector; 
+  typedef std::vector<Electron>              ElectronCollection;
+  typedef edm::Ref<ElectronCollection>       ElectronRef;
+  typedef edm::RefVector<ElectronCollection> ElectronRefVector;
 }
 
 
@@ -62,6 +64,8 @@ namespace pat {
       virtual Electron * clone() const { return new Electron(*this); }
 
       // ---- methods for content embedding ----
+      /// override the virtual reco::GsfElectron::core method, so that the embedded core can be used by GsfElectron client methods
+      virtual reco::GsfElectronCoreRef core() const;
       /// override the reco::GsfElectron::gsfTrack method, to access the internal storage of the supercluster
       reco::GsfTrackRef gsfTrack() const;
       /// override the reco::GsfElectron::superCluster method, to access the internal storage of the supercluster
@@ -69,6 +73,8 @@ namespace pat {
       /// override the reco::GsfElectron::track method, to access the internal storage of the track
       reco::TrackRef track() const;
       using reco::RecoCandidate::track; // avoid hiding the base implementation
+      /// method to store the electron's core internally
+      void embedGsfElectronCore();
       /// method to store the electron's GsfTrack internally
       void embedGsfTrack();
       /// method to store the electron's SuperCluster internally
@@ -86,10 +92,10 @@ namespace pat {
       /// 4: passes conversion rejection
       /// 5: passes conversion rejection and ID
       /// 6: passes conversion rejection and Isolation
-      /// 7: passes the whole selection 
+      /// 7: passes the whole selection
       /// For more details have a look at:
       /// https://twiki.cern.ch/twiki/bin/view/CMS/SimpleCutBasedEleID
-      /// https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCategoryBasedElectronID 
+      /// https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCategoryBasedElectronID
       /// Note: an exception is thrown if the specified ID is not available
       float electronID(const std::string & name) const;
       /// Returns true if a specific ID is available in this pat::Electron
@@ -98,22 +104,22 @@ namespace pat {
       /// The 'default' ID is the first in the list
       const std::vector<IdPair> &  electronIDs() const { return electronIDs_; }
       /// Store multiple electron ID values, discarding existing ones
-      /// The first one in the list becomes the 'default' electron id 
+      /// The first one in the list becomes the 'default' electron id
       void setElectronIDs(const std::vector<IdPair> & ids) { electronIDs_ = ids; }
-      
+
       // ---- overload of isolation functions ----
       /// Overload of pat::Lepton::trackIso(); returns the value of
       /// the summed track pt in a cone of deltaR<0.4
       float trackIso() const { return dr04TkSumPt(); }
-      /// Overload of pat::Lepton::trackIso(); returns the value of 
-      /// the summed Et of all recHits in the ecal in a cone of 
+      /// Overload of pat::Lepton::trackIso(); returns the value of
+      /// the summed Et of all recHits in the ecal in a cone of
       /// deltaR<0.4
       float ecalIso()  const { return dr04EcalRecHitSumEt(); }
-      /// Overload of pat::Lepton::trackIso(); returns the value of 
-      /// the summed Et of all caloTowers in the hcal in a cone of 
+      /// Overload of pat::Lepton::trackIso(); returns the value of
+      /// the summed Et of all caloTowers in the hcal in a cone of
       /// deltaR<0.4
       float hcalIso()  const { return dr04HcalTowerSumEt(); }
-      /// Overload of pat::Lepton::trackIso(); returns the sum of 
+      /// Overload of pat::Lepton::trackIso(); returns the sum of
       /// ecalIso() and hcalIso
       float caloIso()  const { return ecalIso()+hcalIso(); }
 
@@ -123,43 +129,64 @@ namespace pat {
       reco::PFCandidateRef pfCandidateRef() const;
       /// add a reference to the source IsolatedPFCandidate
       void setPFCandidateRef(const reco::PFCandidateRef& ref) {
-	pfCandidateRef_ = ref;
-      } 
+        pfCandidateRef_ = ref;
+      }
       /// embed the PFCandidate pointed to by pfCandidateRef_
       void embedPFCandidate();
       // get the number of non-null PF candidates
-      size_t numberOfSourceCandidatePtrs() const { 
-	return pfCandidateRef_.isNonnull() ? 1 : 0;
+      size_t numberOfSourceCandidatePtrs() const {
+        return pfCandidateRef_.isNonnull() ? 1 : 0;
       }
       /// get the candidate pointer with index i
       reco::CandidatePtr sourceCandidatePtr( size_type i ) const;
 
-      /// dB gives the impact parameter wrt the beamline.
-      /// If this is not cached it is not meaningful, since
-      /// it relies on the distance to the beamline. 
-      double dB() const;
-      double edB() const;
-      void setDB(double dB, double edB) { dB_ = dB; edB_ = edB; cachedDB_ = true;}
+      // ---- embed various impact parameters with errors ----
+      //
+      // example:
+      //
+      //    // this will return the muon inner track
+      //    // transverse impact parameter
+      //    // relative to the primary vertex
+      //    muon->dB(pat::Muon::PV2D);
+      //
+      //    // this will return the uncertainty
+      //    // on the muon inner track
+      //    // transverse impact parameter
+      //    // relative to the primary vertex
+      //    // or -1.0 if there is no valid PV in the event
+      //    muon->edB(pat::Muon::PV2D);
+      //
+      // IpType defines the type of the impact parameter
+      // None is default and reverts to old behavior controlled by 
+      // patMuons.usePV = True/False
+      typedef enum IPTYPE { None = 0, PV2D = 1, PV3D = 2, BS2D = 3, BS3D = 4 } IpType;       
+      double dB(IpType type = None) const;
+      double edB(IpType type = None) const;
+      void setDB(double dB, double edB, IpType type = None);    
       
       // ---- Momentum estimate specific methods ----
       const LorentzVector & ecalDrivenMomentum() const {return ecalDrivenMomentum_;}
       void setEcalDrivenMomentum(const Candidate::LorentzVector& mom) {ecalDrivenMomentum_=mom;}
 
     protected:
+      void initImpactParameters(); // init IP defaults in a constructor
 
       // ---- for content embedding ----
+      bool embeddedGsfElectronCore_;
+      std::vector<reco::GsfElectronCore> gsfElectronCore_;
       bool embeddedGsfTrack_;
       std::vector<reco::GsfTrack> gsfTrack_;
       bool embeddedSuperCluster_;
       std::vector<reco::SuperCluster> superCluster_;
       bool embeddedTrack_;
       std::vector<reco::Track> track_;
+
       // ---- electron ID's holder ----
       std::vector<IdPair> electronIDs_;
 
       // ---- PF specific members ----
       /// true if the IsolatedPFCandidate is embedded
-      bool embeddedPFCandidate_;      
+      bool embeddedPFCandidate_;
       /// if embeddedPFCandidate_, a copy of the source IsolatedPFCandidate
       /// is stored in this vector
       reco::PFCandidateCollection pfCandidate_;
@@ -168,13 +195,19 @@ namespace pat {
       reco::PFCandidateRef pfCandidateRef_;
 
       // ---- specific members : Momentum estimates ----
-      /// ECAL-driven momentum 
+      /// ECAL-driven momentum
       LorentzVector ecalDrivenMomentum_;
 
-      // V+Jets group selection variables. 
-      bool    cachedDB_;         // have these values been cached? 
+      // V+Jets group selection variables.
+      bool    cachedDB_;         // have these values been cached?
       double  dB_;               // dB and edB are the impact parameter at the primary vertex,
       double  edB_;              // dB and edB are the impact parameter at the primary vertex,
+
+      // ---- cached impact parameters ----
+      std::vector<bool>    cachedIP_;  // has the IP (former dB) been cached?
+      std::vector<double>  ip_;        // dB and edB are the impact parameter at the primary vertex,
+      std::vector<double>  eip_;       // and its uncertainty as recommended by the tracking group
+      
   };
 }
 
