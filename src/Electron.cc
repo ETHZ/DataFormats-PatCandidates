@@ -1,5 +1,5 @@
 //
-// $Id: Electron.cc,v 1.23 2010/10/14 13:55:24 beaudett Exp $
+// $Id: Electron.cc,v 1.24 2011/02/08 09:10:10 chamont Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -24,8 +24,6 @@ Electron::Electron() :
 {
 }
 
-
-
 /// constructor from reco::GsfElectron
 Electron::Electron(const reco::GsfElectron & anElectron) :
     Lepton<reco::GsfElectron>(anElectron),
@@ -40,7 +38,6 @@ Electron::Electron(const reco::GsfElectron & anElectron) :
     edB_(0.0)
 {
 }
-
 
 /// constructor from ref to reco::GsfElectron
 Electron::Electron(const edm::RefToBase<reco::GsfElectron> & anElectronRef) :
@@ -72,11 +69,26 @@ Electron::Electron(const edm::Ptr<reco::GsfElectron> & anElectronRef) :
 {
 }
 
-
 /// destructor
 Electron::~Electron() {
 }
 
+std::ostream& 
+reco::operator<<(std::ostream& out, const pat::Electron& obj) 
+{
+  if(!out) return out;
+  
+  out << "\tpat::Electron: ";
+  out << std::setiosflags(std::ios::right);
+  out << std::setiosflags(std::ios::fixed);
+  out << std::setprecision(3);
+  out << " E/pT/eta/phi " 
+      << obj.energy()<<"/"
+      << obj.pt()<<"/"
+      << obj.eta()<<"/"
+      << obj.phi();
+  return out; 
+}
 
 /// override the reco::GsfElectron::gsfTrack method, to access the internal storage of the supercluster
 reco::GsfTrackRef Electron::gsfTrack() const {

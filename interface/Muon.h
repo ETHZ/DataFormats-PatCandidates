@@ -1,5 +1,5 @@
 //
-// $Id: Muon.h,v 1.33 2010/09/14 15:15:15 kukartse Exp $
+// $Id: Muon.h,v 1.34 2010/09/29 13:24:25 wreece Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Muon_h
@@ -17,7 +17,7 @@
 
   \author   Steven Lowette, Giovanni Petrucciani, Frederic Ronga, Colin Bernet
 
-  \version  $Id: Muon.h,v 1.33 2010/09/14 15:15:15 kukartse Exp $
+  \version  $Id: Muon.h,v 1.34 2010/09/29 13:24:25 wreece Exp $
 */
 
 #include "DataFormats/MuonReco/interface/Muon.h"
@@ -37,6 +37,11 @@ namespace pat {
   typedef std::vector<Muon>              MuonCollection; 
   typedef edm::Ref<MuonCollection>       MuonRef; 
   typedef edm::RefVector<MuonCollection> MuonRefVector; 
+}
+
+namespace reco {
+  /// pipe operator (introduced to use pat::Muon with PFTopProjectors)
+  std::ostream& operator<<(std::ostream& out, const pat::Muon& obj);
 }
 
 
@@ -198,6 +203,9 @@ namespace pat {
 
       /// Returns the segment compatibility, using muon::segmentCompatibility (DataFormats/MuonReco/interface/MuonSelectors.h)
       double segmentCompatibility(reco::Muon::ArbitrationType arbitrationType = reco::Muon::SegmentAndTrackArbitration) const ;
+
+      /// pipe operator (introduced to use pat::Muon with PFTopProjectors)
+      friend std::ostream& reco::operator<<(std::ostream& out, const Muon& obj);
 
     protected:
 
