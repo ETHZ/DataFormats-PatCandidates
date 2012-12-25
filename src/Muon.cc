@@ -1,5 +1,5 @@
 //
-// $Id: Muon.cc,v 1.32 2012/09/27 09:15:34 bellan Exp $
+// $Id: Muon.cc,v 1.32.2.1 2012/12/10 14:04:58 bellan Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -425,22 +425,33 @@ bool Muon::isSoftMuon(const reco::Vertex& vtx) const{
 #include "DataFormats/MuonReco/interface/MuonCocktails.h"
 
 // Backport from version CMSSW_6_0_0 of DataFormats/MuonReco/*/MuonSelectors.*
-bool Muon::isHighPtMuon(const reco::Vertex& vtx) const{
+bool Muon::isHighPtMuon(const reco::Vertex& vtx, TunePType tunePType) const{
   bool muID =   isGlobalMuon() && globalTrack()->hitPattern().numberOfValidMuonHits() >0 && (numberOfMatchedStations() > 1);
   if(!muID) return false;
 
-  // Get the optimized track
-  reco::TrackRef cktTrack = (muon::tevOptimized(*this, 200, 17., 40., 0.25)).first;
-
-
-  bool hits = innerTrack()->hitPattern().trackerLayersWithMeasurement() > 8 &&
-    innerTrack()->hitPattern().numberOfValidPixelHits() > 0; 
-
-  bool momQuality = cktTrack->ptError()/cktTrack->pt() < 0.3;
-
-  bool ip = fabs(cktTrack->dxy(vtx.position())) < 0.2 && fabs(cktTrack->dz(vtx.position())) < 0.5;
+  if(tunePType == improvedTuneP){    
+    // Get the optimized track
+    reco::TrackRef cktTrack = (muon::tevOptimized(*this, 200, 17., 40., 0.25)).first;
+    bool momQuality = cktTrack->ptError()/cktTrack->pt() < 0.3;
+    
+    bool hits = innerTrack()->hitPattern().trackerLayersWithMeasurement() > 8 &&
+      innerTrack()->hitPattern().numberOfValidPixelHits() > 0; 
   
-  return muID && hits && momQuality && ip;
+    bool ip = fabs(cktTrack->dxy(vtx.position())) < 0.2 && fabs(cktTrack->dz(vtx.position())) < 0.5;
 
+    return muID && hits && momQuality && ip;
+  }
+  else if(tunePType == defaultTuneP){
+    // Get the optimized track
+    reco::TrackRef cktTrack = (muon::tevOptimized(*this, 200, 4., 6., -1)).first;
+    
+    bool hits = innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5 &&
+      innerTrack()->hitPattern().numberOfValidPixelHits() > 0; 
+    
+    bool ip = fabs(cktTrack->dxy(vtx.position())) < 0.2 && fabs(cktTrack->dz(vtx.position())) < 0.5;
+
+    return muID && hits && ip;
+  }
+  else return false;
 }
 
