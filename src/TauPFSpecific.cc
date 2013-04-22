@@ -17,14 +17,16 @@ pat::tau::TauPFSpecific::TauPFSpecific(const reco::PFTau& tau) :
     selectedSignalPFChargedHadrCands_(tau.signalPFChargedHadrCands()), 
     selectedSignalPFNeutrHadrCands_(tau.signalPFNeutrHadrCands()), 
     selectedSignalPFGammaCands_(tau.signalPFGammaCands()),
+    signalTauChargedHadronCandidates_(tau.signalTauChargedHadronCandidates()),
     signalPiZeroCandidates_(tau.signalPiZeroCandidates()),
     // Isolation cone
     selectedIsolationPFCands_(tau.isolationPFCands()), 
     selectedIsolationPFChargedHadrCands_(tau.isolationPFChargedHadrCands()), 
     selectedIsolationPFNeutrHadrCands_(tau.isolationPFNeutrHadrCands()), 
     selectedIsolationPFGammaCands_(tau.isolationPFGammaCands()),
+    isolationTauChargedHadronCandidates_(tau.isolationTauChargedHadronCandidates()),
     isolationPiZeroCandidates_(tau.isolationPiZeroCandidates()),
-    isolationPFChargedHadrCandsPtSum_(tau.isolationPFChargedHadrCandsPtSum()),
+    isolationPFChargedHadrCandsPtSum_(tau.isolationPFChargedHadrCandsPtSum()),    
     isolationPFGammaCandsEtSum_(tau.isolationPFGammaCandsEtSum()),
     // Other useful variables 
     maximumHCALPFClusterEt_(tau.maximumHCALPFClusterEt()),
