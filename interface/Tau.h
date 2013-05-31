@@ -1,5 +1,5 @@
 //
-// $Id: Tau.h,v 1.34 2012/04/25 07:32:20 cbern Exp $
+// $Id: Tau.h,v 1.34.2.1 2013/04/22 12:46:27 veelken Exp $
 //
 
 #ifndef DataFormats_PatCandidates_Tau_h
@@ -17,12 +17,14 @@
    https://hypernews.cern.ch/HyperNews/CMS/get/physTools.html
 
   \author   Steven Lowette, Christophe Delaere, Giovanni Petrucciani, Frederic Ronga, Colin Bernet
-  \version  $Id: Tau.h,v 1.34 2012/04/25 07:32:20 cbern Exp $
+  \version  $Id: Tau.h,v 1.34.2.1 2013/04/22 12:46:27 veelken Exp $
 */
 
 
 #include "DataFormats/TauReco/interface/BaseTau.h"
+#include "DataFormats/TauReco/interface/PFTauTransverseImpactParameter.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/PatCandidates/interface/Lepton.h"
 #include "DataFormats/JetReco/interface/GenJetCollection.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
@@ -55,7 +57,7 @@ namespace pat {
 
     public:
 
-      typedef std::pair<std::string,float> IdPair;
+      typedef std::pair<std::string, float> IdPair;
 
       /// default constructor
       Tau();
@@ -251,6 +253,24 @@ namespace pat {
       /// Method copied from reco::PFTau. 
       /// Throws an exception if this pat::Tau was not made from a reco::PFTau
       bool muonDecision() const { return pfSpecific().muonDecision_; }
+      
+      /// ---- Tau lifetime information ----
+      /// Filled from PFTauTIPAssociation.
+      /// Throws an exception if this pat::Tau was not made from a reco::PFTau	
+      const reco::PFTauTransverseImpactParameter::Point& dxy_PCA() const { return pfSpecific().dxy_PCA_; }
+      double dxy() const { return pfSpecific().dxy_; }
+      double dxy_error() const { return pfSpecific().dxy_error_; }
+      double dxy_Sig() const;
+      const reco::VertexRef& primaryVertex() const { return pfSpecific().pv_; }
+      const reco::PFTauTransverseImpactParameter::Point& primaryVertexPos() const { return pfSpecific().pvPos_; }
+      const reco::PFTauTransverseImpactParameter::CovMatrix& primaryVertexCov() const { return pfSpecific().pvCov_; }
+      bool hasSecondaryVertex() const { return pfSpecific().hasSV_; }
+      const reco::PFTauTransverseImpactParameter::Vector& flightLength() const { return pfSpecific().flightLength_; } 
+      double flightLengthSig() const { return pfSpecific().flightLengthSig_; }
+      reco::PFTauTransverseImpactParameter::CovMatrix flightLengthCov() const;
+      const reco::VertexRef& secondaryVertex() const { return pfSpecific().sv_; }
+      const reco::PFTauTransverseImpactParameter::Point& secondaryVertexPos() const { return pfSpecific().svPos_; }
+      const reco::PFTauTransverseImpactParameter::CovMatrix& secondaryVertexCov() const { return pfSpecific().svCov_; }
 
       /// Methods copied from reco::Jet.
       /// (accessible from reco::CaloTau/reco::PFTau via reco::CaloTauTagInfo/reco::PFTauTagInfo)

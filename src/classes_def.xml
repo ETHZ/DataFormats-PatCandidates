@@ -87,7 +87,8 @@
   <ioread sourceClass="pat::Tau" targetClass="pat::Tau" version="[1-]" source="" target="isolationPFGammaCandsPtrsFixed_">
   <![CDATA[isolationPFGammaCandsPtrsFixed_=false;]]>
   </ioread>
-  <class name="pat::tau::TauPFSpecific"  ClassVersion="13">
+  <class name="pat::tau::TauPFSpecific"  ClassVersion="14">
+   <version ClassVersion="14" checksum="3129436753"/>
    <version ClassVersion="13" checksum="3827669049"/>
    <version ClassVersion="12" checksum="941745608"/>
    <version ClassVersion="11" checksum="3975939304"/>

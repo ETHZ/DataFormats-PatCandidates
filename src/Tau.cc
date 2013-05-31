@@ -1,5 +1,5 @@
 //
-// $Id: Tau.cc,v 1.22 2011/10/27 16:37:04 wmtan Exp $
+// $Id: Tau.cc,v 1.22.4.1 2013/04/22 12:46:28 veelken Exp $
 //
 
 #include "DataFormats/PatCandidates/interface/Tau.h"
@@ -290,6 +290,25 @@ const reco::Candidate::LorentzVector& Tau::p4Jet() const
   if ( isCaloTau() ) return caloSpecific().p4Jet_;
   if ( isPFTau()   ) return pfSpecific().p4Jet_;
   throw cms::Exception("Type Error") << "Requesting a CaloTau/PFTau-specific information from a pat::Tau which wasn't made from either a CaloTau or a PFTau.\n";
+}
+
+double Tau::dxy_Sig() const
+{
+  if ( pfSpecific().dxy_error_ != 0 ) return (pfSpecific().dxy_/pfSpecific().dxy_error_);
+  else return 0.;
+}
+
+reco::PFTauTransverseImpactParameter::CovMatrix Tau::flightLengthCov() const
+{
+  reco::PFTauTransverseImpactParameter::CovMatrix cov;
+  const reco::PFTauTransverseImpactParameter::CovMatrix& sv = secondaryVertexCov();
+  const reco::PFTauTransverseImpactParameter::CovMatrix& pv = primaryVertexCov();
+  for ( int i = 0; i < dimension; ++i ) {
+    for ( int j = 0; j < dimension; ++j ) {
+      cov(i,j) = sv(i,j) + pv(i,j);
+    }
+  }
+  return cov;
 }
 
 float Tau::etaetaMoment() const
